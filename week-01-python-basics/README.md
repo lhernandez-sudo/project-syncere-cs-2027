@@ -35,6 +35,20 @@ print("Hello!")
 3. Compare output and help a classmate diagnose one error.
 4. Complete the [Week 1 assignment](assignment/README.md).
 
+## Saturday plan
+
+| Time | Activity |
+| --- | --- |
+| 9:00-9:20 | Do-now: give a human exact instructions for a simple task |
+| 9:20-9:40 | Community introductions, course overview, and learning objectives |
+| 9:40-10:25 | What computer science is, input-process-output, and the first Python program |
+| 10:25-10:35 | Break |
+| 10:35-11:20 | Guided lab: run, change, and debug `hello.py` |
+| 11:20-11:30 | Break |
+| 11:30-12:25 | Student introduction program and peer testing |
+| 12:25-12:45 | Share programs and discuss one debugging discovery |
+| 12:45-1:00 | Exit ticket and reflection |
+
 ## Running Python files
 
 From the repository root:

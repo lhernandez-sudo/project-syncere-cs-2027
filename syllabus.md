@@ -16,25 +16,54 @@ By the end of the course, students should be able to:
 - Read from files and work with APIs and JSON.
 - Write and run automated tests.
 - Use Git and GitHub to manage code.
-- Plan, build, and present a complete Python project.
+- Evaluate AI output for accuracy, usefulness, bias, and safety.
+- Plan, build, test, document, and present complete Python projects.
 
-## Weekly routine
+## Saturday routine
 
-Each week includes:
+Class meets from 9:00 AM to 1:00 PM. A typical session follows this rhythm:
 
-1. Learning objectives and lesson notes
-2. Instructor-led examples
-3. In-class exercises
-4. An independent assignment
-5. Optional resources for additional practice
+| Time | Block |
+| --- | --- |
+| 9:00-9:20 | Do-now or computer science challenge |
+| 9:20-9:40 | Community check-in, review, and objectives |
+| 9:40-10:25 | Short lesson and live coding |
+| 10:25-10:35 | Break |
+| 10:35-11:20 | Guided Python lab |
+| 11:20-11:30 | Break |
+| 11:30-12:25 | Project work or challenge |
+| 12:25-12:45 | Demonstrations, debugging, and peer review |
+| 12:45-1:00 | Exit ticket and reflection |
+
+The exact balance may change on project and presentation days. See the [Saturday schedule](shared/saturday-schedule.md) for planning guidance.
+
+## Learning progression
+
+Students repeatedly practice the same development cycle:
+
+> Understand a problem -> plan -> code -> test -> debug -> improve -> explain
+
+Short exercises lead to milestone projects, a December capstone, a team API project, an AI prototype, and a final AI capstone. See the [curriculum roadmap](curriculum-roadmap.md) for details.
+
+## Major projects
+
+- **December capstone:** An individual or pair-based Python application that solves a clearly defined problem.
+- **Team API project:** A collaborative application that retrieves and processes external data.
+- **AI prototype:** A small, constrained AI feature with explicit evaluation criteria.
+- **Final AI capstone:** A complete, responsible AI-enabled Python application addressing a real user need.
 
 ## Expectations
 
 - Attend class prepared and participate in exercises.
 - Ask questions when something is unclear.
 - Write your own code and credit outside sources.
+- Explain code you submit, including code developed with AI assistance.
 - Make small, descriptive Git commits as you work.
 - Treat classmates and their work with respect.
+
+## Responsible use of AI
+
+AI may support learning when the instructor allows it, but it does not replace student reasoning. Students must disclose meaningful AI assistance, verify generated information, protect personal data, and be able to explain and revise every part of their project.
 
 ## Getting help
 

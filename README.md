@@ -4,24 +4,18 @@ Python and computer science lessons, exercises, projects, and resources for the 
 
 ## Course roadmap
 
-New lesson folders will be added as the course progresses. Each week contains lesson notes, examples, practice exercises, and an assignment.
+The course meets on Saturdays for four hours, including two breaks. New lesson folders will be released as the course progresses. Every phase ends with a working artifact that prepares students for the next challenge.
 
-| Week | Topic | Materials |
+| Phase | Focus | Milestone |
 | --- | --- | --- |
-| 1 | Python basics | [Open Week 1](week-01-python-basics/README.md) |
-| 2 | Variables, types, and input | Coming soon |
-| 3 | Conditionals and Boolean logic | Coming soon |
-| 4 | Loops | Coming soon |
-| 5 | Functions | Coming soon |
-| 6 | Lists and tuples | Coming soon |
-| 7 | Dictionaries and sets | Coming soon |
-| 8 | Strings and text processing | Coming soon |
-| 9 | Files and exceptions | Coming soon |
-| 10 | Modules and virtual environments | Coming soon |
-| 11 | Object-oriented programming | Coming soon |
-| 12 | Testing and debugging | Coming soon |
-| 13 | APIs and JSON | Coming soon |
-| 14 | Final project | Coming soon |
+| 1. Python foundations | Computational thinking, input/output, decisions, loops, and lists | Interactive Python program |
+| 2. Reliable programs | Functions, dictionaries, files, validation, debugging, testing, and Git | Data and decision challenge |
+| 3. December capstone | Plan, build, test, improve, document, and present | First portfolio project |
+| 4. Software development | Modules, object-oriented programming, APIs, JSON, collaboration, and code review | Team API project |
+| 5. AI foundations | AI literacy, responsible use, model APIs, structured output, evaluation, and safeguards | AI prototype |
+| 6. Final AI capstone | A complete Python application that uses AI to address a real need | Demo day and final portfolio project |
+
+See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 1 lesson](week-01-python-basics/README.md).
 
 ## Getting started
 
@@ -39,6 +33,7 @@ New lesson folders will be added as the course progresses. Each week contains le
 ```text
 setup/                      Installation and GitHub instructions
 shared/                     Resources used throughout the course
+projects/                   Capstone briefs and project expectations
 week-01-python-basics/      Weekly lesson, examples, exercises, and assignment
 ```
 
