@@ -19,7 +19,7 @@ See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday sche
 
 ## Getting started
 
-1. Follow the [setup guide](setup/README.md).
+1. On a Windows computer, follow the [Day 1 PowerShell setup guide](setup/README.md).
 2. Read the [syllabus](syllabus.md).
 3. Open the folder for the current week.
 4. Pull the latest changes before each class:

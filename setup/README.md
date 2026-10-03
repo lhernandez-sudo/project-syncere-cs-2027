@@ -1,57 +1,74 @@
-# Course Setup
+# Day 1 Windows Setup
 
-## 1. Install the tools
+Students begin with `project-syncere-windows-setup.zip` from the repository's GitHub Releases page. They do not need Git or Python before running it.
 
-Install the following software:
+The package contains:
 
-- Python 3.12 or newer
+- `Start-Setup.bat` - the file students double-click
+- `install-windows.ps1` - the PowerShell installer used by the launcher
+- `README.txt` - short student instructions
+
+The setup installs:
+
+- Python 3.12
 - Git
 - Visual Studio Code
 - The Python extension for Visual Studio Code
+- The Python packages required by this course
 
-## 2. Clone the course repository
+It then clones the course into the student's Documents folder, creates `.venv`, installs the course packages, verifies Python, and opens the course in Visual Studio Code. It is safe to run more than once.
 
-```bash
-git clone https://github.com/lhernandez-sudo/project-syncere-cs-2027.git
-cd project-syncere-cs-2027
-```
+## Student instructions
 
-## 3. Create a virtual environment
+1. Connect the computer to the internet.
+2. Download `project-syncere-windows-setup.zip` from the GitHub Releases page.
+3. Right-click the ZIP and select **Extract All**.
+4. Open the extracted folder and double-click `Start-Setup.bat`.
+5. Approve any Windows installation prompts.
+6. Keep the setup window open until it reports success or an error.
 
-### Windows PowerShell
+Do not run the launcher from inside the ZIP preview. Extract all files first.
+
+## Instructor preparation
+
+Before Day 1:
+
+1. Test the package on the same type of school-managed computer students will use.
+2. Confirm that policy allows `winget`, PowerShell, GitHub, Python, Git, and Visual Studio Code.
+3. Publish the ZIP as a GitHub Release asset.
+4. Keep backup copies on the school LMS and a USB drive.
+5. Provide students with a short link or QR code to the GitHub Release.
+
+If installation is blocked, ask school IT to preinstall the required software. The setup can then be rerun and will reuse installed packages.
+
+## Confirm the setup manually
+
+From the repository root:
 
 ```powershell
-py -m venv .venv
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\python.exe setup\verify_setup.py
+git --version
+code --version
 ```
 
-### macOS, Linux, or WSL
+You should see a successful Python message plus installed Git and VS Code versions.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
+## If `winget` is missing
 
-## 4. Install course packages
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-On systems where Python is named `python3`, use `python3` in place of `python`.
-
-## 5. Verify the setup
-
-```bash
-python setup/verify_setup.py
-```
-
-You should see a success message and your installed Python version.
+Install **App Installer** from the Microsoft Store, restart PowerShell, and run the script again. Ask the instructor for help before installing tools from another source.
 
 ## Before each class
 
-Open a terminal in the repository, activate the virtual environment, and run:
+Open PowerShell in the repository and run:
 
-```bash
+```powershell
 git pull
+.\.venv\Scripts\Activate.ps1
+```
+
+If script activation is blocked, use the environment's Python directly:
+
+```powershell
+git pull
+.\.venv\Scripts\python.exe your_program.py
 ```
