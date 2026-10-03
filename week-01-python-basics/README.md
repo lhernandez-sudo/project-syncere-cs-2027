@@ -39,15 +39,15 @@ print("Hello!")
 
 | Time | Activity |
 | --- | --- |
-| 9:00-9:20 | Do-now: give a human exact instructions for a simple task |
-| 9:20-9:40 | Community introductions, course overview, and learning objectives |
-| 9:40-10:25 | What computer science is, input-process-output, and the first Python program |
+| 9:00-9:30 | Administrative tasks: attendance, forms, accounts, and device distribution |
+| 9:30-9:50 | Community introductions, course overview, and learning objectives |
+| 9:50-10:25 | What computer science is, input-process-output, and the first Python program |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Guided lab: run, change, and debug `hello.py` |
 | 11:20-11:30 | Break |
-| 11:30-12:25 | Student introduction program and peer testing |
-| 12:25-12:45 | Share programs and discuss one debugging discovery |
-| 12:45-1:00 | Exit ticket and reflection |
+| 11:30-12:20 | Student introduction program and peer testing |
+| 12:20-12:40 | Share programs and discuss one debugging discovery |
+| 12:40-1:00 | Exit ticket, setup check, and reflection |
 
 ## Running Python files
 
