@@ -12,6 +12,8 @@ build/
 develop-eggs/
 dist/
 downloads/
+!setup/downloads/
+!setup/downloads/project-syncere-windows-setup.zip
 eggs/
 .eggs/
 lib/
