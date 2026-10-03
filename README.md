@@ -4,18 +4,17 @@ Python and computer science lessons, exercises, projects, and resources for the 
 
 ## Course roadmap
 
-The course meets on Saturdays for four hours, including two breaks. New lesson folders will be released as the course progresses. Every phase ends with a working artifact that prepares students for the next challenge.
+The course meets on Saturdays for four hours, including two breaks. New lesson folders will be released as the course progresses. The year centers on three major projects, with smaller programs serving as practice rather than additional high-stakes assignments.
 
-| Phase | Focus | Milestone |
+| Course arc | Focus | Major project |
 | --- | --- | --- |
-| 1. Python foundations | Computational thinking, input/output, decisions, loops, and lists | Interactive Python program |
-| 2. Reliable programs | Functions, dictionaries, files, validation, debugging, testing, and Git | Data and decision challenge |
-| 3. December capstone | Plan, build, test, improve, document, and present | First portfolio project |
-| 4. Software development | Modules, object-oriented programming, APIs, JSON, collaboration, and code review | Team API project |
-| 5. AI foundations | AI literacy, responsible use, model APIs, structured output, evaluation, and safeguards | AI prototype |
-| 6. Final AI capstone | A complete Python application that uses AI to address a real need | Demo day and final portfolio project |
+| Python foundations | Core Python, problem solving, debugging, testing, and Git | December capstone |
+| Data applications | Modules, SQLite, APIs, JSON, collaboration, and code review | Team data application |
+| AI applications | AI literacy, model APIs, evaluation, safeguards, and product development | Final AI capstone |
 
 See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 1 lesson](week-01-python-basics/README.md).
+
+The roadmap intentionally leaves approximately one out of every four Saturdays flexible for review, cancellations, setup problems, and additional project time. The data-application arc includes a complete [database foundations lesson](lessons/database-foundations/README.md).
 
 ## Getting started
 

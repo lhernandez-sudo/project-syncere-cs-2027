@@ -1,121 +1,94 @@
 # Curriculum Roadmap
 
-This roadmap organizes the school year into flexible phases rather than fixed calendar weeks. Holidays, school events, and student progress may change the exact pacing. Every Saturday class lasts four hours, including two ten-minute breaks.
+This roadmap intentionally plans only about 75% of the available Saturdays. The remaining time protects the course from holidays, cancellations, setup problems, concepts that need reteaching, and projects that need another work session.
 
-## Phase 1 - Python Foundations
+Every class meets from 9:00 AM to 1:00 PM and includes two ten-minute breaks. Git, debugging, testing, documentation, and short presentations are practiced throughout the year instead of being isolated into separate units.
 
-**Estimated time:** 4-6 Saturdays  
-**Milestone:** Interactive Python program
+## Arc 1 - Python Foundations and December Capstone
 
-### Topics
+**Estimated time:** 8-10 Saturdays
+**Major outcome:** Individual or pair-based December capstone
 
-- Computational thinking, algorithms, and decomposition
-- Input, processing, and output
-- Running Python and reading tracebacks
-- Variables, strings, numbers, input, and arithmetic
-- Boolean logic and conditionals
-- `for` and `while` loops
-- Lists and basic data processing
+### Suggested sequence
 
-### Possible milestone projects
+1. Setup, computational thinking, and first Python programs
+2. Variables, input, strings, numbers, and arithmetic
+3. Boolean logic and conditionals
+4. `for` and `while` loops
+5. Lists and dictionaries
+6. Functions and decomposition
+7. Files, exceptions, debugging, and introductory testing
+8. Capstone planning and pseudocode
+9. Capstone building and peer testing
+10. Capstone improvement, presentations, and reflection
 
-- Quiz or trivia game
-- Number-guessing game
-- Student profile generator
-- Small calculator or unit converter
+Short programs such as calculators, quizzes, profile generators, and data challenges are weekly practice. They are not separate major projects.
 
-## Phase 2 - Building Reliable Programs
+The December project brief and rubric are in [`projects/december-capstone/README.md`](projects/december-capstone/README.md).
 
-**Estimated time:** 4-6 Saturdays  
-**Milestone:** Data and decision challenge
+## Arc 2 - Data Applications
 
-### Topics
+**Estimated time:** 7-9 Saturdays
+**Major outcome:** Team data application
 
-- Functions, parameters, and return values
-- Dictionaries and structured information
-- Strings and text processing
-- Files and CSV data
-- Exceptions and input validation
-- Debugging strategies
-- Introductory tests with `pytest`
-- Git commits and GitHub workflow
+### Suggested sequence
 
-### Possible milestone projects
+1. Review, refactoring, and reusable modules
+2. Packages and virtual environments
+3. Relational databases, SQL, and SQLite
+4. Building a small database application
+5. APIs and JSON
+6. Saving API results in SQLite
+7. Team project planning and GitHub workflow
+8. Team development, testing, and code review
+9. Demonstrations, documentation, and reflection
 
-- Grade or survey analyzer
-- Personal budget helper
-- Volunteer-hours tracker
-- Community-resource finder
+The [database foundations lesson](lessons/database-foundations/README.md) belongs here. Object-oriented programming is optional: introduce it lightly only when a project clearly benefits from classes and objects.
 
-## Phase 3 - December Capstone
+The team project should collect or retrieve information, store it in SQLite, and turn it into a useful result. Possible interfaces include a command-line program, simple web application, or data visualization.
 
-**Estimated time:** 3 Saturdays  
-**Milestone:** First portfolio project
+## Arc 3 - AI Foundations and Final Capstone
 
-1. **Plan:** Identify a user and problem, define requirements, write pseudocode, and create GitHub issues.
-2. **Build:** Implement the core program, test it, and gather peer feedback.
-3. **Improve and present:** Fix problems, improve usability, document the project, and demonstrate it.
+**Estimated time:** 10-12 Saturdays
+**Major outcome:** Responsible AI-enabled capstone and demo day
 
-The project brief and rubric are in [`projects/december-capstone/README.md`](projects/december-capstone/README.md).
+### Suggested sequence
 
-## Phase 4 - Software Development
+1. What AI is, how models behave, and where they fail
+2. Calling an AI model through an API
+3. Prompt design and structured output
+4. Evaluating accuracy, bias, privacy, safety, and usefulness
+5. Build and evaluate one small AI feature
+6. Capstone problem selection and responsible-use review
+7. User stories, requirements, success criteria, and evaluation cases
+8. Technical prototype and project architecture
+9. Core development
+10. Testing, AI evaluation, and safeguards
+11. Revision, documentation, and presentation rehearsal
+12. Demo day and reflection
 
-**Estimated time:** 6-8 Saturdays  
-**Milestone:** Team API project
+The small AI feature in Saturday 5 is a prototype for the final capstone, not a separate major project.
 
-### Topics
+The final project brief and rubric are in [`projects/ai-capstone/README.md`](projects/ai-capstone/README.md).
 
-- Modules and reusable code
-- Virtual environments and packages
-- Object-oriented programming
-- APIs and JSON
-- More substantial automated testing
-- Team branches, pull requests, and code review
-- Documentation and project maintenance
-- Optional command-line interfaces, simple web apps, or data visualization
-
-For the milestone, small teams build a program that retrieves external data from a public API and turns it into a useful result.
-
-## Phase 5 - AI Foundations
-
-**Estimated time:** 4-6 Saturdays  
-**Milestone:** Evaluated AI prototype
-
-### Topics
-
-- What AI can and cannot do
-- Data, models, training, and inference
-- Bias, privacy, copyright, and responsible use
-- Prompt design and output evaluation
-- Calling a model through an API
-- Structured outputs and validation
-- Handling failures and adding safeguards
-- Testing AI-enabled applications
-
-Before the final capstone, each student builds one constrained feature such as summarization, classification, tutoring feedback, or question generation. The prototype must include test cases and a written evaluation of its limitations.
-
-## Phase 6 - Final AI Capstone
-
-**Estimated time:** 5-7 Saturdays  
-**Milestone:** Demo day and final portfolio project
-
-1. Select a real problem and review responsible-use concerns.
-2. Define users, requirements, success criteria, and evaluation cases.
-3. Build a technical prototype.
-4. Develop the core application.
-5. Test Python behavior and evaluate AI output.
-6. Revise, document, and prepare the presentation.
-7. Present on demo day and reflect on the development process.
-
-The project brief and rubric are in [`projects/ai-capstone/README.md`](projects/ai-capstone/README.md).
-
-## Course checkpoints
+## Major checkpoints
 
 | Checkpoint | Evidence of learning |
 | --- | --- |
-| Interactive Python program | Input, output, variables, decisions, or repetition |
-| Data and decision challenge | Functions, collections, validation, and useful processing |
-| December capstone | Independent planning, implementation, testing, Git history, and presentation |
-| Team API project | Collaboration, external data, JSON, pull requests, and documentation |
-| AI prototype | Constrained AI feature, test cases, evaluation, and safeguards |
-| Final AI capstone | Complete application, responsible AI use, portfolio documentation, and live demonstration |
+| December capstone | Independent planning, Python foundations, testing, Git history, and presentation |
+| Team data application | Collaboration, APIs or collected data, SQLite, pull requests, and documentation |
+| Final AI capstone | Complete application, responsible AI use, evaluation evidence, safeguards, and live demonstration |
+
+## Flex Saturdays
+
+Do not assign every available Saturday in advance. Preserve approximately one out of every four sessions for needs such as:
+
+- Device, account, or installation problems
+- Review and reteaching
+- Project recovery and extra build time
+- Holidays, weather, or program cancellations
+- Guest speakers and career exploration
+- Portfolio cleanup and presentation practice
+- Student showcases or community events
+
+If the class moves faster than expected, use flex sessions for deeper projects and extensions rather than introducing additional required concepts.

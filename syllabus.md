@@ -14,6 +14,7 @@ By the end of the course, students should be able to:
 - Solve problems with conditionals, loops, functions, and data structures.
 - Read error messages and debug programs systematically.
 - Read from files and work with APIs and JSON.
+- Store, query, and update structured information in a relational database.
 - Write and run automated tests.
 - Use Git and GitHub to manage code.
 - Evaluate AI output for accuracy, usefulness, bias, and safety.
@@ -43,14 +44,15 @@ Students repeatedly practice the same development cycle:
 
 > Understand a problem -> plan -> code -> test -> debug -> improve -> explain
 
-Short exercises lead to milestone projects, a December capstone, a team API project, an AI prototype, and a final AI capstone. See the [curriculum roadmap](curriculum-roadmap.md) for details.
+Short exercises lead to three major projects: a December capstone, a team data application, and a final AI capstone. The course deliberately preserves flex Saturdays for review, recovery, and deeper project work. See the [curriculum roadmap](curriculum-roadmap.md) for details.
 
 ## Major projects
 
 - **December capstone:** An individual or pair-based Python application that solves a clearly defined problem.
-- **Team API project:** A collaborative application that retrieves and processes external data.
-- **AI prototype:** A small, constrained AI feature with explicit evaluation criteria.
+- **Team data application:** A collaborative application that retrieves or collects data and stores it in SQLite.
 - **Final AI capstone:** A complete, responsible AI-enabled Python application addressing a real user need.
+
+The AI prototype is an early checkpoint within the final capstone rather than a separate major project.
 
 ## Expectations
 

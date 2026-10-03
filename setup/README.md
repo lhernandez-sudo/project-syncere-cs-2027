@@ -8,6 +8,8 @@ The package contains:
 - `install-windows.ps1` - the PowerShell installer used by the launcher
 - `README.txt` - short student instructions
 
+Instructor-maintained source files live in [`installer-source/`](installer-source/). Students only need the ZIP in [`downloads/`](downloads/).
+
 The setup installs:
 
 - Python 3.12
