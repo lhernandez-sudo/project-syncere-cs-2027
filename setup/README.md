@@ -44,6 +44,12 @@ Before Day 1:
 
 If installation is blocked, ask school IT to preinstall the required software. The setup can then be rerun and will reuse installed packages.
 
+## Week 2 ChatGPT installer
+
+Students who completed the original setup can download [`Install-ChatGPT.bat`](downloads/Install-ChatGPT.bat) separately. Double-clicking it installs the ChatGPT Windows app through `winget` and the Microsoft Store source without rerunning the full course setup.
+
+If school policy blocks Microsoft Store packages, use [chatgpt.com](https://chatgpt.com/) in a browser and show the installer error to the instructor.
+
 ## Confirm the setup manually
 
 From the repository root:
