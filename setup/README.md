@@ -16,6 +16,7 @@ The setup installs:
 - Git
 - Visual Studio Code
 - The Python extension for Visual Studio Code
+- The Jupyter extension for Visual Studio Code
 - The Python packages required by this course
 
 It then clones the course into the student's Documents folder, creates `.venv`, installs the course packages, verifies Python, and opens the course in Visual Studio Code. It is safe to run more than once.

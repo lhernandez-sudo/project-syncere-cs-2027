@@ -12,7 +12,7 @@ The course meets on Saturdays for four hours, including two breaks. New lesson f
 | Data applications | Modules, SQLite, APIs, JSON, collaboration, and code review | Team data application |
 | AI applications | AI literacy, model APIs, evaluation, safeguards, and product development | Final AI capstone |
 
-See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 1 lesson](week-01-python-basics/README.md).
+See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 3 lesson](week-03-programming-foundations/README.md).
 
 The roadmap intentionally leaves approximately one out of every four Saturdays flexible for review, cancellations, setup problems, and additional project time. The data-application arc includes a complete [database foundations lesson](lessons/database-foundations/README.md).
 
@@ -34,6 +34,8 @@ setup/                      Installation and GitHub instructions
 shared/                     Resources used throughout the course
 projects/                   Capstone briefs and project expectations
 week-01-python-basics/      Weekly lesson, examples, exercises, and assignment
+week-02-input-ai-workflow/  AI-assisted app building and peer feedback
+week-03-programming-foundations/  Data, decisions, loops, and functions
 ```
 
 Course materials live in this repository. Student submissions should be completed in the repository provided for each assignment.

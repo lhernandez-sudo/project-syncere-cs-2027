@@ -9,7 +9,7 @@ PROJECT SYNCERE - WINDOWS SETUP
 6. If there is an error, show the open window to your instructor.
 
 The setup installs Python, Git, Visual Studio Code, and the VS Code Python
-extension. It downloads the course into Documents, creates its Python
+and Jupyter extensions. It downloads the course into Documents, creates its Python
 environment, verifies it, and opens it in Visual Studio Code.
 
 Course repository:

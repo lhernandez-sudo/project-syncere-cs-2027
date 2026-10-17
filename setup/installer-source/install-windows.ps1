@@ -136,6 +136,10 @@ if ($null -eq $codeCommand) {
 } else {
     & $codeCommand --install-extension ms-python.python --force
     if ($LASTEXITCODE -ne 0) { throw "The VS Code Python extension could not be installed." }
+
+    Write-Step "Installing the Visual Studio Code Jupyter extension"
+    & $codeCommand --install-extension ms-toolsai.jupyter --force
+    if ($LASTEXITCODE -ne 0) { throw "The VS Code Jupyter extension could not be installed." }
 }
 
 if (-not $SkipCourseEnvironment) {
