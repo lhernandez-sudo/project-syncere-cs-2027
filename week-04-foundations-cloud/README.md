@@ -1,5 +1,11 @@
 # Week 4: Foundations Review and Cloud Computing
 
+## Students: open the notebook
+
+### [START WEEK 4 IN COLAB](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-04-foundations-cloud/exercises/foundations-review.ipynb)
+
+Choose **File > Save a copy in Drive** before you begin.
+
 Week 4 is a flex and recovery lesson. Students revisit the Week 3 foundations before the course moves forward: variables, data types, input and conversion, conditionals, lists, loops, functions, parameters, return values, decomposition, and tracing.
 
 The class uses a browser notebook so local setup does not consume the lesson. The notebook also creates a concrete introduction to cloud computing: student code runs on a remote computer, while the browser displays and controls the session. A Raspberry Pi gives students a physical example of the same basic computer resources that a cloud provider manages at much larger scale.

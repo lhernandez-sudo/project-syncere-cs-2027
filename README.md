@@ -1,5 +1,11 @@
 # Project Syncere — Computer Science 2027
 
+## Students: start Week 4
+
+### [START WEEK 4 IN COLAB](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-04-foundations-cloud/exercises/foundations-review.ipynb)
+
+After Colab opens, choose **File > Save a copy in Drive** before editing.
+
 Python and computer science lessons, exercises, projects, and resources for the Project Syncere 2027 cohort.
 
 ## Course roadmap
