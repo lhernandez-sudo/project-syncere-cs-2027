@@ -86,12 +86,7 @@ Do not reveal an answer immediately after a wrong prediction. Trace the code wit
 
 ## Guided foundations repair lab
 
-Students work through [`exercises/foundations-review.ipynb`](exercises/foundations-review.ipynb). The notebook contains four short repairs:
-
-1. Convert text input before arithmetic.
-2. Repair a conditional boundary.
-3. Use a loop and accumulator to process a list.
-4. Return a result from a function and use it later.
+Students work through [`exercises/foundations-review.ipynb`](exercises/foundations-review.ipynb). The expanded notebook includes explanations, prediction prompts, trace tables, nine guided practices, checkpoints, debugging challenges, self-check tests, cloud-runtime exploration, and a staged final project. Its core repairs cover conversion, conditional boundaries, lists, loop accumulators, `while` loop stopping conditions, and return values.
 
 Pairs stop after every checkpoint and compare traces. A student who finishes early explains one repair to another student without taking control of their keyboard.
 
