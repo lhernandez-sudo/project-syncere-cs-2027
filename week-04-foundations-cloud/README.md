@@ -30,9 +30,9 @@ Colab resources are temporary and availability can vary. Students should use **F
 
 | Time | Block |
 | --- | --- |
-| 9:00-9:13 | Direct Week 3 review: values, decisions, and loops |
-| 9:13-9:22 | Raspberry Pi, cloud computing, and the Colab runtime |
-| 9:22-9:35 | Functions review, objectives, and Colab launch |
+| 9:00-9:20 | Direct Week 3 review: values, decisions, loops, and functions |
+| 9:20-9:30 | Raspberry Pi, cloud computing, and the Colab runtime |
+| 9:30-9:35 | Objectives and Colab launch |
 | 9:35-10:25 | Colab work block 1: values through loops |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Colab work block 2: functions and debugging |
