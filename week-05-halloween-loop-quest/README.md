@@ -37,7 +37,7 @@ Wrong answers and timeouts trigger a Mario death animation and count as a TAS mi
 | --- | --- | --- |
 | 1-1 | Variables and lists | Assignment, `append()`, indexing, and value types |
 | 2-1 | Conditions and logic | Comparisons, `if`/`else`, `and`, `or`, and `not` |
-| 3-1 | `for` loops | Iteration counts, ranges, list building, and accumulators |
+| 3-1 | `for` loops | Iteration counts, visible lists, list building, and accumulators |
 | 4-1 | `while` loops | Conditions, state changes, stopping, and iteration tracing |
 | 5-1 | Functions | Arguments, parameters, return values, and `None` |
 
@@ -61,6 +61,29 @@ The earlier terminal version remains in `examples/haunted_mushroom_kingdom.py` a
 ## Guided exercise
 
 After playing, students work in pairs to locate one variable, list, conditional, `for` loop, `while` loop, and function in the source. For each example, they explain what changes if one value is modified.
+
+## Beginner recovery workshop
+
+The main Week 5 lesson uses three browser notebooks. Each module begins with teacher modeling, a silent prediction, a whole-class trace, and one guided change before students work independently.
+
+1. [Module 1 Game Loadout](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) reviews variables, lists, and decisions.
+2. [Module 2 Arcade Loop Trainer](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) gives repeated practice with loop variables, counters, accumulators, list building, and stopping conditions.
+3. [Module 3 Power-Up Functions](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb) connects parameters, return values, decisions, and loops inside functions.
+
+### Saturday agenda
+
+| Time | Block |
+| --- | --- |
+| 9:00-9:25 | Mario review game and class voting |
+| 9:25-10:25 | Human loop demonstration and Module 1 guided practice |
+| 10:25-10:35 | Break |
+| 10:35-11:20 | Module 2 Arcade Loop Trainer |
+| 11:20-11:30 | Break |
+| 11:30-12:20 | Module 3 Power-Up Functions |
+| 12:20-12:45 | Loop boss challenge and peer debugging |
+| 12:45-1:00 | Exit ticket and notebook download |
+
+The editable teaching deck is in `slides/week-05-beginner-loop-workshop.pptx`.
 
 ## Challenge artifact
 
