@@ -123,6 +123,22 @@ function beep(frequency = 440, duration = .08, type = "square", volume = .045, d
   osc.connect(gain).connect(ac.destination); osc.start(start); osc.stop(start + duration);
 }
 
+function wobble(startFrequency, endFrequency, duration = .2, type = "sawtooth", volume = .03, delay = 0) {
+  if (!audioOn) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  const ac = beep.ac || (beep.ac = new AudioContext());
+  if (ac.state === "suspended") ac.resume();
+  const osc = ac.createOscillator(), gain = ac.createGain();
+  const start = ac.currentTime + delay;
+  osc.type = type;
+  osc.frequency.setValueAtTime(startFrequency, start);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), start + duration);
+  gain.gain.setValueAtTime(volume, start);
+  gain.gain.exponentialRampToValueAtTime(.001, start + duration);
+  osc.connect(gain).connect(ac.destination); osc.start(start); osc.stop(start + duration);
+}
+
 // Five original chiptune themes. The soundtrack changes with each Python world
 // and continues under the question panel so the quiz keeps its game-show energy.
 const musicWorlds = [
@@ -141,25 +157,36 @@ function startMusic() {
     const step = musicStep++;
     const note = theme.lead[step % theme.lead.length];
     const bassNote = theme.bass[Math.floor(step / 4) % theme.bass.length];
-    // Lead melody, quiet bass, offbeat sparkle, and a short rhythmic pulse.
-    beep(note, .11, step % 4 === 3 ? "triangle" : "square", asking ? .018 : .026);
+    // Lead melody, quiet bass, offbeat sparkle, and deliberately silly interruptions.
+    const cartoonNote = step % 13 === 12 ? note * 1.07 : note;
+    beep(cartoonNote, .11, step % 4 === 3 ? "triangle" : "square", asking ? .018 : .026);
     if (step % 2 === 0) beep(bassNote, .22, "triangle", asking ? .012 : .019);
     if (step % 4 === 2) beep(note * 2, .035, "sine", .009, .055);
     beep(step % 4 === 0 ? 74 : 96, .025, "square", .006);
+    if (step % 16 === 7) wobble(note * 1.7, note * .55, .19, "square", asking ? .009 : .017);
+    if (step % 32 === 23) {
+      beep(1175, .045, "square", .018); beep(880, .045, "square", .018, .055);
+      beep(1319, .07, "square", .018, .11);
+    }
   }, 132);
 }
 
 function playDeathJingle() {
-  // Original upbeat 1980s synth-pop fakeout, followed by an arcade crash.
-  const sparkle = [659, 784, 988, 784, 880, 1047, 988, 784];
-  const bass = [165, 196, 220, 147];
+  // Original fake victory fanfare that loses control and falls down the stairs.
+  const sparkle = [659, 784, 988, 1175, 1047, 831, 622, 466];
+  const bass = [165, 196, 220, 139];
   sparkle.forEach((note, index) => {
-    beep(note, .12, index % 2 ? "square" : "triangle", .055, index * .105);
+    const crookedNote = index > 4 ? note * (index % 2 ? .93 : 1.06) : note;
+    beep(crookedNote, .12, index % 2 ? "square" : "triangle", .055, index * .105);
     if (index % 2 === 0) beep(bass[index / 2], .19, "sawtooth", .025, index * .105);
   });
-  beep(131, .22, "square", .055, .88);
-  beep(98, .3, "sawtooth", .065, 1.02);
-  beep(65, .55, "sawtooth", .075, 1.22);
+  // Slide whistle, two clown honks, a tiny squeak, and the final tuba collapse.
+  wobble(1200, 95, .62, "sine", .065, .78);
+  wobble(180, 420, .16, "square", .05, .92);
+  wobble(170, 390, .16, "square", .05, 1.10);
+  beep(1568, .055, "square", .045, 1.29);
+  beep(74, .18, "sawtooth", .08, 1.37);
+  wobble(110, 42, .62, "sawtooth", .075, 1.48);
 }
 
 function rectsTouch(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
