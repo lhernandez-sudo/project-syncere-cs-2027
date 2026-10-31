@@ -1,18 +1,16 @@
 # Week 5 Icebreaker: Super Mario Haunted Python Kingdom
 
-This unofficial, fan-made Super Mario Halloween terminal game reviews the Week 3 and Week 4 Python foundations before students begin independent work. It features Mario, Toad, Boo, Bowser, Peach, warp pipes, coins, and power-ups. It uses original text art, six terminal colors, and only the Python standard library. It does not contain copied Nintendo sprites, music, or level files.
+This unofficial, fan-made Super Mario Halloween side-scroller reviews the Week 3 and Week 4 Python foundations. Students run, jump, stomp Goombas, collect coins, hit question blocks, enter warp pipes, and unlock five Python gates on the way to Bowser's castle. The game uses original canvas-drawn pixel art and original sound effects. It does not contain copied Nintendo sprites, music, or level files.
 
 ## Run the game
 
-From the repository root:
+Double-click [`start.bat`](start.bat). It opens the game in the default browser with no installation.
 
-```powershell
-py -3 week-05-halloween-loop-quest/examples/haunted_mushroom_kingdom.py
-```
+You can also open this file directly:
 
-On Windows, you can also double-click [`start.bat`](start.bat).
+[`game/index.html`](game/index.html)
 
-No packages or development-environment setup are required.
+Controls: arrow keys or `A`/`D` to run, Space/Up/`W` to jump, and `P` to pause. Number keys `1`–`3` answer Python gates. No packages, server, or development-environment setup are required.
 
 ## Icebreaker learning objectives
 
@@ -26,12 +24,12 @@ By the end of the game, students can:
 
 ## Suggested facilitation: 9:00–9:25
 
-1. **9:00–9:03:** Launch the game and let students choose the player name.
-2. **9:03–9:18:** Let the class vote on each answer. Ask for a prediction before entering it.
-3. **9:18–9:22:** Open the source file and find one example of each concept in the actual game.
+1. **9:00–9:03:** Launch the game and demonstrate run, jump, and Goomba stomping.
+2. **9:03–9:18:** Let students take turns playing. At each locked gate, let the class vote before choosing an answer.
+3. **9:18–9:22:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
 4. **9:22–9:25:** Ask students which concept needs the most practice today.
 
-Wrong answers do not end the game. They award fewer coins and display an explanation, keeping the activity useful for a mixed-confidence group.
+Wrong gate answers do not end the game. The gate asks students to trace the code and try again.
 
 ## Instructor concept map
 
@@ -43,11 +41,9 @@ Wrong answers do not end the game. They award fewer coins and display an explana
 | Warp Pipe Maze | `while` loops | Which state change makes the loop condition false? |
 | Bowser's Function Castle | Functions | How do arguments become parameters and produce a return value? |
 
-## Quick technical check
+## Technical fallback
 
-```powershell
-py -3 week-05-halloween-loop-quest/examples/haunted_mushroom_kingdom.py --self-test
-```
+The earlier terminal version remains in `examples/haunted_mushroom_kingdom.py` as a fallback if a classroom browser cannot open the canvas game.
 
 ## Vocabulary
 

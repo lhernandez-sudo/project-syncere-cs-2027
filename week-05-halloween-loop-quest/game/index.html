@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Super Mario: Haunted Python Kingdom</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header>
+      <div>
+        <p class="eyebrow">WEEK 5 HALLOWEEN ICEBREAKER</p>
+        <h1>SUPER MARIO: HAUNTED PYTHON KINGDOM</h1>
+      </div>
+      <button id="soundButton" type="button">SOUND: ON</button>
+    </header>
+
+    <section class="hud" aria-label="Game status">
+      <span>MARIO <strong id="lives">× 3</strong></span>
+      <span>COINS <strong id="coins">00</strong></span>
+      <span>WORLD <strong id="worldLabel">1-1</strong></span>
+      <span>PYTHON KEYS <strong id="keys">0/5</strong></span>
+    </section>
+
+    <div class="canvas-wrap">
+      <canvas id="game" width="960" height="540" aria-label="Side-scrolling Mario-inspired Python review game"></canvas>
+      <div id="startScreen" class="panel start-panel">
+        <p class="small">BOWSER'S BOO CREW LOCKED THE KINGDOM WITH PYTHON BUGS</p>
+        <h2>PRESS ENTER TO START</h2>
+        <p><kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd> to run</p>
+        <p><kbd>SPACE</kbd> or <kbd>↑</kbd> to jump</p>
+        <p>Stomp Goombas, collect coins, hit blocks, and unlock five concept gates.</p>
+      </div>
+      <div id="questionPanel" class="panel question-panel" hidden>
+        <p id="questionWorld" class="small"></p>
+        <h2 id="questionTitle"></h2>
+        <pre id="questionCode"></pre>
+        <p id="questionPrompt"></p>
+        <div id="answers" class="answers"></div>
+        <p id="feedback" class="feedback" aria-live="polite"></p>
+      </div>
+      <div id="winPanel" class="panel win-panel" hidden>
+        <p class="small">CASTLE CLEAR</p>
+        <h2>PEACH IS SAVED!</h2>
+        <p>You unlocked variables, logic, for loops, while loops, and functions.</p>
+        <p id="finalScore"></p>
+        <button id="restartButton" type="button">PLAY AGAIN</button>
+      </div>
+    </div>
+
+    <footer>
+      <span>RUN: ARROWS / A-D</span>
+      <span>JUMP: SPACE / UP / W</span>
+      <span>PAUSE: P</span>
+      <span>Original classroom fan game • no copied sprites or music</span>
+    </footer>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
