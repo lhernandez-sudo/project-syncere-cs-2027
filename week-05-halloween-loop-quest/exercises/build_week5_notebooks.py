@@ -11,12 +11,17 @@ def code(text):
 
 def write(name, title, cells):
     colab_url = f"https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/{name}"
+    module_links = """[Module 1: Debug Quest](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) · [Module 2: Loop Trainer](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) · [Module 3: Function Factory](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb)"""
     intro = md(f'''<div style="background:#071a33;color:white;padding:22px;border-radius:16px">
 <h1>{title}</h1><p>Week 5 beginner practice • Read → Predict → Run → Change → Explain</p></div>
 
 ## Open and save your Google Workspace copy
 
 [**Open this notebook in Google Colab**]({colab_url})
+
+### Week 5 Google Workspace launch pad
+
+{module_links}
 
 1. Sign into the Google account you will use for class.
 2. In Colab, choose **File → Save a copy in Drive**.
@@ -328,6 +333,25 @@ Save a screenshot of the successful Bowser battle in your Google Drive copy. If 
 
 write("module-2-arcade-loops.ipynb","Module 2: Arcade Loop Trainer",[
     common_setup,
+    md('''## Opening diagnostic — repair the round tracker
+
+Before the walkthrough, repair one loop that must count rounds, total points, and count high-scoring rounds. Run it once first, then use the failed checks as clues.
+
+**Rules:** keep one loop, do not type the final totals directly, and update all three variables inside the loop.'''),
+    code('''round_scores = [4, 11, 7, 13]
+rounds_played = 0
+total_points = 0
+high_rounds = 0
+
+for score in round_scores:
+    # TODO: count this round
+    # TODO: add score to total_points
+    # TODO: if score is at least 10, count a high round
+    pass
+
+checkpoint("Opening round count", rounds_played == 4)
+checkpoint("Opening point total", total_points == 35)
+checkpoint("Opening high rounds", high_rounds == 2)'''),
     md('''## Loop idea — repeat one instruction for every item
 
 Say the loop in plain English first: **For each player in the list, print the player's name.**'''),
@@ -366,6 +390,11 @@ for enemy in enemies:
     print("⚔️ Battle", count, enemy)
 
 print("Battles completed:", count)'''),
+    md('''### Level 1 self-check
+
+Your repaired list must contain exactly five enemies. The test should pass without changing the test itself.'''),
+    code('''checkpoint("Five-enemy roster", len(enemies) == 5)
+checkpoint("Counter matches list", count == len(enemies))'''),
     md('''## Level 2 — Accumulators build a total
 
 An accumulator starts with a value and updates during every iteration. Trace `total` one line at a time.'''),
@@ -378,27 +407,34 @@ for coin in coin_values:
     print("After:", total)
 
 checkpoint("Coin total", total == 10)'''),
-    md('''### Trace before Run
+    md('''### Trace, repair, and filter
 
-Fill this in on paper: `0 → ___ → ___ → ___` for `[4, 1, 6]`.'''),
+Fill this in on paper: `0 → ___ → ___ → ___` for `[4, 1, 6]`.
+
+Then repair the loop so `bonus_total` includes only scores of `5` or more.'''),
     code('''scores = [4, 1, 6]
 total = 0
+bonus_total = 0
 for score in scores:
     total += score
+    # TODO: if score is at least 5, add it to bonus_total
 
 print("Team score:", total)
-checkpoint("Score accumulator", total == 11)'''),
+print("Bonus score:", bonus_total)
+checkpoint("Score accumulator", total == 11)
+checkpoint("Filtered accumulator", bonus_total == 6)'''),
     md('''## Level 3 — Build a new list
 
 Start with an empty list. The loop creates and appends one new value per iteration.'''),
-    code('''base_damage = [2, 4, 6]
+    code('''base_damage = [2, 4, 6, 9]
 powered_damage = []
 
 for damage in base_damage:
-    powered_damage.append(damage * 2)
+    # TODO: append double damage only when damage is 4 or more
+    pass
 
 print(powered_damage)
-checkpoint("Power list", powered_damage == [4, 8, 12])'''),
+checkpoint("Filtered power list", powered_damage == [8, 12, 18])'''),
     md('''## Level 4 — While loops need an exit
 
 Ask two questions: **What keeps the loop running? What changes so it stops?**'''),
@@ -412,34 +448,39 @@ print("REST")
 checkpoint("While loop stops", energy == 0)'''),
     md('''### Repair challenge
 
-This starter is safe, but incomplete. Add one line inside the loop that changes `turns_left` so the game ends.'''),
+This starter has two missing updates. Make the game end after four turns and collect one coin on every even-numbered turn.'''),
     code('''turns_left = 4
+coins = 0
 
 while turns_left > 0:
     print("Turn", turns_left)
-    # TODO: subtract 1 from turns_left
+    # TODO: add 1 coin when turns_left is even
+    # TODO: subtract 1 from turns_left every iteration
     break  # remove this after adding the update
 
-print("Game over")'''),
+print("Game over with", coins, "coins")
+checkpoint("While loop exit", turns_left == 0)
+checkpoint("Even-turn coins", coins == 2)'''),
     md('''## Boss challenge — Arcade scoreboard
 
-Use one loop to count games, total the scores, and print whether each score earned a bonus.'''),
+Complete one loop that counts games, totals scores, counts bonus rounds, and stores winning scores in a new list.'''),
     code('''scores = [8, 12, 5, 15]
 games_played = 0
 total_score = 0
+bonus_rounds = 0
+winning_scores = []
 
 for score in scores:
-    games_played += 1
-    total_score += score
-    if score >= 10:
-        print("🔥 BONUS ROUND:", score)
-    else:
-        print("Score:", score)
+    # TODO: update games_played and total_score
+    # TODO: scores of 10 or more update bonus_rounds and winning_scores
+    pass
 
 print("Games:", games_played)
 print("Total:", total_score)
 checkpoint("Loop boss count", games_played == 4)
-checkpoint("Loop boss total", total_score == 40)'''),
+checkpoint("Loop boss total", total_score == 40)
+checkpoint("Bonus counter", bonus_rounds == 2)
+checkpoint("Winning score list", winning_scores == [12, 15])'''),
     md('''## Loop mastery check
 
 Point to the loop variable, collection, repeated block, accumulator, and stopping condition. Explain each without reading the definition.''')
@@ -447,6 +488,18 @@ Point to the loop variable, collection, repeated block, accumulator, and stoppin
 
 write("module-3-power-up-functions.ipynb","Module 3: Power-Up Function Factory",[
     common_setup,
+    md('''## Opening diagnostic — repair the power-up function
+
+This function must approve a power-up only when it has uses remaining **and** its name is in the allowed list. Replace `False` with one Boolean expression. Do not change the checks.'''),
+    code('''def can_equip(item, uses_left):
+    allowed_items = ["Fire Flower", "Super Star", "Tanooki Suit"]
+    if False:  # TODO: combine membership, comparison, and and
+        return True
+    return False
+
+checkpoint("Allowed power-up", can_equip("Fire Flower", 2) is True)
+checkpoint("Empty power-up blocked", can_equip("Fire Flower", 0) is False)
+checkpoint("Unknown item blocked", can_equip("Mystery Box", 3) is False)'''),
     md('''## Function idea — name a reusable job
 
 Python remembers the recipe after `def`. The code runs only when you call the function.'''),
@@ -465,23 +518,29 @@ greet_player("Ari")
 greet_player("Sam")'''),
     md('''### Guided change
 
-Add a second parameter named `game`. Update both calls.'''),
+Add a third parameter named `game`. Update the function and both calls so every card prints a name, game, and score.'''),
     code('''def player_card(name, score):
+    # TODO: add game as a parameter and print it
     print("Player:", name)
     print("Score:", score)
 
-player_card("Maya", 12)
-player_card("Devin", 18)'''),
+player_card("Maya", 12)   # TODO: add the game argument
+player_card("Devin", 18)  # TODO: add the game argument'''),
     md('''## Level 2 — Return sends a value back
 
 `print()` shows a value. `return` gives a value back to the calling code so it can be saved or reused.'''),
     code('''def add_bonus(score, bonus):
+    # A negative bonus is not allowed. Return the original score instead.
+    if bonus < 0:
+        return score
     new_score = score + bonus
     return new_score
 
 final_score = add_bonus(10, 5)
-print("Final:", final_score)
-checkpoint("Return value", final_score == 15)'''),
+protected_score = add_bonus(10, -5)
+print("Final:", final_score, "Protected:", protected_score)
+checkpoint("Return value", final_score == 15)
+checkpoint("Input protection", protected_score == 10)'''),
     md('''### Predict three parts
 
 1. Arguments: `7` and `3`  
@@ -494,33 +553,39 @@ checkpoint("Return value", final_score == 15)'''),
 points_lost = hit_points(7, 3)
 print(points_lost)
 checkpoint("Function trace", points_lost == 4)'''),
-    md('''## Level 3 — Functions can contain decisions'''),
-    code('''def rank_player(score):
-    if score >= 20:
+    md('''## Level 3 — Functions can combine decisions
+
+Repair the ranking rules. GOLD requires a score of at least 20 **and** a completed quest. SILVER requires at least 10.'''),
+    code('''def rank_player(score, quest_complete):
+    if False:  # TODO: replace False with the two-part GOLD condition
         return "GOLD"
     elif score >= 10:
         return "SILVER"
     else:
         return "BRONZE"
 
-print(rank_player(8))
-print(rank_player(14))
-print(rank_player(25))'''),
+print(rank_player(8, True))
+print(rank_player(14, False))
+print(rank_player(25, True))
+checkpoint("Gold condition", rank_player(25, True) == "GOLD" and rank_player(25, False) == "SILVER")'''),
     md('''## Level 4 — Functions can contain loops
 
-Trace `total` after every score before running.'''),
-    code('''def total_scores(scores):
+Trace `total` and `high_scores` after every score. The function returns two results.'''),
+    code('''def score_report(scores):
     total = 0
+    high_scores = []
     for score in scores:
         total += score
-    return total
+        # TODO: append scores of 10 or more to high_scores
+    return total, high_scores
 
-team_total = total_scores([4, 6, 5])
-print(team_total)
-checkpoint("Function loop", team_total == 15)'''),
+team_total, team_high_scores = score_report([4, 12, 6, 15])
+print(team_total, team_high_scores)
+checkpoint("Function loop total", team_total == 37)
+checkpoint("Function loop filter", team_high_scores == [12, 15])'''),
     md('''## Boss challenge — Battle report
 
-Complete `average_score`. Then call both functions to create a report.'''),
+Complete `average_score` and `best_score`. Then use all three functions to create the report.'''),
     code('''def average_score(scores):
     total = 0
     for score in scores:
@@ -533,14 +598,23 @@ def battle_message(average):
         return "BOSS DEFEATED"
     return "TRAIN AND RETRY"
 
+def best_score(scores):
+    best = scores[0]
+    for score in scores:
+        # TODO: replace best when score is greater
+        pass
+    return best
+
 battle_scores = [8, 12, 10]
 average = average_score(battle_scores)
 message = battle_message(average)
+best = best_score(battle_scores)
 print("Average:", average)
+print("Best:", best)
 print(message)
 
 # This passes after average_score is complete.
-checkpoint("Function boss", average == 10 and message == "BOSS DEFEATED")'''),
+checkpoint("Function boss", average == 10 and best == 12 and message == "BOSS DEFEATED")'''),
     md('''## Exit check
 
 Draw arrows from argument → parameter → local variable → return value. Explain why a function with no `return` gives `None`.''')

@@ -80,9 +80,11 @@ Students do not need to clone the repository or configure Python locally.
 
 **Git reminder:** `git pull` downloads new commits from a remote repository into an existing local repository. It does not move a notebook into Google Drive. For this class, the GitHub-to-Colab link replaces the local pull/setup step: GitHub supplies the master notebook, Colab runs it, and **Save a copy in Drive** connects the editable copy to the student's Google account.
 
-1. [Module 1 Game Loadout](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) reviews variables, lists, and decisions.
-2. [Module 2 Arcade Loop Trainer](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) gives repeated practice with loop variables, counters, accumulators, list building, and stopping conditions.
-3. [Module 3 Power-Up Functions](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb) connects parameters, return values, decisions, and loops inside functions.
+Use these current Google Workspace launch links. Each notebook also contains the complete three-module launch panel.
+
+1. [Open Module 1: Game Loadout in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) combines variables, lists, loops, multi-part decisions, and a boss function.
+2. [Open Module 2: Arcade Loop Trainer in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) practices counters, filtered accumulators, list building, stopping conditions, and multi-output loop challenges.
+3. [Open Module 3: Power-Up Functions in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb) combines parameters, guarded returns, Boolean decisions, loops inside functions, and multi-result reports.
 
 ### Saturday agenda
 
