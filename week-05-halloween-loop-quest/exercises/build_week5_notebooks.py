@@ -44,6 +44,14 @@ def checkpoint(name, passed):
     icon = "✅" if passed else "🔁"
     print(f"{icon} {name}: {'CLEARED' if passed else 'TRY AGAIN'}")
 
+def integrity_check(name, rules):
+    """Require every named rule to pass and explain exactly what failed."""
+    failed = [message for passed, message in rules if not passed]
+    checkpoint(name, not failed)
+    for message in failed:
+        print("   ↳", message)
+    return not failed
+
 banner("TRAINING MODE READY")''')
 
 write("module-1-game-loadout.ipynb","Module 1: Super Mario Debug Quest",[
@@ -110,6 +118,14 @@ def mario_level(title, goal, success, reason, character="🍄", enemy="🐢", co
 def checkpoint(name, passed):
     icon = "✅" if passed else "🔁"
     print(f"{icon} {name}: {'CLEARED' if passed else 'FIX THE CODE AND RUN AGAIN'}")
+
+def integrity_check(name, rules):
+    """Run several anti-shortcut checks and show actionable feedback."""
+    failed = [message for passed, message in rules if not passed]
+    checkpoint(name, not failed)
+    for message in failed:
+        print("   ↳", message)
+    return not failed
 
 def make_chiptune():
     """Create an original arcade-style soundtrack without external files."""
@@ -184,6 +200,13 @@ jump_power = 1          # TODO: Mario needs at least 3
 run_speed = 1           # TODO: Mario needs at least 2
 
 can_clear_goomba = jump_power >= 3 and run_speed >= 2
+movement_valid = integrity_check("Movement integrity", [
+    (type(jump_power) is int, "jump_power must be an integer, not text or True/False."),
+    (type(run_speed) is int, "run_speed must be an integer, not text or True/False."),
+    (3 <= jump_power <= 10, "Use a reasonable jump_power from 3 through 10."),
+    (2 <= run_speed <= 10, "Use a reasonable run_speed from 2 through 10."),
+])
+can_clear_goomba = can_clear_goomba and movement_valid
 mario_level("LEVEL 1: GOOMBA JUMP", "Repair power AND speed", can_clear_goomba,
             "One of the two movement variables is still too low.",
             enemy="🍄", coins=jump_power + run_speed)
@@ -214,6 +237,13 @@ Run the starter, inspect the printed list, then add the missing item.
 has_mushroom = "Super Mushroom" in inventory
 has_fire_flower = "Fire Flower" in inventory
 loadout_ready = has_mushroom and has_fire_flower
+loadout_valid = integrity_check("Inventory integrity", [
+    (type(inventory) is list, "inventory must remain a list."),
+    (type(inventory) is list and inventory[:2] == ["coin", "map"], "Keep the original coin and map in order."),
+    (type(inventory) is list and inventory.count("Super Mushroom") == 1, "Add exactly one Super Mushroom."),
+    (type(inventory) is list and inventory.count("Fire Flower") == 1, "Add exactly one Fire Flower."),
+])
+loadout_ready = loadout_ready and loadout_valid
 print("Current inventory:", inventory)
 mario_level("LEVEL 2: KOOPA ROAD", "Build a two-item power loadout", loadout_ready,
             "The loadout needs both named power-ups. Inspect both Boolean checks.",
@@ -249,6 +279,13 @@ for bonus in team_bonuses:
     print("Added", bonus, "to the running total:", coins)
 
 pipe_unlocked = coins >= 12
+coin_loop_valid = integrity_check("Coin-loop integrity", [
+    (type(team_bonuses) is list and len(team_bonuses) == 3, "Use a list containing exactly three bonuses."),
+    (type(team_bonuses) is list and all(type(bonus) is int for bonus in team_bonuses), "Every bonus must be an integer."),
+    (type(team_bonuses) is list and all(type(bonus) is int and 1 <= bonus <= 5 for bonus in team_bonuses), "Keep every bonus between 1 and 5."),
+    (type(team_bonuses) is list and all(type(bonus) is int for bonus in team_bonuses) and coins == 2 + sum(team_bonuses), "coins must equal the start value plus every list bonus."),
+])
+pipe_unlocked = pipe_unlocked and coin_loop_valid
 mario_level("LEVEL 3: COIN RUSH", "Loop to reach 12 coins", pipe_unlocked,
             "The loop finished below 12. Trace every iteration.",
             enemy="🕳️", coins=coins)
@@ -277,6 +314,12 @@ if False:
 else:
     castle_open = False
 
+castle_valid = integrity_check("Castle-logic integrity", [
+    (type(has_key) is bool and type(boo_awake) is bool, "Key and Boo states must stay Boolean."),
+    (coins >= 12, "The earlier coin loop must still produce at least 12 coins."),
+    (castle_open == (coins >= 12 and has_key and not boo_awake), "castle_open must match all three rules."),
+])
+castle_open = castle_open and castle_valid
 mario_level("LEVEL 4: CASTLE DOOR", "Use coins, key, and Boo logic", castle_open,
             "The condition sent Mario into the lava. Repair the if line.",
             character="🏃", enemy="🔥", coins=coins)
@@ -312,6 +355,13 @@ def can_defeat_bowser(attack, defense, has_star):
     return False
 
 bowser_defeated = can_defeat_bowser(mario_attack, bowser_defense, team_has_star)
+boss_logic_valid = integrity_check("Boss-function integrity", [
+    (can_defeat_bowser(5, 3, True) is True, "A stronger attack with a star must win."),
+    (can_defeat_bowser(3, 5, True) is False, "A weaker attack must lose even with a star."),
+    (can_defeat_bowser(5, 3, False) is False, "A missing star must cause a loss."),
+    (can_defeat_bowser(3, 3, True) is False, "Equal attack and defense must not satisfy >."),
+])
+bowser_defeated = bowser_defeated and boss_logic_valid
 
 print("Mario attack:", mario_attack)
 print("Bowser defense:", bowser_defense)
@@ -349,9 +399,12 @@ for score in round_scores:
     # TODO: if score is at least 10, count a high round
     pass
 
-checkpoint("Opening round count", rounds_played == 4)
-checkpoint("Opening point total", total_points == 35)
-checkpoint("Opening high rounds", high_rounds == 2)'''),
+integrity_check("Opening loop integrity", [
+    (round_scores == [4, 11, 7, 13], "Do not change the starter scores."),
+    (rounds_played == len(round_scores), "Count one round per list item."),
+    (total_points == sum(round_scores), "Build the total from every score."),
+    (high_rounds == 2, "Count only scores of 10 or more."),
+])'''),
     md('''## Loop idea — repeat one instruction for every item
 
 Say the loop in plain English first: **For each player in the list, print the player's name.**'''),
@@ -393,8 +446,11 @@ print("Battles completed:", count)'''),
     md('''### Level 1 self-check
 
 Your repaired list must contain exactly five enemies. The test should pass without changing the test itself.'''),
-    code('''checkpoint("Five-enemy roster", len(enemies) == 5)
-checkpoint("Counter matches list", count == len(enemies))'''),
+    code('''integrity_check("Roster integrity", [
+    (type(enemies) is list and len(enemies) == 5, "Keep enemies as a five-item list."),
+    (count == len(enemies), "The counter must match the list length."),
+    (type(enemies) is list and len(set(enemies)) == 5, "Use five different enemy names."),
+])'''),
     md('''## Level 2 — Accumulators build a total
 
 An accumulator starts with a value and updates during every iteration. Trace `total` one line at a time.'''),
@@ -421,8 +477,11 @@ for score in scores:
 
 print("Team score:", total)
 print("Bonus score:", bonus_total)
-checkpoint("Score accumulator", total == 11)
-checkpoint("Filtered accumulator", bonus_total == 6)'''),
+integrity_check("Accumulator integrity", [
+    (scores == [4, 1, 6], "Do not change the starter scores."),
+    (total == sum(scores), "total must include every score."),
+    (bonus_total == 6, "bonus_total must include only scores of 5 or more."),
+])'''),
     md('''## Level 3 — Build a new list
 
 Start with an empty list. The loop creates and appends one new value per iteration.'''),
@@ -434,7 +493,11 @@ for damage in base_damage:
     pass
 
 print(powered_damage)
-checkpoint("Filtered power list", powered_damage == [8, 12, 18])'''),
+integrity_check("Power-list integrity", [
+    (base_damage == [2, 4, 6, 9], "Do not change base_damage."),
+    (powered_damage == [8, 12, 18], "Filter first, then double each accepted value."),
+    (powered_damage is not base_damage, "Build a new list instead of reusing base_damage."),
+])'''),
     md('''## Level 4 — While loops need an exit
 
 Ask two questions: **What keeps the loop running? What changes so it stops?**'''),
@@ -459,8 +522,10 @@ while turns_left > 0:
     break  # remove this after adding the update
 
 print("Game over with", coins, "coins")
-checkpoint("While loop exit", turns_left == 0)
-checkpoint("Even-turn coins", coins == 2)'''),
+integrity_check("While-loop integrity", [
+    (turns_left == 0, "The changing condition must end at zero."),
+    (coins == 2, "Only turns 4 and 2 should award coins."),
+])'''),
     md('''## Boss challenge — Arcade scoreboard
 
 Complete one loop that counts games, totals scores, counts bonus rounds, and stores winning scores in a new list.'''),
@@ -477,10 +542,13 @@ for score in scores:
 
 print("Games:", games_played)
 print("Total:", total_score)
-checkpoint("Loop boss count", games_played == 4)
-checkpoint("Loop boss total", total_score == 40)
-checkpoint("Bonus counter", bonus_rounds == 2)
-checkpoint("Winning score list", winning_scores == [12, 15])'''),
+integrity_check("Loop-boss integrity", [
+    (scores == [8, 12, 5, 15], "Do not change the boss input scores."),
+    (games_played == len(scores), "Count every game exactly once."),
+    (total_score == sum(scores), "Accumulate every score."),
+    (bonus_rounds == 2, "Count the two scores of 10 or more."),
+    (winning_scores == [12, 15], "Append qualifying scores in their original order."),
+])'''),
     md('''## Loop mastery check
 
 Point to the loop variable, collection, repeated block, accumulator, and stopping condition. Explain each without reading the definition.''')
@@ -497,9 +565,12 @@ This function must approve a power-up only when it has uses remaining **and** it
         return True
     return False
 
-checkpoint("Allowed power-up", can_equip("Fire Flower", 2) is True)
-checkpoint("Empty power-up blocked", can_equip("Fire Flower", 0) is False)
-checkpoint("Unknown item blocked", can_equip("Mystery Box", 3) is False)'''),
+integrity_check("Power-up function integrity", [
+    (can_equip("Fire Flower", 2) is True, "An allowed item with uses remaining must pass."),
+    (can_equip("Fire Flower", 0) is False, "Zero remaining uses must fail."),
+    (can_equip("Mystery Box", 3) is False, "An unknown item must fail."),
+    (can_equip("Tanooki Suit", -1) is False, "Negative uses must fail."),
+])'''),
     md('''## Function idea — name a reusable job
 
 Python remembers the recipe after `def`. The code runs only when you call the function.'''),
@@ -518,14 +589,20 @@ greet_player("Ari")
 greet_player("Sam")'''),
     md('''### Guided change
 
-Add a third parameter named `game`. Update the function and both calls so every card prints a name, game, and score.'''),
-    code('''def player_card(name, score):
-    # TODO: add game as a parameter and print it
-    print("Player:", name)
-    print("Score:", score)
+Repair the returned player card so it contains the name, game, and score in that order.'''),
+    code('''def player_card(name, game, score):
+    # TODO: include game between name and score
+    return [name, score]
 
-player_card("Maya", 12)   # TODO: add the game argument
-player_card("Devin", 18)  # TODO: add the game argument'''),
+maya_card = player_card("Maya", "Kart", 12)
+devin_card = player_card("Devin", "Platformer", 18)
+print(maya_card)
+print(devin_card)
+integrity_check("Parameter-card integrity", [
+    (maya_card == ["Maya", "Kart", 12], "Return Maya's three arguments in order."),
+    (devin_card == ["Devin", "Platformer", 18], "The function must work for different arguments."),
+    (maya_card is not devin_card, "Each call must create its own result."),
+])'''),
     md('''## Level 2 — Return sends a value back
 
 `print()` shows a value. `return` gives a value back to the calling code so it can be saved or reused.'''),
@@ -539,8 +616,12 @@ player_card("Devin", 18)  # TODO: add the game argument'''),
 final_score = add_bonus(10, 5)
 protected_score = add_bonus(10, -5)
 print("Final:", final_score, "Protected:", protected_score)
-checkpoint("Return value", final_score == 15)
-checkpoint("Input protection", protected_score == 10)'''),
+integrity_check("Bonus-function integrity", [
+    (final_score == 15, "Positive bonuses must be added."),
+    (protected_score == 10, "Negative bonuses must leave the score unchanged."),
+    (add_bonus(0, 7) == 7, "Do not hard-code the first example."),
+    (add_bonus(4, -1) == 4, "The guard must work with other scores."),
+])'''),
     md('''### Predict three parts
 
 1. Arguments: `7` and `3`  
@@ -567,7 +648,12 @@ Repair the ranking rules. GOLD requires a score of at least 20 **and** a complet
 print(rank_player(8, True))
 print(rank_player(14, False))
 print(rank_player(25, True))
-checkpoint("Gold condition", rank_player(25, True) == "GOLD" and rank_player(25, False) == "SILVER")'''),
+integrity_check("Rank-function integrity", [
+    (rank_player(25, True) == "GOLD", "A high score plus a completed quest earns GOLD."),
+    (rank_player(25, False) == "SILVER", "A missing quest blocks GOLD."),
+    (rank_player(10, True) == "SILVER", "A score of 10 earns SILVER."),
+    (rank_player(9, True) == "BRONZE", "A score below 10 earns BRONZE."),
+])'''),
     md('''## Level 4 — Functions can contain loops
 
 Trace `total` and `high_scores` after every score. The function returns two results.'''),
@@ -581,8 +667,12 @@ Trace `total` and `high_scores` after every score. The function returns two resu
 
 team_total, team_high_scores = score_report([4, 12, 6, 15])
 print(team_total, team_high_scores)
-checkpoint("Function loop total", team_total == 37)
-checkpoint("Function loop filter", team_high_scores == [12, 15])'''),
+second_total, second_high_scores = score_report([10, 2, 20])
+integrity_check("Report-function integrity", [
+    (team_total == 37 and team_high_scores == [12, 15], "Return the correct total and filtered list."),
+    (second_total == 32 and second_high_scores == [10, 20], "Do not hard-code the first input list."),
+    (team_high_scores is not second_high_scores, "Create a new result list for every call."),
+])'''),
     md('''## Boss challenge — Battle report
 
 Complete `average_score` and `best_score`. Then use all three functions to create the report.'''),
@@ -613,8 +703,13 @@ print("Average:", average)
 print("Best:", best)
 print(message)
 
-# This passes after average_score is complete.
-checkpoint("Function boss", average == 10 and best == 12 and message == "BOSS DEFEATED")'''),
+# Multiple cases catch hard-coded return values.
+integrity_check("Function-boss integrity", [
+    (average == 10 and best == 12 and message == "BOSS DEFEATED", "Complete the provided battle report."),
+    (average_score([2, 4, 6]) == 4, "average_score must work for another list."),
+    (best_score([3, 9, 5, 7]) == 9, "best_score must compare every item."),
+    (battle_message(9) == "TRAIN AND RETRY", "A low average must not defeat the boss."),
+])'''),
     md('''## Exit check
 
 Draw arrows from argument → parameter → local variable → return value. Explain why a function with no `return` gives `None`.''')
