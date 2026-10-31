@@ -19,6 +19,7 @@ const ui = {
 
 const W = canvas.width, H = canvas.height, GROUND_Y = 452;
 const COURSE_END = 12600, QUESTION_SECONDS = 15;
+const TEST_MODE = new URLSearchParams(window.location.search).has("autotest");
 const palette = {
   skyTop: "#120b35", skyBottom: "#423079", mist: "#786ba0", moon: "#fff1a8",
   white: "#fffdf2", black: "#110b18", red: "#e93642", redDark: "#8e1925",
@@ -162,6 +163,8 @@ function openQuestion(q) {
     button.addEventListener("click", () => answerQuestion(index, button)); ui.answers.append(button);
   });
   ui.question.hidden = false;
+  // Hidden smoke-test mode lets us verify every gate without changing class play.
+  if (TEST_MODE) setTimeout(() => answerQuestion(q.correct, ui.answers.children[q.correct]), 20);
 }
 
 function answerQuestion(index, button) {
@@ -176,7 +179,7 @@ function answerQuestion(index, button) {
   ui.feedback.textContent = `FRAME PERFECT! ${activeQuestion.explanation}`;
   spawnParticles(player.x, player.y, subjects[activeQuestion.subjectIndex].color, 25);
   beep(760, .09); setTimeout(() => beep(1020, .18), 100); updateHud();
-  setTimeout(() => { ui.question.hidden = true; asking = false; paused = false; activeQuestion = null; }, 1200);
+  setTimeout(() => { ui.question.hidden = true; asking = false; paused = false; activeQuestion = null; }, TEST_MODE ? 20 : 1200);
 }
 
 function killMario(reason) {
@@ -233,7 +236,7 @@ function update() {
     cameraX += ((player.x - W * .35) - cameraX) * .05; return;
   }
 
-  const speed = 5.1 + Math.min(1.7, state.cleared * .07);
+  const speed = TEST_MODE ? 36 : 5.1 + Math.min(1.7, state.cleared * .07);
   player.vx += (speed - player.vx) * .08;
   const obstacle = nextObstacleDistance();
   if (player.onGround && obstacle < 105) { player.vy = -13.3; player.onGround = false; beep(390, .06); }
@@ -249,7 +252,12 @@ function update() {
       if (solid.kind === "question") { state.coins += 1; spawnParticles(player.x, player.y, palette.gold, 8); beep(720, .06); }
     }
   }
-  if (player.y > H + 70) { killMario("MISINPUT! Mario missed the platform."); return; }
+  // The TAS owns movement inputs, so terrain mistakes should never punish the
+  // class. Recover invisibly if browser timing ever drops Mario below a pit.
+  if (player.y > H + 70) {
+    placePlayerSafely(player.x + 90);
+    player.vx = speed;
+  }
 
   coins.forEach(c => {
     c.phase += .06;
@@ -260,8 +268,9 @@ function update() {
   enemies.forEach(e => {
     if (!e.alive) return; e.y = 418 + Math.sin(performance.now() / 350 + e.phase) * 2;
     if (rectsTouch(player, e)) {
-      if (player.vy > 2 && player.y + player.h - e.y < 22) { e.alive = false; player.vy = -8; state.coins += 2; spawnParticles(e.x, e.y, "#a8623c", 14); beep(250, .07); }
-      else killMario("MISINPUT! Mario touched a Goomba.");
+      // TAS movement is frame-perfect: every Goomba contact becomes a stomp.
+      e.alive = false; player.vy = -8; state.coins += 2;
+      spawnParticles(e.x, e.y, "#a8623c", 14); beep(250, .07);
     }
   });
 
