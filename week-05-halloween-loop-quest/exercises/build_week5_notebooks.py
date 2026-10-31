@@ -42,7 +42,11 @@ def checkpoint(name, passed):
 banner("TRAINING MODE READY")''')
 
 write("module-1-game-loadout.ipynb","Module 1: Super Mario Debug Quest",[
-    code('''from IPython.display import display, HTML
+    code('''from IPython.display import display, HTML, Audio
+import io
+import math
+import struct
+import wave
 
 def mario_level(title, goal, success, reason, character="🍄", enemy="🐢", coins=0):
     state = "win" if success else "fail"
@@ -84,6 +88,49 @@ def mario_level(title, goal, success, reason, character="🍄", enemy="🐢", co
 def checkpoint(name, passed):
     icon = "✅" if passed else "🔁"
     print(f"{icon} {name}: {'CLEARED' if passed else 'FIX THE CODE AND RUN AGAIN'}")
+
+def make_chiptune():
+    """Create an original arcade-style soundtrack without external files."""
+    sample_rate = 11025
+    beat = 0.14
+    melody = [
+        659, 784, 988, 784, 659, 523, 587, 659,
+        698, 880, 1047, 880, 698, 587, 659, 698,
+        784, 988, 1175, 988, 784, 659, 698, 784,
+        523, 659, 784, 659, 587, 494, 523, 0,
+    ]
+    bass = [131, 131, 196, 196, 147, 147, 220, 220]
+    frames = []
+    for repeat in [1, 2, 3, 4]:
+        note_number = 0
+        for frequency in melody:
+            bass_frequency = bass[note_number % len(bass)]
+            sample = 0
+            while sample < int(sample_rate * beat):
+                time = sample / sample_rate
+                lead = 0 if frequency == 0 else (1 if math.sin(2 * math.pi * frequency * time) >= 0 else -1)
+                low = 1 if math.sin(2 * math.pi * bass_frequency * time) >= 0 else -1
+                pulse = 1 if math.sin(2 * math.pi * (frequency * 2 if frequency else 1) * time) >= 0 else -1
+                fade = 1 - (sample / (sample_rate * beat)) * 0.35
+                value = int(10500 * fade * (0.62 * lead + 0.28 * low + 0.10 * pulse))
+                frames.append(struct.pack("<h", value))
+                sample = sample + 1
+            note_number = note_number + 1
+    audio_file = io.BytesIO()
+    with wave.open(audio_file, "wb") as sound:
+        sound.setnchannels(1)
+        sound.setsampwidth(2)
+        sound.setframerate(sample_rate)
+        sound.writeframes(b"".join(frames))
+    return audio_file.getvalue()
+
+display(HTML("""
+<div style="background:#111;color:white;border:5px solid #fbd000;border-radius:14px;
+padding:14px;text-align:center;font-family:Arial;font-size:20px;font-weight:bold">
+🎵 SOUNDTRACK READY — Click Play, then begin World 1-1
+</div>
+"""))
+display(Audio(make_chiptune(), autoplay=False))
 
 mario_level("WORLD 1-1", "Repair the code to reach the flag", False,
             "The starter code is supposed to fail. Your team will fix it.", character="🏃")'''),
