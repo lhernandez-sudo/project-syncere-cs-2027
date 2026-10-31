@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week5-slides");
 const outputDir = path.join(workspaceDir, "week-05-halloween-loop-quest", "slides");
-const finalPath = path.join(outputDir, "week-05-beginner-loop-workshop-v5.pptx");
+const finalPath = path.join(outputDir, "week-05-engineering-foundations-workshop-v6.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1025.11240\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF";
@@ -36,8 +36,8 @@ function codeBlock(slide,code,left=100,top=175,width=1080,height=390){
 }
 
 let s=deck.slides.add(); s.background.fill=navy; box(s,0,0,1280,18,coral,"none","none");
-text(s,"Python Loop Workshop",72,138,1080,90,52,white,true); text(s,"Beginner practice before every lab module",76,238,1050,48,28,"#B8D7F0");
-text(s,"Week 5  •  Mario review  •  Three guided Colab labs",76,584,1080,36,20,"#D9E8F5",false);
+text(s,"Python Foundations for Engineers",72,138,1100,90,50,white,true); text(s,"Beginner review before the team labs",76,238,1050,48,28,"#B8D7F0");
+text(s,"Week 5: Mario review and three guided Colab labs",76,584,1080,36,20,"#D9E8F5",false);
 
 s=base("Today’s path","Class ends at 1:00 PM — the first 15 minutes are for arrival and setup");
 bullets(s,["9:00–9:15  Arrive, sign in, open the browser, and get settled","9:15–9:35  Mario review and class voting","9:35–10:25  Super Mario Team Quest in Module 1","10:00  Coin Rush photo showcase","10:25–10:35  Break","10:35–11:20  Module 2: Arcade Loop Trainer","11:20–11:30  Break","11:30–1:00  Module 3, boss challenge, peer debugging, and exit"],72,132,1140,20,62);
@@ -45,6 +45,44 @@ bullets(s,["9:00–9:15  Arrive, sign in, open the browser, and get settled","9:
 s=base("Google Colab setup","GitHub supplies the class notebook. Google Drive stores your copy.");
 bullets(s,["Open the module link from the Week 5 GitHub README","Sign into the Google account you will use for class","Choose File, then Save a copy in Drive","Rename the copy with your name and module number","Complete the lesson only in your saved Drive copy"],88,150,1090,25,78);
 text(s,"git pull updates a repository on a local computer. You do not need it for today’s Colab lesson.",88,574,1095,48,21,coral,true);
+
+s=base("Mario is a software system","Every game action depends on the same foundations engineers use");
+text(s,"VARIABLES",82,158,220,34,19,teal,true); text(s,"Store Mario’s lives, coins, speed, and power state",82,198,470,72,26,ink,true);
+text(s,"LISTS",82,322,220,34,19,teal,true); text(s,"Keep enemies, questions, platforms, and collected items",82,362,470,72,26,ink,true);
+text(s,"CONDITIONS",690,158,240,34,19,coral,true); text(s,"Choose what happens after a collision or answer",690,198,470,72,26,ink,true);
+text(s,"LOOPS + FUNCTIONS",690,322,330,34,19,coral,true); text(s,"Update the world repeatedly and reuse reliable actions",690,362,470,72,26,ink,true);
+text(s,"Engineering starts by turning a real situation into data, rules, repetition, and reusable jobs.",84,540,1090,70,28,navy,true,"Arial","center");
+
+s=base("Variables and lists model a system","Engineers name the information a program must remember");
+codeBlock(s,'player = "Mario"\nlives = 3\ncoins = 12\npower_ups = ["mushroom", "leaf"]',72,165,610,300);
+text(s,"Why engineers need them",750,166,390,42,24,teal,true);
+text(s,"A delivery app stores drivers and orders.\n\nA robot stores sensor readings.\n\nA game stores players and inventory.",750,220,420,240,25,ink,false);
+text(s,"Quick check: Which name stores one value? Which name stores several values?",72,530,1090,66,27,coral,true,"Arial","center");
+
+s=base("Conditions encode decisions","Engineers turn requirements and safety rules into True or False checks");
+codeBlock(s,'door_closed = True\nperson_nearby = True\n\nif door_closed and person_nearby:\n    stop_motor()',72,165,610,315);
+text(s,"Why engineers need them",750,166,390,42,24,teal,true);
+text(s,"Games choose whether Mario takes damage.\n\nWebsites decide whether a login is valid.\n\nMachines stop when a safety rule becomes true.",750,220,430,255,25,ink,false);
+text(s,"Engineering question: What could go wrong if the condition checks the wrong value?",72,540,1090,56,26,coral,true,"Arial","center");
+
+s=base("Loops make work scale","Engineers describe one correct action, then repeat it across the data");
+codeBlock(s,'temperatures = [72, 75, 91, 68]\n\nfor temperature in temperatures:\n    if temperature > 90:\n        print("ALERT")',72,165,620,315);
+text(s,"Without a loop",755,170,390,38,23,coral,true); text(s,"Copy the same code for every sensor",755,212,400,60,25,ink,false);
+text(s,"With a loop",755,322,390,38,23,teal,true); text(s,"One tested block can process four sensors or four million",755,364,410,92,25,ink,true);
+text(s,"Quick check: What changes during each iteration?",72,540,1090,56,27,navy,true,"Arial","center");
+
+s=base("Functions make code reusable","Engineers give a reliable job a name so teammates can call it");
+codeBlock(s,'def calculate_total(prices):\n    total = 0\n    for price in prices:\n        total += price\n    return total',72,160,625,340);
+text(s,"Why engineers need them",760,164,390,42,24,teal,true);
+text(s,"A function can be tested once.\n\nTeammates can reuse it without rewriting the steps.\n\nA clear name explains the job the code performs.",760,220,410,260,25,ink,false);
+text(s,"Trace it: What enters the function? What repeats? What returns?",72,548,1090,50,27,coral,true,"Arial","center");
+
+s=base("Engineers debug with evidence","A failure shows which assumption or value needs another look");
+text(s,"1",86,170,55,55,35,teal,true,"Arial","center"); text(s,"Predict the result before running",155,168,950,58,29,ink,true);
+text(s,"2",86,265,55,55,35,teal,true,"Arial","center"); text(s,"Run one test and read the actual result",155,263,950,58,29,ink,true);
+text(s,"3",86,360,55,55,35,teal,true,"Arial","center"); text(s,"Find the first value that differs from the prediction",155,358,980,58,29,ink,true);
+text(s,"4",86,455,55,55,35,teal,true,"Arial","center"); text(s,"Change one thing, then run the same test again",155,453,950,58,29,ink,true);
+text(s,"The Mario labs use failure animations because engineers learn by testing and repairing systems.",82,570,1100,48,22,coral,true,"Arial","center");
 
 s=base("A loop repeats a block","The computer follows the same steps for several values");
 text(s,"PLAIN ENGLISH",88,170,290,34,18,teal,true); text(s,"For each player in the team, print the player’s name.",88,215,1090,58,32,ink,true);
@@ -114,5 +152,5 @@ for(let i=0;i<deck.slides.items.length;i++){
 const montage=await deck.export({format:"webp",montage:true}); await fs.writeFile(path.join(buildDir,"montage.webp"),new Uint8Array(await montage.arrayBuffer()));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"container_tools","artifact_tool_utils.mjs")).href);
 const candidate=path.join(buildDir,"candidate.pptx"); await (await PresentationFile.exportPptx(deck)).save(candidate);
-await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v5.json")});
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v6.json")});
 console.log(finalPath);
