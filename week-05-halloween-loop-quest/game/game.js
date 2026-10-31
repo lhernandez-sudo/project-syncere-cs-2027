@@ -18,7 +18,7 @@ const ui = {
 };
 
 const W = canvas.width, H = canvas.height, GROUND_Y = 452;
-const COURSE_END = 12600, QUESTION_SECONDS = 15;
+const COURSE_END = 12600, QUESTION_SECONDS = 20;
 const TEST_MODE = new URLSearchParams(window.location.search).has("autotest");
 const palette = {
   skyTop: "#120b35", skyBottom: "#423079", mist: "#786ba0", moon: "#fff1a8",
@@ -149,6 +149,19 @@ function startMusic() {
   }, 132);
 }
 
+function playDeathJingle() {
+  // Original upbeat 1980s synth-pop fakeout, followed by an arcade crash.
+  const sparkle = [659, 784, 988, 784, 880, 1047, 988, 784];
+  const bass = [165, 196, 220, 147];
+  sparkle.forEach((note, index) => {
+    beep(note, .12, index % 2 ? "square" : "triangle", .055, index * .105);
+    if (index % 2 === 0) beep(bass[index / 2], .19, "sawtooth", .025, index * .105);
+  });
+  beep(131, .22, "square", .055, .88);
+  beep(98, .3, "sawtooth", .065, 1.02);
+  beep(65, .55, "sawtooth", .075, 1.22);
+}
+
 function rectsTouch(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 function block(x, y, w, h, fill) { ctx.fillStyle = fill; ctx.fillRect(Math.round(x), Math.round(y), w, h); }
 function safeGroundPosition(targetX) {
@@ -221,7 +234,7 @@ function killMario(reason) {
   state.deaths += 1; state.lives -= 1; if (state.lives <= 0) state.lives = 3;
   deathStyle = reason.startsWith("TIMEOUT") ? "timeout" : ["bonk", "bug", "yeet"][state.deaths % 3];
   player.vx = 0; player.vy = -13; ui.question.classList.add("danger"); ui.feedback.textContent = `${reason} Mario dies and the TAS retries.`;
-  beep(180, .18, "sawtooth", .07); beep(135, .2, "square", .055, .16); beep(82, .5, "sawtooth", .06, .34);
+  playDeathJingle();
   if (deathStyle === "timeout") beep(880, .055, "square", .04, .02);
   updateHud();
   setTimeout(() => { ui.question.hidden = true; }, 650);

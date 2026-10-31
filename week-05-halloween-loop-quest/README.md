@@ -10,7 +10,7 @@ You can also open this file directly:
 
 [`game/index.html`](game/index.html)
 
-Mario's movement is automatic. Click an answer or use number keys `1`–`3` at each gate. Every question has a 15-second countdown. A wrong answer or timeout causes a visible TAS misinput death, then Mario retries from the previous checkpoint. Press `P` to pause between gates. No packages, server, or development-environment setup are required.
+Mario's movement is automatic. Click an answer or use number keys `1`–`3` at each gate. Every question has a 20-second countdown. A wrong answer or timeout causes a visible TAS misinput death, then Mario retries from the previous checkpoint. Press `P` to pause between gates. No packages, server, or development-environment setup are required.
 
 ## Icebreaker learning objectives
 
@@ -25,7 +25,7 @@ By the end of the game, students can:
 ## Suggested facilitation: 9:15–9:35
 
 1. **9:15–9:18:** Launch the game and explain that Mario's movement is a tool-assisted speedrun.
-2. **9:18–9:30:** Assign a student to submit each timed input. At every gate, the class has 15 seconds to vote before the input is entered.
+2. **9:18–9:30:** Assign a student to submit each timed input. At every gate, the class has 20 seconds to vote before the input is entered.
 3. **9:30–9:33:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
 4. **9:33–9:35:** Ask students which concept needs the most practice today.
 
