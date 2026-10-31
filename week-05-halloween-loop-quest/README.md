@@ -78,6 +78,8 @@ Students do not need to clone the repository or configure Python locally.
 4. Rename the copy with the student's name and module number.
 5. Work from the saved Google Drive copy for the rest of class.
 
+Modules 2 and 3 use teams of 3 or 4. Students keep the same team but rotate the active role after every level. Each team completes a spoken human trace before the Driver runs the code.
+
 **Git reminder:** `git pull` downloads new commits from a remote repository into an existing local repository. It does not move a notebook into Google Drive. For this class, the GitHub-to-Colab link replaces the local pull/setup step: GitHub supplies the master notebook, Colab runs it, and **Save a copy in Drive** connects the editable copy to the student's Google account.
 
 Use these current Google Workspace launch links. Each notebook also contains the complete three-module launch panel.
@@ -102,7 +104,7 @@ Use these current Google Workspace launch links. Each notebook also contains the
 | 12:35-12:50 | Instructor preview of classes and objects in the slides |
 | 12:50-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-review-game-labs-v9.pptx`.
+The editable teaching deck is in `slides/week-05-review-game-labs-v10.pptx`.
 
 ## Challenge artifact
 

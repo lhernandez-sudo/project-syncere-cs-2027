@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week5-slides");
 const outputDir = path.join(workspaceDir, "week-05-halloween-loop-quest", "slides");
-const finalPath = path.join(outputDir, "week-05-review-game-labs-v9.pptx");
+const finalPath = path.join(outputDir, "week-05-review-game-labs-v10.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1025.11240\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF";
@@ -70,8 +70,8 @@ text(s,"Open module-1-game-loadout.ipynb in Colab",100,590,1080,46,24,blue,true)
 
 s=base("Break","10 minutes"); text(s,"Stand up. Get water. Be back when the timer ends.",140,270,1000,70,32,navy,true,"Arial","center");
 
-s=base("Module 2 practice","Arcade Loop Trainer is today’s main learning block");
-bullets(s,["Act out one loop with student volunteers","Trace a counter through four iterations","Trace an accumulator through three scores","Build a new list inside a loop","Repair a while loop so it stops","Complete the arcade scoreboard boss"],92,142,1100,23,76);
+s=base("Module 2 teams","Teams of 3 or 4 act out every loop before Run");
+bullets(s,["Driver edits and runs after the human trace","Loop Variable points to the current list item","Accumulator announces each updated total","Condition Checker says True or False","With 3 students, Accumulator also checks conditions","Rotate roles after every level"],92,142,1100,23,76);
 
 s=base("Loop boss challenge","Count games, total scores, and identify bonus rounds");
 codeBlock(s,'scores = [8, 12, 5, 15]\ngames = 0\ntotal = 0\n\nfor score in scores:\n    games += 1\n    total += score\n    if score >= 10:\n        print("BONUS", score)',75,150,730,450);
@@ -79,9 +79,10 @@ text(s,"Before Run",875,174,260,38,24,coral,true); text(s,"games = ___\n\ntotal 
 
 s=base("Break","10 minutes"); text(s,"Reset your brain. Module 3 connects functions and loops.",140,270,1000,70,32,navy,true,"Arial","center");
 
-s=base("Module 3 practice","Power-Up Functions: name reusable jobs");
+s=base("Module 3 teams","Teams of 3 or 4 act out each function call before Run");
 codeBlock(s,'def add_bonus(score, bonus):\n    new_score = score + bonus\n    return new_score\n\nfinal_score = add_bonus(10, 5)',74,170,690,340);
-text(s,"Trace the call",830,175,320,38,24,teal,true); text(s,"arguments\n10 and 5\n\nparameters\nscore and bonus\n\nreturn value\n15",830,224,320,300,25,ink,false);
+text(s,"Team roles",830,175,320,38,24,teal,true); text(s,"Caller reads the arguments\n\nParameter matches the names\n\nFunction Runner traces each line\n\nReturn Tester checks the result",830,224,350,300,23,ink,false);
+text(s,"With 3 students, Caller also tests the return. Rotate after every level.",100,555,1080,52,22,coral,true,"Arial","center");
 
 s=base("Functions can contain loops","One function can own the complete totaling job");
 codeBlock(s,'def total_scores(scores):\n    total = 0\n    for score in scores:\n        total += score\n    return total\n\nteam_total = total_scores([4, 6, 5])',78,165,770,410);
@@ -116,5 +117,5 @@ for(let i=0;i<deck.slides.items.length;i++){
 const montage=await deck.export({format:"webp",montage:true}); await fs.writeFile(path.join(buildDir,"montage.webp"),new Uint8Array(await montage.arrayBuffer()));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"container_tools","artifact_tool_utils.mjs")).href);
 const candidate=path.join(buildDir,"candidate.pptx"); await (await PresentationFile.exportPptx(deck)).save(candidate);
-await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v9.json")});
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v10.json")});
 console.log(finalPath);

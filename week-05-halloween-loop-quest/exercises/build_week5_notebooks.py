@@ -383,6 +383,18 @@ Save a screenshot of the successful Bowser battle in your Google Drive copy. If 
 
 write("module-2-arcade-loops.ipynb","Module 2: Arcade Loop Trainer",[
     common_setup,
+    md('''## Team setup — 3 or 4 students
+
+Keep the same team for this module. Every student must speak during the human trace before the Driver runs a cell.
+
+- **Driver:** edits and runs the code after the trace.
+- **Loop Variable:** holds or points to the current list item.
+- **Accumulator:** announces and records each updated total or counter.
+- **Condition Checker:** says `True` or `False` when an `if` or `while` condition appears.
+
+With three students, the Accumulator also checks conditions. Rotate roles after every level.
+
+**Human loop routine:** point to one list item, say the loop variable, update the accumulator, evaluate the condition, then move to the next item.'''),
     md('''## Opening diagnostic — repair the round tracker
 
 Before the walkthrough, repair one loop that must count rounds, total points, and count high-scoring rounds. Run it once first, then use the failed checks as clues.
@@ -556,6 +568,18 @@ Point to the loop variable, collection, repeated block, accumulator, and stoppin
 
 write("module-3-power-up-functions.ipynb","Module 3: Power-Up Function Factory",[
     common_setup,
+    md('''## Team setup — 3 or 4 students
+
+Keep the same team, but take a new role. Act out every function call before the Driver runs it.
+
+- **Caller:** reads the function name and hands over the argument values.
+- **Parameter:** matches each argument to its parameter name.
+- **Function Runner:** traces the body one line at a time.
+- **Return Tester:** announces the returned value and checks the expected result.
+
+With three students, the Caller also serves as Return Tester. Rotate roles after every level.
+
+**Human function routine:** call the function, match arguments to parameters, trace the body, then send the return value back to the caller.'''),
     md('''## Opening diagnostic — repair the power-up function
 
 This function must approve a power-up only when it has uses remaining **and** its name is in the allowed list. Replace `False` with one Boolean expression. Do not change the checks.'''),
