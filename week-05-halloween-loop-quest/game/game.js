@@ -262,8 +262,8 @@ function answerQuestion(index, button) {
 
 function startWorldTransition() {
   transitionFromWorld = Math.max(0, Math.floor(state.cleared / 4) - 1);
-  transitionTimer = TEST_MODE ? 1 : 300;
-  paused = true;
+  transitionTimer = TEST_MODE ? 1 : 240;
+  paused = false;
   spawnParticles(player.x, player.y, palette.gold, 55);
   beep(523, .1, "square", .05); beep(659, .1, "square", .05, .11); beep(784, .2, "square", .05, .22);
 }
@@ -318,14 +318,15 @@ function update() {
     return;
   }
   if (transitionTimer > 0) {
+    const transitionElapsed = 240 - transitionTimer;
+    if (transitionElapsed > 55 && transitionElapsed < 125) player.form = "fire";
+    if (transitionElapsed >= 125) player.form = "tanooki";
     transitionTimer -= 1;
     if (transitionTimer === 0) {
       player.form = "tanooki";
-      paused = false;
       spawnParticles(player.x, player.y, palette.gold, 40);
       beep(784, .08); beep(988, .08, "square", .05, .09); beep(1319, .22, "square", .05, .18);
     }
-    return;
   }
   if (paused && !player.dead) return;
 
@@ -399,7 +400,10 @@ function update() {
 }
 
 function drawBackground() {
-  const stage = Math.min(4, Math.floor(state.cleared / 4));
+  const transitionElapsed = transitionTimer > 0 ? 240 - transitionTimer : 240;
+  const stage = transitionTimer > 0 && transitionElapsed < 165
+    ? transitionFromWorld
+    : Math.min(4, Math.floor(state.cleared / 4));
   const themes = [
     ["#071f4a", "#4388c7", "#18384e"], // moonlit hills
     ["#241047", "#8b3e9e", "#321b4d"], // haunted forest
@@ -458,6 +462,8 @@ function drawPlatform(p) {
 }
 
 function drawMario() {
+  const transitionElapsed = transitionTimer > 0 ? 240 - transitionTimer : 0;
+  if (transitionElapsed > 165) return;
   const x = Math.round(player.x - cameraX), y = Math.round(player.y), run = Math.floor(player.frame) % 2;
   if (!player.onGround && !player.dead) {
     ctx.save(); ctx.globalAlpha=.38; ctx.fillStyle=palette.gold;
@@ -469,6 +475,9 @@ function drawMario() {
   block(8, y + 7, 21, 15, palette.skin); block(24, y + 10, 9, 7, palette.skin); block(18, y + 8, 4, 5, palette.black);
   block(8, y + 17, 18, 5, palette.brown); block(4, y + 22, 28, 5, palette.red);
   block(8, y + 25, 21, 14, palette.blue); block(11, y + 23, 5, 12, palette.blueLight); block(23, y + 23, 5, 12, palette.blueLight);
+  if (player.form === "fire") {
+    block(8, y + 25, 21, 14, palette.white); block(11, y + 23, 5, 12, palette.orange); block(23, y + 23, 5, 12, palette.orange);
+  }
   block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
   if (player.form === "tanooki" && !player.dead) {
@@ -482,53 +491,48 @@ function drawMario() {
 
 function drawWorldTransition() {
   if (transitionTimer <= 0) return;
-  const elapsed = 300 - transitionTimer;
+  const elapsed = 240 - transitionTimer;
   const nextWorld = subjects[Math.min(4, transitionFromWorld + 1)];
+  const marioX = Math.round(player.x - cameraX) + 18;
+  const marioY = Math.round(player.y) + 20;
   ctx.save();
-  // Moving sky creates the feeling that Tanooki Mario leaves the level vertically.
-  const sky = ctx.createLinearGradient(0, 0, 0, H);
-  sky.addColorStop(0, "#188fe8"); sky.addColorStop(1, "#b8efff");
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
-  for (let cloud = 0; cloud < 8; cloud++) {
-    const cloudY = ((cloud * 93 + elapsed * 3.2) % (H + 120)) - 80;
-    const cloudX = 70 + (cloud * 137) % 820;
-    ctx.fillStyle = "rgba(255,255,255,.9)";
-    ctx.beginPath(); ctx.arc(cloudX, cloudY, 28, 0, Math.PI*2); ctx.arc(cloudX+35, cloudY-8, 35, 0, Math.PI*2); ctx.arc(cloudX+75, cloudY, 27, 0, Math.PI*2); ctx.fill();
-  }
   ctx.textAlign = "center";
-  if (elapsed < 75) {
-    const flowerY = 170 + Math.sin(elapsed * .12) * 10;
-    ctx.fillStyle = palette.orange; ctx.fillRect(W/2-48, 245, 96, 72);
-    ctx.fillStyle = palette.gold; ctx.font = "bold 58px monospace"; ctx.fillText("?", W/2, 302);
-    ctx.font = "72px sans-serif"; ctx.fillText("🌼", W/2, flowerY);
-    ctx.fillStyle = palette.white; ctx.font = "bold 38px monospace"; ctx.fillText("POWER-UP BLOCK!", W/2, 75);
-    ctx.font = "bold 22px monospace"; ctx.fillText("FIRE FLOWER ACQUIRED", W/2, 112);
-  } else if (elapsed < 145) {
-    const pulse = 1 + Math.sin(elapsed * .35) * .12;
-    ctx.translate(W/2, 270); ctx.scale(pulse, pulse);
-    ctx.fillStyle = "rgba(255,110,20,.35)"; ctx.beginPath(); ctx.arc(0,0,115,0,Math.PI*2); ctx.fill();
-    ctx.font = "100px sans-serif"; ctx.fillText("🔥", 0, 25);
-    ctx.fillStyle = palette.white; ctx.font = "bold 34px monospace"; ctx.fillText("FIRE MARIO!", 0, -125);
-    ctx.setTransform(1,0,0,1,0,0);
-    for (let fireball = 0; fireball < 6; fireball++) {
-      const angle = elapsed * .09 + fireball * Math.PI / 3;
-      ctx.font = "36px sans-serif"; ctx.fillText("🔥", W/2 + Math.cos(angle)*150, 270 + Math.sin(angle)*105);
+  if (elapsed < 55) {
+    // The block and flower move with Mario instead of replacing the world.
+    const itemX = marioX + 95 - elapsed * 1.2;
+    const flowerY = marioY - 105 + Math.sin(elapsed * .18) * 8;
+    ctx.fillStyle = palette.orange; ctx.fillRect(itemX-25, marioY-42, 50, 44);
+    ctx.fillStyle = palette.gold; ctx.font = "bold 32px monospace"; ctx.fillText("?", itemX, marioY-10);
+    ctx.font = "47px sans-serif"; ctx.fillText("🌼", itemX, flowerY);
+    ctx.fillStyle = palette.white; ctx.font = "bold 22px monospace"; ctx.fillText("FIRE FLOWER!", marioX+25, marioY-145);
+  } else if (elapsed < 125) {
+    const pulse = 34 + Math.sin(elapsed * .4) * 10;
+    ctx.strokeStyle = palette.orange; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(marioX, marioY, pulse, 0, Math.PI*2); ctx.stroke();
+    for (let fireball = 0; fireball < 4; fireball++) {
+      const angle = elapsed * .13 + fireball * Math.PI / 2;
+      ctx.font = "27px sans-serif"; ctx.fillText("🔥", marioX + Math.cos(angle)*58, marioY + Math.sin(angle)*42);
     }
-  } else if (elapsed < 215) {
-    const spin = elapsed * .16;
-    ctx.save(); ctx.translate(W/2, 235); ctx.rotate(spin); ctx.font = "82px sans-serif"; ctx.fillText("🍂", 0, 0); ctx.restore();
-    ctx.font = "105px sans-serif"; ctx.fillText("🦝", W/2, 390);
-    ctx.fillStyle = palette.white; ctx.font = "bold 35px monospace"; ctx.fillText("TANOOKI SUIT!", W/2, 82);
-    ctx.font = "bold 19px monospace"; ctx.fillText("RUN FAST. WAG TAIL. IGNORE GRAVITY.", W/2, 116);
+    ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("FIRE MARIO", marioX, marioY-82);
+  } else if (elapsed < 165) {
+    const leafX = marioX + 70 - (elapsed-125) * 1.8;
+    const leafY = marioY - 70 + Math.sin(elapsed*.25)*28;
+    ctx.save(); ctx.translate(leafX, leafY); ctx.rotate(elapsed*.18); ctx.font = "45px sans-serif"; ctx.fillText("🍂", 0, 0); ctx.restore();
+    ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("TANOOKI SUIT!", marioX, marioY-110);
   } else {
-    const flight = Math.min(1, (elapsed - 215) / 75);
-    const marioY = 390 - flight * 245 + Math.sin(elapsed * .18) * 12;
-    ctx.font = "92px sans-serif"; ctx.fillText("🦝", W/2, marioY);
-    ctx.font = "45px sans-serif"; ctx.fillText("🧢", W/2-5, marioY-58);
-    ctx.fillStyle = palette.white; ctx.font = "bold 38px monospace"; ctx.fillText("FLYING TO THE NEXT WORLD!", W/2, 72);
-    ctx.fillStyle = nextWorld.color; ctx.strokeStyle = palette.black; ctx.lineWidth = 8;
-    ctx.font = "bold 48px monospace"; ctx.strokeText(`WORLD ${nextWorld.world}`, W/2, 470); ctx.fillText(`WORLD ${nextWorld.world}`, W/2, 470);
-    ctx.fillStyle = palette.white; ctx.font = "bold 22px monospace"; ctx.fillText(nextWorld.name, W/2, 510);
+    const flight = Math.min(1, (elapsed - 165) / 75);
+    const flyingY = marioY - flight * 235 + Math.sin(elapsed * .22) * 8;
+    // Speed lines and clouds pass over the still-scrolling world.
+    ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 5;
+    for (let streak = 0; streak < 9; streak++) {
+      const sx = (streak * 133 - elapsed * 12) % (W + 180);
+      const sy = 75 + (streak * 61) % 360;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx+120, sy); ctx.stroke();
+    }
+    ctx.font = "68px sans-serif"; ctx.fillText("🦝", marioX, flyingY);
+    ctx.font = "32px sans-serif"; ctx.fillText("🧢", marioX-2, flyingY-42);
+    ctx.fillStyle = nextWorld.color; ctx.strokeStyle = palette.black; ctx.lineWidth = 6;
+    ctx.font = "bold 34px monospace"; ctx.strokeText(`WORLD ${nextWorld.world}`, W/2, 72); ctx.fillText(`WORLD ${nextWorld.world}`, W/2, 72);
+    ctx.fillStyle = palette.white; ctx.font = "bold 18px monospace"; ctx.fillText(nextWorld.name, W/2, 102);
   }
   ctx.restore();
 }
