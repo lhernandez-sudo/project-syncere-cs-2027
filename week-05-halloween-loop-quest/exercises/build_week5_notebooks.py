@@ -41,105 +41,135 @@ def checkpoint(name, passed):
 
 banner("TRAINING MODE READY")''')
 
-write("module-1-game-loadout.ipynb","Module 1: Super Mario Team Quest",[
+write("module-1-game-loadout.ipynb","Module 1: Super Mario Debug Quest",[
     code('''from IPython.display import display, HTML
 
-def mario_scene(title, message, color="#e52521", character="🍄", coins=0):
-    coin_row = "🟡 " * coins
+def mario_level(title, goal, success, reason, character="🍄", enemy="🐢", coins=0):
+    state = "win" if success else "fail"
+    headline = "LEVEL CLEAR!" if success else "MARIO MISSED THE CODE!"
+    detail = goal if success else reason
+    color = "#25a244" if success else "#d00000"
+    coin_row = "🟡 " * min(coins, 12)
     display(HTML(f"""
-    <div style="position:relative;overflow:hidden;height:280px;border:8px solid #222;
-                border-radius:20px;background:linear-gradient(#55b9ff 0 68%,#73c94b 68% 82%,#b86b32 82%);
-                font-family:Arial;text-align:center;color:white;box-shadow:0 10px 0 #222">
+    <div class="mario-stage {state}">
       <style>
-        @keyframes run {{0%{{left:-10%}} 45%{{left:45%;transform:translateY(0)}} 55%{{left:55%;transform:translateY(-75px)}} 100%{{left:105%;transform:translateY(0)}}}}
-        @keyframes pop {{0%,100%{{transform:scale(1)}} 50%{{transform:scale(1.25) rotate(-3deg)}}}}
-        @keyframes drift {{from{{transform:translateX(-120px)}} to{{transform:translateX(900px)}}}}
-        .runner {{position:absolute;bottom:42px;font-size:64px;animation:run 4s ease-in-out infinite}}
-        .cloud {{position:absolute;top:30px;font-size:45px;animation:drift 8s linear infinite}}
+        .mario-stage {{position:relative;overflow:hidden;height:360px;border:8px solid #111;border-radius:18px;
+          background:linear-gradient(#45b6ff 0 67%,#71c837 67% 80%,#b7652a 80%);font-family:Arial;color:white;
+          text-align:center;box-shadow:0 12px 0 #222}}
+        .mario-stage:after {{content:'';position:absolute;left:0;right:0;bottom:58px;height:12px;
+          background:repeating-linear-gradient(90deg,#d98b3a 0 38px,#6b3217 38px 42px)}}
+        @keyframes cloudMove {{from{{left:-120px}}to{{left:105%}}}}
+        @keyframes winRun {{0%{{left:-10%;bottom:70px}}35%{{left:32%;bottom:70px}}55%{{left:52%;bottom:180px;transform:rotate(-12deg)}}75%{{left:70%;bottom:70px}}100%{{left:92%;bottom:70px}}}}
+        @keyframes failRun {{0%{{left:-10%;bottom:70px;transform:rotate(0)}}55%{{left:49%;bottom:70px;transform:rotate(0)}}65%{{left:52%;bottom:76px;transform:rotate(-25deg)}}75%{{left:52%;bottom:145px;transform:rotate(180deg)}}100%{{left:52%;bottom:-100px;transform:rotate(540deg)}}}}
+        @keyframes enemyMove {{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(-35px)}}}}
+        @keyframes flagRise {{0%{{height:0;opacity:0}}70%{{height:0;opacity:0}}100%{{height:150px;opacity:1}}}}
+        @keyframes flash {{0%,100%{{opacity:1}}50%{{opacity:.25}}}}
+        @keyframes shake {{0%,100%{{transform:translateX(0)}}25%{{transform:translateX(-8px)}}75%{{transform:translateX(8px)}}}}
+        .sky-title {{position:relative;z-index:5;margin:18px 12px 5px;font-size:32px;text-shadow:4px 4px #222}}
+        .mission {{position:relative;z-index:5;font-size:18px;font-weight:bold}}
+        .runner {{position:absolute;z-index:4;font-size:64px;animation:{'winRun' if success else 'failRun'} 4.4s ease-in-out infinite}}
+        .enemy {{position:absolute;z-index:3;left:55%;bottom:70px;font-size:58px;animation:enemyMove 1s infinite}}
+        .cloud {{position:absolute;top:86px;font-size:44px;animation:cloudMove 9s linear infinite}}
+        .flag {{position:absolute;right:8%;bottom:70px;width:10px;background:white;animation:flagRise 4.4s infinite}}
+        .result {{position:absolute;z-index:8;left:10%;right:10%;top:145px;background:{color};border:6px solid white;
+          border-radius:12px;padding:10px;font-size:25px;font-weight:bold;
+          animation:{'flash' if success else 'shake'} .8s infinite}}
+        .coins {{position:absolute;z-index:6;left:0;right:0;bottom:15px;font-size:21px}}
       </style>
-      <div class="cloud">☁️</div><div class="runner">{character}</div>
-      <h1 style="font-size:38px;text-shadow:4px 4px #222;margin:24px 10px 8px">{title}</h1>
-      <div style="display:inline-block;background:{color};padding:12px 22px;border:5px solid white;
-                  border-radius:14px;font-size:24px;font-weight:bold;animation:pop 1.2s infinite">{message}</div>
-      <div style="font-size:25px;margin-top:20px">{coin_row}</div>
+      <div class="cloud">☁️</div><div class="sky-title">{title}</div><div class="mission">MISSION: {goal}</div>
+      <div class="runner">{character}</div><div class="enemy">{enemy}</div><div class="flag"></div>
+      <div class="result">{headline}<br><span style="font-size:17px">{detail}</span></div><div class="coins">{coin_row}</div>
     </div>"""))
 
 def checkpoint(name, passed):
     icon = "✅" if passed else "🔁"
-    print(f"{icon} {name}: {'CLEARED' if passed else 'TRY AGAIN'}")
+    print(f"{icon} {name}: {'CLEARED' if passed else 'FIX THE CODE AND RUN AGAIN'}")
 
-mario_scene("MUSHROOM KINGDOM TEAM QUEST", "Choose your crew!", character="🏃", coins=3)'''),
-    md('''## Party setup — Teams of 3 or 4
+mario_level("WORLD 1-1", "Repair the code to reach the flag", False,
+            "The starter code is supposed to fail. Your team will fix it.", character="🏃")'''),
+    md('''## Team roles
 
-Move next to your teammates. Choose one role now. Rotate after every level.
+Work in teams of 3 or 4. Rotate roles after every level.
 
-- **Driver:** edits and runs the code.
-- **Navigator:** reads each instruction aloud.
-- **Predictor:** announces the result before Run.
-- **Reporter:** explains what the team changed.
+- **Driver:** changes the code and presses Run.
+- **Navigator:** reads the mission and tips aloud.
+- **Predictor:** says whether Mario will live or die before Run.
+- **Debugger:** points to the exact variable, list item, or condition that needs repair.
 
-Every teammate must agree before the Driver presses **Run**.'''),
-    md('''## Level 1 — Create your Mario team
+The first run should fail. A failure animation means the code gave you useful information.'''),
+    md('''## Level 1 — Jump Power Variable
 
-Variables are labeled boxes. Your team fills the boxes together.
+**Concept reminder:** A variable stores one value under a name. Changing the value changes what the program can do.
 
-1. Pick a team name.
-2. Choose one character emoji: `🍄`, `⭐`, `🐢`, `👻`, or `🔥`.
-3. Choose a team color from the examples.
-4. Predict what the cell will display, then run it.'''),
-    code('''team_name = "Fire Flower Crew"       # change the text
-team_character = "🔥"                  # change the emoji
-team_color = "#e52521"                 # try #e52521, #149ece, #43b047, or #fbd000
-starting_coins = 3                      # choose 1 through 5
+**Mission:** Mario needs jump power of at least `3` to clear the Goomba.
 
-mario_scene(team_name, "TEAM READY!", team_color, team_character, starting_coins)'''),
-    md('''### Team checkpoint
+Run the starter once. Watch Mario fail. Then repair only the value stored in `jump_power`.
 
-The Reporter points to the code and answers:
+**Tips**
 
-- Which variable stores text?
-- Which variable stores a whole number?
-- If `starting_coins` changes, which part of the scene changes?'''),
-    code('''checkpoint("Team name is text", type(team_name) == str)
-checkpoint("Coins are a whole number", type(starting_coins) == int)
-checkpoint("Team selected 1 to 5 coins", starting_coins >= 1 and starting_coins <= 5)'''),
-    md('''## Level 2 — Mystery Block Relay
+- Look for the line with `jump_power =`.
+- Keep the variable name the same.
+- Replace only the number.'''),
+    code('''team_name = "Fire Flower Crew"
+jump_power = 1          # TODO: Mario needs at least 3
 
-Lists are backpacks that keep several values in order.
+can_jump = jump_power >= 3
+mario_level("LEVEL 1: GOOMBA JUMP", "Set jump_power to 3 or more", can_jump,
+            "Jump power was too low. Change the variable and retry.",
+            character="🏃", enemy="🍄", coins=jump_power)
+checkpoint("Jump power", can_jump)'''),
+    md('''### Explain the repair
 
-1. The Navigator reads the three power-ups.
-2. The Predictor chooses which item sits at index `0`.
-3. The Driver runs the cell.
-4. Everyone performs the action shown on screen.'''),
-    code('''power_ups = ["Super Star", "Fire Flower", "Super Mushroom"]
-power_icons = ["⭐", "🔥", "🍄"]
+The Predictor completes this sentence before the team moves on:
 
-print("Power-up at index 0:", power_ups[0])
-print("Its matching icon:", power_icons[0])
-print("Items in the block:", len(power_ups))'''),
-    md('''### Add your own power-up
+> Mario failed because `jump_power` stored ____. We changed it to ____ so the condition became `True`.'''),
+    md('''## Level 2 — Power-Up List
 
-As a team, invent one classroom-safe power-up and its celebration move. Add it to both lists.'''),
-    code('''power_ups.append("Team High Five")
-power_icons.append("🙌")
+**Concept reminder:** A list stores several values in order. `.append()` adds one value to the end.
 
-chosen_power = power_ups[-1]
-chosen_icon = power_icons[-1]
-mario_scene("MYSTERY BLOCK OPEN!", chosen_power, team_color, chosen_icon, len(power_ups))
+**Mission:** Mario can survive the Koopa only when `"Super Mushroom"` is inside the inventory list.
 
-checkpoint("Both lists match", len(power_ups) == len(power_icons))'''),
+Run the starter, inspect the printed list, then add the missing item.
+
+**Tips**
+
+- Do not replace the entire list.
+- Remove `#` from the TODO line so Python runs it.
+- The spelling and capitalization must match exactly.'''),
+    code('''inventory = ["coin", "map"]
+
+# TODO: remove the # from the next line
+# inventory.append("Super Mushroom")
+
+has_mushroom = "Super Mushroom" in inventory
+print("Current inventory:", inventory)
+mario_level("LEVEL 2: KOOPA ROAD", "Put Super Mushroom in inventory", has_mushroom,
+            "Mario was small. Use append() to add the missing power-up.",
+            character="🏃", enemy="🐢", coins=len(inventory))
+checkpoint("Power-up list", has_mushroom)'''),
+    md('''### Partner check
+
+The Debugger points to:
+
+1. The list variable.
+2. The value added by `.append()`.
+3. The condition that checks whether the value is in the list.'''),
     md('''## Level 3 — Coin Rush at 10:00
 
-This is the class photo challenge. Each team sends one Runner to another team.
+**Concept reminder:** A variable can be updated using its old value: `coins = coins + bonus`.
 
-1. The visiting Runner gives that team a number from 1 to 5.
-2. The Driver stores it in `visitor_bonus`.
-3. The Predictor calculates the final coins without running.
-4. Both teams compare predictions.
-5. Run the cell together for the animated reveal.'''),
-    code('''coins = starting_coins
-visitor_bonus = 4       # visiting student chooses 1 through 5
-question_bonus = 3      # team earns this after explaining one variable
+**Mission:** Reach at least `10` coins to unlock the secret pipe.
+
+Send one teammate to another team. The visiting student chooses `visitor_bonus` from 1 to 5. Both teams calculate the total before Run.
+
+**Tips**
+
+- Trace the value after every update.
+- You may change `visitor_bonus` and `question_bonus`.
+- The final value must make `coins >= 10` true.'''),
+    code('''coins = 2
+visitor_bonus = 2       # TODO: visiting student may change this
+question_bonus = 1      # TODO: increase after explaining the coin updates
 
 print("Start:", coins)
 coins = coins + visitor_bonus
@@ -147,77 +177,84 @@ print("After visitor bonus:", coins)
 coins = coins + question_bonus
 print("After question bonus:", coins)
 
-if coins >= 10:
-    finish = "SECRET PIPE UNLOCKED!"
-    finish_icon = "🌟"
-    finish_color = "#43b047"
+pipe_unlocked = coins >= 10
+mario_level("LEVEL 3: COIN RUSH", "Reach 10 coins", pipe_unlocked,
+            "The pipe stayed locked. Trace the updates and raise the bonuses.",
+            character="🏃", enemy="🕳️", coins=coins)
+checkpoint("Coin total", pipe_unlocked)'''),
+    md('''## Level 4 — Repair the If Condition
+
+**Concept reminder:** An `if` statement runs its indented block only when the condition is `True`. `and` requires both sides to be true.
+
+**Mission:** Open the castle door when Mario has at least 10 coins **and** has the key.
+
+The starter uses `False`, so Mario always dies. Replace `False` with the correct condition.
+
+**Tips**
+
+- First comparison: `coins >= 10`
+- Second condition: `has_key`
+- Join them with `and`.
+- Your finished line begins with `if coins`.'''),
+    code('''has_key = True
+
+# TODO: replace False with a condition using coins, has_key, and and
+if False:
+    castle_open = True
 else:
-    finish = "ONE MORE COIN RUSH!"
-    finish_icon = "🍄"
-    finish_color = "#e52521"
+    castle_open = False
 
-mario_scene(team_name, finish, finish_color, finish_icon, coins)
-checkpoint("Coin math", coins == starting_coins + visitor_bonus + question_bonus)'''),
-    md('''## Level 4 — Warp Pipe Decision
+mario_level("LEVEL 4: CASTLE DOOR", "Use coins and the key", castle_open,
+            "The condition sent Mario into the lava. Repair the if line.",
+            character="🏃", enemy="🔥", coins=coins)
+checkpoint("Castle condition", castle_open)'''),
+    md('''### Condition trace
 
-An `if` condition chooses one path. Teams must negotiate their strategy.
+The Reporter explains both sides separately:
 
-- Blue pipe needs at least 8 coins.
-- Green pipe needs a key.
-- Gold pipe needs both at least 10 coins **and** a key.
+- `coins >= 10` is ____.
+- `has_key` is ____.
+- `True and True` becomes ____.'''),
+    md('''## Final Boss — Bowser Condition
 
-Choose one pipe as a team, then change the variables and run the result.'''),
-    code('''chosen_pipe = "gold"     # choose "blue", "green", or "gold"
-has_key = True
+Pair with another team. One team controls Mario's attack. The other controls Bowser's defense.
 
-if chosen_pipe == "gold" and coins >= 10 and has_key:
-    pipe_result = "BOWSER CASTLE SHORTCUT!"
-    pipe_icon = "🏰"
-elif chosen_pipe == "green" and has_key:
-    pipe_result = "UNDERGROUND BONUS ROOM!"
-    pipe_icon = "🟢"
-elif chosen_pipe == "blue" and coins >= 8:
-    pipe_result = "SKY WORLD!"
-    pipe_icon = "🔵"
-else:
-    pipe_result = "PIPE LOCKED — CHANGE YOUR PLAN"
-    pipe_icon = "🔒"
+**Mission:** Mario wins only when his attack is greater than Bowser's defense **and** he has a star.
 
-mario_scene("WARP PIPE RESULT", pipe_result, team_color, pipe_icon, coins)'''),
-    md('''## Final boss — Class Castle Battle
+The condition is broken on purpose. Repair it, predict the outcome, and run the battle.
 
-Pair with another team. One team becomes **Mario**, and the other becomes **Bowser**.
+**Tips**
 
-1. Mario team chooses an attack value from 1 to 5.
-2. Bowser team chooses a defense value from 1 to 5.
-3. Both Predictors decide whether the attack lands.
-4. Run the cell.
-5. Switch roles and play again.'''),
-    code('''mario_attack = 5       # Mario team chooses 1 through 5
-bowser_defense = 3     # Bowser team chooses 1 through 5
+- Compare `mario_attack` and `bowser_defense` with `>`.
+- Check `team_has_star` in the same condition.
+- Use `and` because both requirements matter.
+- If Mario still dies, print the three variable values and compare them.'''),
+    code('''mario_attack = 5
+bowser_defense = 3
 team_has_star = True
 
-if mario_attack > bowser_defense and team_has_star:
-    battle_result = "BOWSER DEFEATED! CLASS VICTORY!"
-    battle_icon = "🏆"
-    battle_color = "#fbd000"
+# TODO: replace False with the complete boss condition
+if False:
+    bowser_defeated = True
 else:
-    battle_result = "BOWSER BLOCKED IT — PLAN A REMATCH!"
-    battle_icon = "🐲"
-    battle_color = "#e52521"
+    bowser_defeated = False
 
-mario_scene("FINAL CASTLE BATTLE", battle_result, battle_color, battle_icon, coins)
-checkpoint("Attack is a number", type(mario_attack) == int)
-checkpoint("Decision produced a result", battle_result != "")'''),
-    md('''## Team debrief
+print("Mario attack:", mario_attack)
+print("Bowser defense:", bowser_defense)
+print("Team has star:", team_has_star)
+mario_level("FINAL BOSS: BOWSER", "Win with attack AND a star", bowser_defeated,
+            "Bowser's fireball hit Mario. Repair the two-part condition.",
+            character="🏃", enemy="🐲", coins=coins)
+checkpoint("Bowser battle", bowser_defeated)'''),
+    md('''## Final team debrief
 
-Each Reporter shares one sentence:
+Each Reporter shares one repair:
 
-- “A **variable** changed our game by…”
-- “A **list** helped our team store…”
-- “The **if condition** chose a result when…”
+- “We changed the **variable** because…”
+- “We added to the **list** because…”
+- “Our **if condition** needed `and` because…”
 
-Save a screenshot of your final castle battle before moving to Module 2.''')
+Save a screenshot of the successful Bowser battle in your Google Drive copy. If the final animation still shows Mario dying, do not move on yet. Ask another team to trace your condition.''')
 ])
 
 write("module-2-arcade-loops.ipynb","Module 2: Arcade Loop Trainer",[
