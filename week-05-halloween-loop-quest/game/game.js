@@ -308,6 +308,17 @@ function nextObstacleDistance() {
   return nearest;
 }
 
+function nextPitDistance() {
+  const feetX = player.x + player.w / 2;
+  const floor = ground.find(g => feetX >= g.x && feetX <= g.x + g.w);
+  return floor ? floor.x + floor.w - (player.x + player.w) : Infinity;
+}
+
+function hasFloorUnderPlayer() {
+  const leftFoot = player.x + 6, rightFoot = player.x + player.w - 6;
+  return ground.some(g => rightFoot >= g.x && leftFoot <= g.x + g.w);
+}
+
 function updateParticles() {
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i]; p.x += p.vx; p.y += p.vy; p.vy += .22; p.life -= 1;
@@ -385,15 +396,16 @@ function update() {
 
   updateFireballs();
 
-  const speed = TEST_MODE ? 36 : 5.1 + Math.min(1.7, state.cleared * .07);
-  player.vx += (speed - player.vx) * .08;
+  const speed = TEST_MODE ? 36 : 7.4 + Math.min(2.1, state.cleared * .09);
+  player.vx += (speed - player.vx) * .14;
   const obstacle = nextObstacleDistance();
-  if (player.onGround && obstacle < 105) {
-    player.vy = -13.3; player.onGround = false;
+  const pit = nextPitDistance();
+  if (player.onGround && (pit < 175 || obstacle < 125)) {
+    player.vy = -15.4; player.onGround = false;
     spawnParticles(player.x+8, player.y+player.h, palette.white, 12);
     spawnParticles(player.x+18, player.y+player.h, palette.gold, 8); beep(390, .06);
   }
-  player.vy += .72; player.vy = Math.min(16, player.vy);
+  player.vy += .68; player.vy = Math.min(16, player.vy);
   const previousY = player.y; player.x += player.vx; player.y += player.vy; player.onGround = false;
 
   for (const solid of ground.concat(platforms)) {
@@ -405,11 +417,17 @@ function update() {
       if (solid.kind === "question") { state.coins += 1; spawnParticles(player.x, player.y, palette.gold, 8); beep(720, .06); }
     }
   }
-  // The TAS owns movement inputs, so terrain mistakes should never punish the
-  // class. Recover invisibly if browser timing ever drops Mario below a pit.
-  if (player.y > H + 70) {
-    placePlayerSafely(player.x + 90);
+  // The auto-run should never look like a wrong-answer death. If a dropped
+  // browser frame misses a pit jump, Tanooki Mario performs an instant air save
+  // at platform height instead of falling through the bottom of the scene.
+  if (!hasFloorUnderPlayer() && player.y > GROUND_Y - player.h + 8) {
+    player.y = GROUND_Y - player.h;
+    player.x += 42;
+    player.vy = -12.5;
     player.vx = speed;
+    player.form = "tanooki";
+    spawnParticles(player.x, player.y + player.h, palette.gold, 24);
+    beep(988, .06, "square", .04); beep(1319, .09, "square", .035, .06);
   }
 
   coins.forEach(c => {
