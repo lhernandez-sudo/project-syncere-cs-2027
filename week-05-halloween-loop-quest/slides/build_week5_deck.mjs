@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week5-slides");
 const outputDir = path.join(workspaceDir, "week-05-halloween-loop-quest", "slides");
-const finalPath = path.join(outputDir, "week-05-beginner-loop-workshop-v3.pptx");
+const finalPath = path.join(outputDir, "week-05-beginner-loop-workshop-v4.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1025.11240\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF";
@@ -41,9 +41,6 @@ text(s,"Week 5  •  Mario review  •  Three guided Colab labs",76,584,1080,36,
 
 s=base("Today’s path","Class ends at 1:00 PM — the first 15 minutes are for arrival and setup");
 bullets(s,["9:00–9:15  Arrive, sign in, open the browser, and get settled","9:15–9:35  Mario review and class voting","9:35–10:25  Super Mario Team Quest in Module 1","10:00  Coin Rush photo showcase","10:25–10:35  Break","10:35–11:20  Module 2: Arcade Loop Trainer","11:20–11:30  Break","11:30–1:00  Module 3, boss challenge, peer debugging, and exit"],72,132,1140,20,62);
-
-s=base("Participation routine","Every student gets thinking time before anyone answers");
-bullets(s,["Think silently for 20 seconds","Write one prediction","Compare with one partner","Vote with fingers: 1, 2, or 3","Run the code only after the vote","Explain the result in plain English"],110,150,1050,24,72);
 
 s=base("A loop repeats a block","The computer follows the same steps for several values");
 text(s,"PLAIN ENGLISH",88,170,290,34,18,teal,true); text(s,"For each player in the team, print the player’s name.",88,215,1090,58,32,ink,true);
@@ -113,5 +110,5 @@ for(let i=0;i<deck.slides.items.length;i++){
 const montage=await deck.export({format:"webp",montage:true}); await fs.writeFile(path.join(buildDir,"montage.webp"),new Uint8Array(await montage.arrayBuffer()));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"container_tools","artifact_tool_utils.mjs")).href);
 const candidate=path.join(buildDir,"candidate.pptx"); await (await PresentationFile.exportPptx(deck)).save(candidate);
-await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v3.json")});
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v4.json")});
 console.log(finalPath);

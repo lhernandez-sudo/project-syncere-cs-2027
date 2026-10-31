@@ -84,7 +84,7 @@ The main Week 5 lesson uses three browser notebooks. Each module begins with tea
 | 12:15-12:40 | Loop boss challenge and peer debugging |
 | 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v3.pptx`.
+The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v4.pptx`.
 
 ## Challenge artifact
 
