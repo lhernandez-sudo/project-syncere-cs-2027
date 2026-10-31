@@ -34,6 +34,7 @@ let cameraX = 0, lastTime = 0, activeQuestion = null, deadline = 0, deathTimer =
 let musicTimer = null, musicStep = 0, bossTimer = 0, deathStyle = "bonk", deathReason = "";
 let transitionTimer = 0, transitionFromWorld = 0;
 let transitionGroundY = 365, fireballCooldown = 0;
+let autoJump = null;
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
 const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" };
@@ -217,7 +218,7 @@ function resetGame() {
   Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" });
   questions.forEach(q => q.passed = false); coins.forEach(c => c.taken = false); enemies.forEach(e => e.alive = true);
   boss.defeated = false; bossTimer = 0;
-  particles.length = 0; fireballs.length = 0; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
+  particles.length = 0; fireballs.length = 0; autoJump = null; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
   startMusic();
   ui.start.hidden = true; ui.win.hidden = true; ui.question.hidden = true; updateHud();
 }
@@ -254,6 +255,7 @@ function answerQuestion(index, button) {
   button.classList.add("correct"); activeQuestion.passed = true; state.cleared += 1; state.coins += 10;
   // A correct answer is always a win. Resume beyond the cleared gate on solid
   // ground so a success can never look like a pit death or enemy collision.
+  autoJump = null;
   state.checkpoint = placePlayerSafely(activeQuestion.x + 90); ui.question.classList.add("success");
   ui.feedback.textContent = `FRAME PERFECT! ${activeQuestion.explanation}`;
   spawnParticles(player.x, player.y, subjects[activeQuestion.subjectIndex].color, 25);
@@ -312,6 +314,10 @@ function nextPitDistance() {
   const feetX = player.x + player.w / 2;
   const floor = ground.find(g => feetX >= g.x && feetX <= g.x + g.w);
   return floor ? floor.x + floor.w - (player.x + player.w) : Infinity;
+}
+
+function nextGroundAfterPlayer() {
+  return ground.find(g => g.x > player.x + player.w);
 }
 
 function hasFloorUnderPlayer() {
@@ -400,31 +406,58 @@ function update() {
   player.vx += (speed - player.vx) * .14;
   const obstacle = nextObstacleDistance();
   const pit = nextPitDistance();
-  if (player.onGround && (pit < 175 || obstacle < 125)) {
+  if (player.onGround && pit < 175) {
+    const landing = nextGroundAfterPlayer();
+    if (landing) {
+      autoJump = {
+        startX: player.x,
+        startY: player.y,
+        targetX: landing.x + 54,
+        targetY: landing.y - player.h,
+        progress: 0,
+      };
+      player.onGround = false;
+      spawnParticles(player.x+8, player.y+player.h, palette.white, 16);
+      spawnParticles(player.x+18, player.y+player.h, palette.gold, 10); beep(440, .07);
+    }
+  } else if (player.onGround && obstacle < 125) {
     player.vy = -15.4; player.onGround = false;
     spawnParticles(player.x+8, player.y+player.h, palette.white, 12);
     spawnParticles(player.x+18, player.y+player.h, palette.gold, 8); beep(390, .06);
   }
-  player.vy += .68; player.vy = Math.min(16, player.vy);
-  const previousY = player.y; player.x += player.vx; player.y += player.vy; player.onGround = false;
+  if (autoJump) {
+    const jumpDistance = autoJump.targetX - autoJump.startX;
+    autoJump.progress = Math.min(1, autoJump.progress + speed / jumpDistance);
+    const t = autoJump.progress;
+    player.x = autoJump.startX + jumpDistance * t;
+    player.y = autoJump.startY + (autoJump.targetY - autoJump.startY) * t - Math.sin(t * Math.PI) * 145;
+    player.vx = speed; player.vy = 0; player.onGround = false;
+    if (t >= 1) {
+      player.x = autoJump.targetX; player.y = autoJump.targetY;
+      player.vy = 0; player.onGround = true; autoJump = null;
+      spawnParticles(player.x + 12, player.y + player.h, palette.white, 12); beep(620, .05);
+    }
+  } else {
+    player.vy += .68; player.vy = Math.min(16, player.vy);
+    const previousY = player.y; player.x += player.vx; player.y += player.vy; player.onGround = false;
 
-  for (const solid of ground.concat(platforms)) {
-    if (!rectsTouch(player, solid)) continue;
-    if (previousY + player.h <= solid.y + 12 && player.vy >= 0) {
-      player.y = solid.y - player.h; player.vy = 0; player.onGround = true;
-    } else if (previousY >= solid.y + solid.h - 8 && player.vy < 0) {
-      player.y = solid.y + solid.h; player.vy = 1;
-      if (solid.kind === "question") { state.coins += 1; spawnParticles(player.x, player.y, palette.gold, 8); beep(720, .06); }
+    for (const solid of ground.concat(platforms)) {
+      if (!rectsTouch(player, solid)) continue;
+      if (previousY + player.h <= solid.y + 12 && player.vy >= 0) {
+        player.y = solid.y - player.h; player.vy = 0; player.onGround = true;
+      } else if (previousY >= solid.y + solid.h - 8 && player.vy < 0) {
+        player.y = solid.y + solid.h; player.vy = 1;
+        if (solid.kind === "question") { state.coins += 1; spawnParticles(player.x, player.y, palette.gold, 8); beep(720, .06); }
+      }
     }
   }
   // The auto-run should never look like a wrong-answer death. If a dropped
   // browser frame misses a pit jump, Tanooki Mario performs an instant air save
   // at platform height instead of falling through the bottom of the scene.
-  if (!hasFloorUnderPlayer() && player.y > GROUND_Y - player.h + 8) {
-    player.y = GROUND_Y - player.h;
-    player.x += 42;
-    player.vy = -12.5;
-    player.vx = speed;
+  if (!autoJump && !hasFloorUnderPlayer() && player.y > GROUND_Y - player.h - 6) {
+    const landing = nextGroundAfterPlayer();
+    if (landing) placePlayerSafely(landing.x + 54);
+    player.vx = speed; player.vy = 0;
     player.form = "tanooki";
     spawnParticles(player.x, player.y + player.h, palette.gold, 24);
     beep(988, .06, "square", .04); beep(1319, .09, "square", .035, .06);
