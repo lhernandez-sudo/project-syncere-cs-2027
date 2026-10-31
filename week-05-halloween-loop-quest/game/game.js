@@ -86,8 +86,9 @@ rawQuestions.forEach((group, subjectIndex) => group.forEach((q, questionIndex) =
 
 const ground = [];
 for (let x = 0; x < COURSE_END; x += 720) {
-  const pit = x > 0 && x % 2160 === 1440;
-  if (!pit) ground.push({ x, y: GROUND_Y, w: 640, h: 88 });
+  // Each segment leaves an 80-pixel pit. Mario's TAS jump can clear that
+  // distance; skipping a whole segment would create an impossible 800-pixel pit.
+  ground.push({ x, y: GROUND_Y, w: 640, h: 88 });
 }
 
 const platforms = [];
@@ -118,6 +119,18 @@ function beep(frequency = 440, duration = .08, type = "square") {
 
 function rectsTouch(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
 function block(x, y, w, h, fill) { ctx.fillStyle = fill; ctx.fillRect(Math.round(x), Math.round(y), w, h); }
+function safeGroundPosition(targetX) {
+  const current = ground.find(g => targetX >= g.x + 20 && targetX <= g.x + g.w - player.w - 20);
+  if (current) return { x: targetX, y: current.y - player.h };
+  const next = ground.find(g => g.x >= targetX);
+  const fallback = next || ground[ground.length - 1];
+  return { x: fallback.x + 30, y: fallback.y - player.h };
+}
+function placePlayerSafely(targetX) {
+  const safe = safeGroundPosition(targetX);
+  Object.assign(player, { x: safe.x, y: safe.y, vx: 0, vy: 0, onGround: true });
+  return safe.x;
+}
 function updateHud() {
   ui.lives.textContent = `× ${state.lives}`; ui.coins.textContent = String(state.coins).padStart(2, "0");
   ui.keys.textContent = `${state.cleared}/20`; ui.deaths.textContent = String(state.deaths);
@@ -157,7 +170,9 @@ function answerQuestion(index, button) {
     button.classList.add("wrong"); killMario("MISINPUT! Wrong answer."); return;
   }
   button.classList.add("correct"); activeQuestion.passed = true; state.cleared += 1; state.coins += 10;
-  state.checkpoint = activeQuestion.x + 70; ui.question.classList.add("success");
+  // Resume before the cleared gate. This gives the TAS enough runway to
+  // evaluate the next pit or enemy instead of teleporting onto level geometry.
+  state.checkpoint = placePlayerSafely(activeQuestion.x - 180); ui.question.classList.add("success");
   ui.feedback.textContent = `FRAME PERFECT! ${activeQuestion.explanation}`;
   spawnParticles(player.x, player.y, subjects[activeQuestion.subjectIndex].color, 25);
   beep(760, .09); setTimeout(() => beep(1020, .18), 100); updateHud();
@@ -174,7 +189,8 @@ function killMario(reason) {
 }
 
 function respawn() {
-  Object.assign(player, { x: Math.max(60, state.checkpoint - 120), y: 350, vx: 0, vy: 0, dead: false });
+  placePlayerSafely(Math.max(60, state.checkpoint - 120));
+  player.dead = false;
   cameraX = Math.max(0, player.x - W * .35); activeQuestion = null; asking = false; paused = false;
 }
 
