@@ -109,28 +109,44 @@ const enemies = Array.from({ length: 44 }, (_, i) => ({
   kind: i % 7 === 3 ? "koopa" : i % 11 === 6 ? "spiny" : "goomba",
 }));
 
-function beep(frequency = 440, duration = .08, type = "square") {
+function beep(frequency = 440, duration = .08, type = "square", volume = .045, delay = 0) {
   if (!audioOn) return;
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return;
   const ac = beep.ac || (beep.ac = new AudioContext());
+  if (ac.state === "suspended") ac.resume();
   const osc = ac.createOscillator(), gain = ac.createGain();
   osc.type = type; osc.frequency.value = frequency;
-  gain.gain.setValueAtTime(.045, ac.currentTime);
-  gain.gain.exponentialRampToValueAtTime(.001, ac.currentTime + duration);
-  osc.connect(gain).connect(ac.destination); osc.start(); osc.stop(ac.currentTime + duration);
+  const start = ac.currentTime + delay;
+  gain.gain.setValueAtTime(volume, start);
+  gain.gain.exponentialRampToValueAtTime(.001, start + duration);
+  osc.connect(gain).connect(ac.destination); osc.start(start); osc.stop(start + duration);
 }
 
-// Original 8-bit classroom theme: platformer energy without copied game audio.
-const melody = [330,392,494,659,494,392,349,440,523,698,523,440,294,370,440,587];
+// Five original chiptune themes. The soundtrack changes with each Python world
+// and continues under the question panel so the quiz keeps its game-show energy.
+const musicWorlds = [
+  { lead: [659,784,988,784,659,523,587,659,698,880,1047,880,698,587,659,698], bass: [131,196,147,220] },
+  { lead: [440,523,659,622,523,440,392,415,440,554,698,659,554,466,415,392], bass: [110,165,123,185] },
+  { lead: [523,659,784,1047,988,784,659,587,659,784,880,784,698,659,587,523], bass: [131,196,175,220] },
+  { lead: [330,392,466,554,523,466,392,349,330,415,494,587,554,494,415,370], bass: [82,123,92,139] },
+  { lead: [262,311,392,466,392,311,277,330,262,349,415,494,415,349,311,277], bass: [65,98,73,110] },
+];
 function startMusic() {
   if (musicTimer || TEST_MODE) return;
   musicTimer = setInterval(() => {
-    if (!audioOn || paused || asking || won || !started) return;
-    const note = melody[musicStep++ % melody.length];
-    beep(note, .105, musicStep % 4 ? "square" : "triangle");
-    if (musicStep % 2 === 0) setTimeout(() => beep(note / 2, .06, "triangle"), 65);
-  }, 145);
+    if (!audioOn || won || !started) return;
+    const worldIndex = Math.min(4, Math.floor(state.cleared / 4));
+    const theme = musicWorlds[worldIndex];
+    const step = musicStep++;
+    const note = theme.lead[step % theme.lead.length];
+    const bassNote = theme.bass[Math.floor(step / 4) % theme.bass.length];
+    // Lead melody, quiet bass, offbeat sparkle, and a short rhythmic pulse.
+    beep(note, .11, step % 4 === 3 ? "triangle" : "square", asking ? .018 : .026);
+    if (step % 2 === 0) beep(bassNote, .22, "triangle", asking ? .012 : .019);
+    if (step % 4 === 2) beep(note * 2, .035, "sine", .009, .055);
+    beep(step % 4 === 0 ? 74 : 96, .025, "square", .006);
+  }, 132);
 }
 
 function rectsTouch(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
@@ -477,5 +493,5 @@ window.addEventListener("keydown", event => {
 window.addEventListener("keyup",event=>held.delete(event.key.length===1?event.key.toLowerCase():event.key));
 ui.restart.addEventListener("click",resetGame);
 ui.start.addEventListener("click",()=>{if(!started)resetGame();});
-ui.sound.addEventListener("click",()=>{audioOn=!audioOn;ui.sound.textContent=`SOUND: ${audioOn?"ON":"OFF"}`;if(audioOn)startMusic();});
+ui.sound.addEventListener("click",()=>{audioOn=!audioOn;ui.sound.textContent=`MUSIC + SFX: ${audioOn?"ON":"OFF"}`;if(audioOn)startMusic();});
 updateHud();requestAnimationFrame(loop);
