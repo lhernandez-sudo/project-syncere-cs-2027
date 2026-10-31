@@ -31,10 +31,12 @@ const palette = {
 
 let started = false, paused = false, asking = false, won = false, audioOn = true;
 let cameraX = 0, lastTime = 0, activeQuestion = null, deadline = 0, deathTimer = 0;
+let musicTimer = null, musicStep = 0, bossTimer = 0;
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
 const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0 };
 const particles = [];
+const boss = { x: 11910, y: 354, w: 96, h: 98, defeated: false };
 
 const subjects = [
   { name: "VARIABLES + LISTS", world: "1-1", color: "#59d65e" },
@@ -102,8 +104,9 @@ for (let i = 0; i < 32; i++) {
 const coins = Array.from({ length: 70 }, (_, i) => ({
   x: 270 + i * 165, y: 285 + (i % 4) * 28, r: 10, taken: false, phase: i * .7,
 }));
-const enemies = Array.from({ length: 24 }, (_, i) => ({
-  x: 560 + i * 490, y: 418, w: 34, h: 34, alive: true, phase: i,
+const enemies = Array.from({ length: 44 }, (_, i) => ({
+  x: 500 + i * 270, y: 418, w: 34, h: 34, alive: true, phase: i,
+  kind: i % 7 === 3 ? "koopa" : i % 11 === 6 ? "spiny" : "goomba",
 }));
 
 function beep(frequency = 440, duration = .08, type = "square") {
@@ -116,6 +119,18 @@ function beep(frequency = 440, duration = .08, type = "square") {
   gain.gain.setValueAtTime(.045, ac.currentTime);
   gain.gain.exponentialRampToValueAtTime(.001, ac.currentTime + duration);
   osc.connect(gain).connect(ac.destination); osc.start(); osc.stop(ac.currentTime + duration);
+}
+
+// Original 8-bit classroom theme: platformer energy without copied game audio.
+const melody = [330,392,494,659,494,392,349,440,523,698,523,440,294,370,440,587];
+function startMusic() {
+  if (musicTimer || TEST_MODE) return;
+  musicTimer = setInterval(() => {
+    if (!audioOn || paused || asking || won || !started) return;
+    const note = melody[musicStep++ % melody.length];
+    beep(note, .105, musicStep % 4 ? "square" : "triangle");
+    if (musicStep % 2 === 0) setTimeout(() => beep(note / 2, .06, "triangle"), 65);
+  }, 145);
 }
 
 function rectsTouch(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
@@ -142,7 +157,9 @@ function resetGame() {
   Object.assign(state, { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 });
   Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0 });
   questions.forEach(q => q.passed = false); coins.forEach(c => c.taken = false); enemies.forEach(e => e.alive = true);
+  boss.defeated = false; bossTimer = 0;
   particles.length = 0; cameraX = 0; won = false; asking = false; paused = false; started = true;
+  startMusic();
   ui.start.hidden = true; ui.win.hidden = true; ui.question.hidden = true; updateHud();
 }
 
@@ -239,7 +256,11 @@ function update() {
   const speed = TEST_MODE ? 36 : 5.1 + Math.min(1.7, state.cleared * .07);
   player.vx += (speed - player.vx) * .08;
   const obstacle = nextObstacleDistance();
-  if (player.onGround && obstacle < 105) { player.vy = -13.3; player.onGround = false; beep(390, .06); }
+  if (player.onGround && obstacle < 105) {
+    player.vy = -13.3; player.onGround = false;
+    spawnParticles(player.x+8, player.y+player.h, palette.white, 12);
+    spawnParticles(player.x+18, player.y+player.h, palette.gold, 8); beep(390, .06);
+  }
   player.vy += .72; player.vy = Math.min(16, player.vy);
   const previousY = player.y; player.x += player.vx; player.y += player.vy; player.onGround = false;
 
@@ -270,14 +291,24 @@ function update() {
     if (rectsTouch(player, e)) {
       // TAS movement is frame-perfect: every Goomba contact becomes a stomp.
       e.alive = false; player.vy = -8; state.coins += 2;
-      spawnParticles(e.x, e.y, "#a8623c", 14); beep(250, .07);
+      spawnParticles(e.x, e.y, e.kind === "koopa" ? "#73d34f" : "#ff9b45", 22); beep(250, .07);
     }
   });
+
+  // The final TAS set piece: after all concepts are cleared, Mario performs
+  // a scripted, frame-perfect leap over Bowser and knocks him into the lava.
+  if (!boss.defeated && state.cleared === 20 && player.x > boss.x - 180) {
+    boss.defeated = true; bossTimer = 80; player.vy = -16; state.coins += 50;
+    spawnParticles(boss.x + 45, boss.y + 30, palette.orange, 60);
+    spawnParticles(boss.x + 45, boss.y + 30, palette.gold, 40);
+    beep(196, .22, "sawtooth"); setTimeout(() => beep(98, .4, "sawtooth"), 180);
+  }
+  if (bossTimer > 0) bossTimer--;
 
   for (const q of questions) {
     if (!q.passed && player.x + player.w >= q.x - 24) { player.x = q.x - player.w - 24; player.vx = 0; openQuestion(q); break; }
   }
-  if (player.x > 12320 && state.cleared === 20) {
+  if (player.x > 12320 && state.cleared === 20 && boss.defeated) {
     won = true; paused = true; ui.finalScore.textContent = `COINS ${state.coins} • MISINPUTS ${state.deaths} • QUESTIONS 20/20`;
     ui.win.hidden = false; beep(523, .1); setTimeout(() => beep(659, .1), 120); setTimeout(() => beep(784, .28), 240);
   }
@@ -286,12 +317,21 @@ function update() {
 }
 
 function drawBackground() {
+  const stage = Math.min(4, Math.floor(state.cleared / 4));
+  const themes = [
+    ["#071f4a", "#4388c7", "#18384e"], // moonlit hills
+    ["#241047", "#8b3e9e", "#321b4d"], // haunted forest
+    ["#06394a", "#21a8a4", "#174c43"], // underground crystal
+    ["#4a1008", "#d64b18", "#3c1710"], // lava world
+    ["#111222", "#4d536a", "#191927"], // Bowser castle
+  ];
+  const theme = themes[stage];
   const gradient = ctx.createLinearGradient(0, 0, 0, H);
-  gradient.addColorStop(0, palette.skyTop); gradient.addColorStop(.68, palette.skyBottom); gradient.addColorStop(1, "#19132f");
+  gradient.addColorStop(0, theme[0]); gradient.addColorStop(.68, theme[1]); gradient.addColorStop(1, theme[2]);
   ctx.fillStyle = gradient; ctx.fillRect(0, 0, W, H);
   const moonX = 795 - cameraX * .018;
   ctx.fillStyle = palette.moon; ctx.beginPath(); ctx.arc(moonX, 86, 57, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = palette.skyTop; ctx.beginPath(); ctx.arc(moonX + 22, 70, 52, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = theme[0]; ctx.beginPath(); ctx.arc(moonX + 22, 70, 52, 0, Math.PI * 2); ctx.fill();
   for (let i = 0; i < 48; i++) {
     const x = ((i * 149 - cameraX * .06) % (W + 60) + W + 60) % (W + 60) - 30;
     const pulse = 1 + Math.sin(performance.now() / 420 + i) * .7;
@@ -305,6 +345,11 @@ function drawBackground() {
   }
   ctx.fillStyle = "rgba(200,190,255,.09)";
   for (let i = 0; i < 4; i++) ctx.fillRect(0, 365 + i * 22 + Math.sin(performance.now()/700+i)*5, W, 12);
+  // Stage-specific silhouettes make each concept feel like a new world.
+  if (stage === 1) for (let i=0;i<9;i++){const x=i*145-(cameraX*.18%145);block(x,205,18,247,"#171126");block(x-34,205,86,18,"#171126");}
+  if (stage === 2) for (let i=0;i<11;i++){const x=i*120-(cameraX*.2%120);ctx.fillStyle=i%2?"#69e6db":"#b978ff";ctx.beginPath();ctx.moveTo(x,390);ctx.lineTo(x+18,260-(i%3)*35);ctx.lineTo(x+36,390);ctx.fill();}
+  if (stage === 3) {ctx.fillStyle="rgba(255,90,20,.55)";ctx.fillRect(0,425,W,27);for(let i=0;i<12;i++)block(i*94-(cameraX*.25%94),410+Math.sin(i+performance.now()/180)*7,54,20,"#ffb11b");}
+  if (stage === 4) for(let i=0;i<8;i++){const x=i*170-(cameraX*.12%170);block(x,250,110,202,"#0c0c14");block(x+16,215,18,35,"#0c0c14");block(x+72,195,18,55,"#0c0c14");}
 }
 
 function drawGround(g) {
@@ -332,6 +377,11 @@ function drawPlatform(p) {
 
 function drawMario() {
   const x = Math.round(player.x - cameraX), y = Math.round(player.y), run = Math.floor(player.frame) % 2;
+  if (!player.onGround && !player.dead) {
+    ctx.save(); ctx.globalAlpha=.38; ctx.fillStyle=palette.gold;
+    for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(x-10-i*11,y+28+i*3,7-i,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+  }
   ctx.save(); ctx.translate(x, 0); if (player.dead) ctx.rotate((85 - deathTimer) * .08);
   block(6, y, 23, 6, palette.red); block(11, y - 5, 15, 6, palette.red); block(3, y + 6, 29, 6, palette.redDark);
   block(8, y + 7, 21, 15, palette.skin); block(24, y + 10, 9, 7, palette.skin); block(18, y + 8, 4, 5, palette.black);
@@ -344,10 +394,33 @@ function drawMario() {
 
 function drawGoomba(e) {
   if (!e.alive) return; const x = e.x - cameraX; if (x < -50 || x > W + 50) return;
+  if (e.kind === "koopa") {
+    block(x+7,e.y-5,21,28,"#54b948"); block(x+2,e.y+7,30,20,"#2d7d35"); block(x+11,e.y-10,16,14,"#f2c16c");
+    block(x+20,e.y-7,4,4,palette.black); block(x+2,e.y+27,13,7,palette.orange); block(x+20,e.y+27,13,7,palette.orange); return;
+  }
+  if (e.kind === "spiny") {
+    block(x+3,e.y+8,29,20,"#e74b3c");
+    ctx.fillStyle=palette.white;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(x+5+i*10,e.y+9);ctx.lineTo(x+10+i*10,e.y-7);ctx.lineTo(x+15+i*10,e.y+9);ctx.fill();}
+    block(x+5,e.y+27,10,7,palette.black);block(x+21,e.y+27,10,7,palette.black);return;
+  }
   block(x + 5, e.y, 24, 7, "#7e3d24"); block(x, e.y + 7, 34, 19, "#a65b37");
   block(x + 6, e.y + 12, 7, 7, palette.white); block(x + 21, e.y + 12, 7, 7, palette.white);
   block(x + 9, e.y + 13, 4, 5, palette.black); block(x + 21, e.y + 13, 4, 5, palette.black);
   block(x + 3, e.y + 26, 13, 7, palette.black); block(x + 20, e.y + 26, 13, 7, palette.black);
+}
+
+function drawBowser() {
+  if (boss.defeated && bossTimer <= 0) return;
+  const x=boss.x-cameraX, fall=boss.defeated?(80-bossTimer)*5:0, y=boss.y+fall;
+  if(x<-150||x>W+150)return;
+  ctx.save(); if(boss.defeated)ctx.rotate((80-bossTimer)*.05);
+  block(x+18,y+14,64,66,"#4e9b42"); block(x+9,y+28,35,48,"#e8b447");
+  block(x+44,y,48,36,"#79bd48"); block(x+76,y+9,20,22,"#e8b447");
+  block(x+73,y+10,6,7,palette.white);block(x+76,y+12,4,5,palette.redDark);
+  block(x+6,y+18,16,13,palette.white);block(x+4,y+43,18,13,palette.white);block(x+24,y+4,13,18,palette.white);
+  block(x+16,y+76,27,17,"#29202d");block(x+60,y+76,28,17,"#29202d");
+  ctx.restore();
+  if(!boss.defeated){ctx.fillStyle=palette.red;ctx.font="bold 16px monospace";ctx.fillText("FINAL BOSS",x+4,y-18);}
 }
 
 function drawBoo(worldX, y, scale = 1) {
@@ -386,7 +459,7 @@ function drawParticles() { particles.forEach(p => block(p.x-cameraX,p.y,p.size,p
 function draw() {
   drawBackground(); drawDecorations(); ground.forEach(drawGround); platforms.forEach(drawPlatform);
   coins.forEach(c => { if(c.taken)return; const x=c.x-cameraX;if(x<-30||x>W+30)return;const y=c.y+Math.sin(c.phase)*6;block(x-7,y-13,14,26,palette.gold);block(x-2,y-9,4,18,"#fff5a4"); });
-  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawParticles(); drawMario();
+  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario();
   if (started && !asking && !won) {
     ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,14,260,32);ctx.fillStyle=palette.green;ctx.font="bold 15px monospace";ctx.fillText("TAS AUTO-RUN • INPUT LOCKED",27,36);
   }
@@ -403,5 +476,6 @@ window.addEventListener("keydown", event => {
 });
 window.addEventListener("keyup",event=>held.delete(event.key.length===1?event.key.toLowerCase():event.key));
 ui.restart.addEventListener("click",resetGame);
-ui.sound.addEventListener("click",()=>{audioOn=!audioOn;ui.sound.textContent=`SOUND: ${audioOn?"ON":"OFF"}`;});
+ui.start.addEventListener("click",()=>{if(!started)resetGame();});
+ui.sound.addEventListener("click",()=>{audioOn=!audioOn;ui.sound.textContent=`SOUND: ${audioOn?"ON":"OFF"}`;if(audioOn)startMusic();});
 updateHud();requestAnimationFrame(loop);
