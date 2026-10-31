@@ -57,31 +57,48 @@ def mario_level(title, goal, success, reason, character="🍄", enemy="🐢", co
     display(HTML(f"""
     <div class="mario-stage {state}">
       <style>
-        .mario-stage {{position:relative;overflow:hidden;height:360px;border:8px solid #111;border-radius:18px;
+        .mario-stage {{position:relative;overflow:hidden;height:390px;border:8px solid #111;border-radius:18px;
           background:linear-gradient(#45b6ff 0 67%,#71c837 67% 80%,#b7652a 80%);font-family:Arial;color:white;
           text-align:center;box-shadow:0 12px 0 #222}}
         .mario-stage:after {{content:'';position:absolute;left:0;right:0;bottom:58px;height:12px;
           background:repeating-linear-gradient(90deg,#d98b3a 0 38px,#6b3217 38px 42px)}}
         @keyframes cloudMove {{from{{left:-120px}}to{{left:105%}}}}
-        @keyframes winRun {{0%{{left:-10%;bottom:70px}}35%{{left:32%;bottom:70px}}55%{{left:52%;bottom:180px;transform:rotate(-12deg)}}75%{{left:70%;bottom:70px}}100%{{left:92%;bottom:70px}}}}
-        @keyframes failRun {{0%{{left:-10%;bottom:70px;transform:rotate(0)}}55%{{left:49%;bottom:70px;transform:rotate(0)}}65%{{left:52%;bottom:76px;transform:rotate(-25deg)}}75%{{left:52%;bottom:145px;transform:rotate(180deg)}}100%{{left:52%;bottom:-100px;transform:rotate(540deg)}}}}
+        @keyframes winRun {{0%{{left:-9%;bottom:70px}}38%{{left:34%;bottom:70px}}52%{{left:53%;bottom:190px;transform:rotate(-8deg)}}68%{{left:69%;bottom:70px}}100%{{left:94%;bottom:70px}}}}
+        @keyframes failRun {{0%{{left:-9%;bottom:70px;transform:rotate(0)}}48%{{left:43%;bottom:70px;transform:rotate(0)}}58%{{left:50%;bottom:84px;transform:rotate(-18deg)}}70%{{left:52%;bottom:155px;transform:rotate(165deg)}}100%{{left:55%;bottom:-105px;transform:rotate(520deg)}}}}
+        @keyframes legs {{0%,100%{{transform:rotate(28deg)}}50%{{transform:rotate(-28deg)}}}}
+        @keyframes arms {{0%,100%{{transform:rotate(-32deg)}}50%{{transform:rotate(32deg)}}}}
+        @keyframes bob {{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-5px)}}}}
         @keyframes enemyMove {{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(-35px)}}}}
         @keyframes flagRise {{0%{{height:0;opacity:0}}70%{{height:0;opacity:0}}100%{{height:150px;opacity:1}}}}
         @keyframes flash {{0%,100%{{opacity:1}}50%{{opacity:.25}}}}
         @keyframes shake {{0%,100%{{transform:translateX(0)}}25%{{transform:translateX(-8px)}}75%{{transform:translateX(8px)}}}}
         .sky-title {{position:relative;z-index:5;margin:18px 12px 5px;font-size:32px;text-shadow:4px 4px #222}}
         .mission {{position:relative;z-index:5;font-size:18px;font-weight:bold}}
-        .runner {{position:absolute;z-index:4;font-size:64px;animation:{'winRun' if success else 'failRun'} 4.4s ease-in-out infinite}}
+        .runner {{position:absolute;z-index:4;width:62px;height:88px;animation:{'winRun' if success else 'failRun'} 3.2s cubic-bezier(.4,0,.35,1) infinite}}
+        .hero-body {{position:absolute;left:15px;top:35px;width:34px;height:37px;background:#1769c2;border:4px solid #111;border-radius:9px;animation:bob .28s infinite}}
+        .hero-head {{position:absolute;left:17px;top:8px;width:37px;height:32px;background:#f2aa6b;border:4px solid #111;border-radius:45%}}
+        .hero-cap {{position:absolute;left:10px;top:0;width:43px;height:17px;background:#e52b32;border:4px solid #111;border-radius:18px 18px 5px 5px}}
+        .hero-cap:after {{content:'M';position:absolute;left:15px;top:-2px;color:white;font:bold 13px Arial}}
+        .hero-eye {{position:absolute;left:43px;top:18px;width:5px;height:7px;background:#111}}
+        .hero-nose {{position:absolute;left:49px;top:24px;width:13px;height:10px;background:#f2aa6b;border:3px solid #111;border-radius:50%}}
+        .hero-mustache {{position:absolute;left:39px;top:33px;width:19px;height:7px;background:#442513;border-radius:50%}}
+        .strap {{position:absolute;top:37px;width:5px;height:22px;background:#5eb0ff}} .strap.a {{left:22px}} .strap.b {{left:40px}}
+        .button {{position:absolute;top:47px;width:5px;height:5px;background:#ffd43b;border-radius:50%}} .button.a {{left:24px}} .button.b {{left:41px}}
+        .arm,.leg {{position:absolute;transform-origin:top center;border:4px solid #111}}
+        .arm {{top:43px;width:10px;height:28px;background:#e52b32;animation:arms .28s infinite}} .arm.a {{left:7px}} .arm.b {{left:49px;animation-direction:reverse}}
+        .glove {{position:absolute;bottom:-8px;left:-5px;width:14px;height:12px;background:white;border:3px solid #111;border-radius:50%}}
+        .leg {{top:67px;width:12px;height:25px;background:#1769c2;animation:legs .28s infinite}} .leg.a {{left:20px}} .leg.b {{left:38px;animation-direction:reverse}}
+        .shoe {{position:absolute;bottom:-7px;left:-5px;width:19px;height:10px;background:#71391f;border:3px solid #111;border-radius:50%}}
         .enemy {{position:absolute;z-index:3;left:55%;bottom:70px;font-size:58px;animation:enemyMove 1s infinite}}
         .cloud {{position:absolute;top:86px;font-size:44px;animation:cloudMove 9s linear infinite}}
         .flag {{position:absolute;right:8%;bottom:70px;width:10px;background:white;animation:flagRise 4.4s infinite}}
-        .result {{position:absolute;z-index:8;left:10%;right:10%;top:145px;background:{color};border:6px solid white;
-          border-radius:12px;padding:10px;font-size:25px;font-weight:bold;
+        .result {{position:absolute;z-index:8;left:16%;right:16%;bottom:12px;background:{color};border:5px solid white;
+          border-radius:12px;padding:8px;font-size:23px;font-weight:bold;
           animation:{'flash' if success else 'shake'} .8s infinite}}
-        .coins {{position:absolute;z-index:6;left:0;right:0;bottom:15px;font-size:21px}}
+        .coins {{position:absolute;z-index:6;right:15px;top:92px;font-size:20px}}
       </style>
       <div class="cloud">☁️</div><div class="sky-title">{title}</div><div class="mission">MISSION: {goal}</div>
-      <div class="runner">{character}</div><div class="enemy">{enemy}</div><div class="flag"></div>
+      <div class="runner"><div class="hero-cap"></div><div class="hero-head"></div><div class="hero-eye"></div><div class="hero-nose"></div><div class="hero-mustache"></div><div class="hero-body"></div><div class="strap a"></div><div class="strap b"></div><div class="button a"></div><div class="button b"></div><div class="arm a"><div class="glove"></div></div><div class="arm b"><div class="glove"></div></div><div class="leg a"><div class="shoe"></div></div><div class="leg b"><div class="shoe"></div></div></div><div class="enemy">{enemy}</div><div class="flag"></div>
       <div class="result">{headline}<br><span style="font-size:17px">{detail}</span></div><div class="coins">{coin_row}</div>
     </div>"""))
 
@@ -148,7 +165,7 @@ The first run should fail. A failure animation means the code gave you useful in
 
 **Concept reminder:** A variable stores one value under a name. Changing the value changes what the program can do.
 
-**Mission:** Mario needs jump power of at least `3` to clear the Goomba.
+**Mission:** Mario needs jump power of at least `3` **and** run speed of at least `2` to clear the Goomba.
 
 Run the starter once. Watch Mario fail. Then repair only the value stored in `jump_power`.
 
@@ -156,25 +173,26 @@ Run the starter once. Watch Mario fail. Then repair only the value stored in `ju
 
 - Look for the line with `jump_power =`.
 - Keep the variable name the same.
-- Replace only the number.'''),
+- Repair both values, then explain why `and` needs both comparisons to be `True`.'''),
     code('''team_name = "Fire Flower Crew"
 jump_power = 1          # TODO: Mario needs at least 3
+run_speed = 1           # TODO: Mario needs at least 2
 
-can_jump = jump_power >= 3
-mario_level("LEVEL 1: GOOMBA JUMP", "Set jump_power to 3 or more", can_jump,
-            "Jump power was too low. Change the variable and retry.",
-            character="🏃", enemy="🍄", coins=jump_power)
-checkpoint("Jump power", can_jump)'''),
+can_clear_goomba = jump_power >= 3 and run_speed >= 2
+mario_level("LEVEL 1: GOOMBA JUMP", "Repair power AND speed", can_clear_goomba,
+            "One of the two movement variables is still too low.",
+            enemy="🍄", coins=jump_power + run_speed)
+checkpoint("Movement system", can_clear_goomba)'''),
     md('''### Explain the repair
 
 The Predictor completes this sentence before the team moves on:
 
-> Mario failed because `jump_power` stored ____. We changed it to ____ so the condition became `True`.'''),
+> Mario failed because `jump_power` stored ____ and `run_speed` stored ____. We changed them to ____ and ____ so both sides became `True`.'''),
     md('''## Level 2 — Power-Up List
 
 **Concept reminder:** A list stores several values in order. `.append()` adds one value to the end.
 
-**Mission:** Mario can survive the Koopa only when `"Super Mushroom"` is inside the inventory list.
+**Mission:** Mario needs both `"Super Mushroom"` and `"Fire Flower"` in the inventory list.
 
 Run the starter, inspect the printed list, then add the missing item.
 
@@ -185,15 +203,17 @@ Run the starter, inspect the printed list, then add the missing item.
 - The spelling and capitalization must match exactly.'''),
     code('''inventory = ["coin", "map"]
 
-# TODO: remove the # from the next line
+# TODO: uncomment this line and add a second append for Fire Flower
 # inventory.append("Super Mushroom")
 
 has_mushroom = "Super Mushroom" in inventory
+has_fire_flower = "Fire Flower" in inventory
+loadout_ready = has_mushroom and has_fire_flower
 print("Current inventory:", inventory)
-mario_level("LEVEL 2: KOOPA ROAD", "Put Super Mushroom in inventory", has_mushroom,
-            "Mario was small. Use append() to add the missing power-up.",
-            character="🏃", enemy="🐢", coins=len(inventory))
-checkpoint("Power-up list", has_mushroom)'''),
+mario_level("LEVEL 2: KOOPA ROAD", "Build a two-item power loadout", loadout_ready,
+            "The loadout needs both named power-ups. Inspect both Boolean checks.",
+            enemy="🐢", coins=len(inventory))
+checkpoint("Power-up loadout", loadout_ready)'''),
     md('''### Partner check
 
 The Debugger points to:
@@ -205,53 +225,54 @@ The Debugger points to:
 
 **Concept reminder:** A variable can be updated using its old value: `coins = coins + bonus`.
 
-**Mission:** Reach at least `10` coins to unlock the secret pipe.
+**Mission:** Use a `for` loop to add three team bonuses and reach at least `12` coins.
 
-Send one teammate to another team. The visiting student chooses `visitor_bonus` from 1 to 5. Both teams calculate the total before Run.
+Before Run, the Predictor traces all three loop iterations and announces the final total.
 
 **Tips**
 
 - Trace the value after every update.
-- You may change `visitor_bonus` and `question_bonus`.
-- The final value must make `coins >= 10` true.'''),
+- Repair the three numbers in `team_bonuses`.
+- Do not replace the loop with separate addition statements.
+- The final value must make `coins >= 12` true.'''),
     code('''coins = 2
-visitor_bonus = 2       # TODO: visiting student may change this
-question_bonus = 1      # TODO: increase after explaining the coin updates
+team_bonuses = [1, 1, 1]   # TODO: choose bonuses that reach 12 or more
 
 print("Start:", coins)
-coins = coins + visitor_bonus
-print("After visitor bonus:", coins)
-coins = coins + question_bonus
-print("After question bonus:", coins)
+for bonus in team_bonuses:
+    coins = coins + bonus
+    print("Added", bonus, "to the running total:", coins)
 
-pipe_unlocked = coins >= 10
-mario_level("LEVEL 3: COIN RUSH", "Reach 10 coins", pipe_unlocked,
-            "The pipe stayed locked. Trace the updates and raise the bonuses.",
-            character="🏃", enemy="🕳️", coins=coins)
+pipe_unlocked = coins >= 12
+mario_level("LEVEL 3: COIN RUSH", "Loop to reach 12 coins", pipe_unlocked,
+            "The loop finished below 12. Trace every iteration.",
+            enemy="🕳️", coins=coins)
 checkpoint("Coin total", pipe_unlocked)'''),
     md('''## Level 4 — Repair the If Condition
 
 **Concept reminder:** An `if` statement runs its indented block only when the condition is `True`. `and` requires both sides to be true.
 
-**Mission:** Open the castle door when Mario has at least 10 coins **and** has the key.
+**Mission:** Open the castle door when Mario has at least 12 coins, has the key, **and** the Boo is not awake.
 
 The starter uses `False`, so Mario always dies. Replace `False` with the correct condition.
 
 **Tips**
 
-- First comparison: `coins >= 10`
+- First comparison: `coins >= 12`
 - Second condition: `has_key`
-- Join them with `and`.
+- Third condition: `not boo_awake`
+- Join all three requirements with `and`.
 - Your finished line begins with `if coins`.'''),
     code('''has_key = True
+boo_awake = False
 
-# TODO: replace False with a condition using coins, has_key, and and
+# TODO: replace False with all three requirements
 if False:
     castle_open = True
 else:
     castle_open = False
 
-mario_level("LEVEL 4: CASTLE DOOR", "Use coins and the key", castle_open,
+mario_level("LEVEL 4: CASTLE DOOR", "Use coins, key, and Boo logic", castle_open,
             "The condition sent Mario into the lava. Repair the if line.",
             character="🏃", enemy="🔥", coins=coins)
 checkpoint("Castle condition", castle_open)'''),
@@ -259,32 +280,33 @@ checkpoint("Castle condition", castle_open)'''),
 
 The Reporter explains both sides separately:
 
-- `coins >= 10` is ____.
+- `coins >= 12` is ____.
 - `has_key` is ____.
-- `True and True` becomes ____.'''),
+- `not boo_awake` is ____.
+- All three joined with `and` become ____.'''),
     md('''## Final Boss — Bowser Condition
 
 Pair with another team. One team controls Mario's attack. The other controls Bowser's defense.
 
 **Mission:** Mario wins only when his attack is greater than Bowser's defense **and** he has a star.
 
-The condition is broken on purpose. Repair it, predict the outcome, and run the battle.
+The function is incomplete on purpose. Repair its `return` expression, predict the outcome, and run the battle.
 
 **Tips**
 
 - Compare `mario_attack` and `bowser_defense` with `>`.
 - Check `team_has_star` in the same condition.
-- Use `and` because both requirements matter.
+- Return one Boolean expression using `>` and `and`.
 - If Mario still dies, print the three variable values and compare them.'''),
     code('''mario_attack = 5
 bowser_defense = 3
 team_has_star = True
 
-# TODO: replace False with the complete boss condition
-if False:
-    bowser_defeated = True
-else:
-    bowser_defeated = False
+def can_defeat_bowser(attack, defense, has_star):
+    # TODO: replace False with the complete two-part condition
+    return False
+
+bowser_defeated = can_defeat_bowser(mario_attack, bowser_defense, team_has_star)
 
 print("Mario attack:", mario_attack)
 print("Bowser defense:", bowser_defense)
