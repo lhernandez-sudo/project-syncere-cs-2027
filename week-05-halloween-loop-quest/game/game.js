@@ -33,10 +33,12 @@ let started = false, paused = false, asking = false, won = false, audioOn = true
 let cameraX = 0, lastTime = 0, activeQuestion = null, deadline = 0, deathTimer = 0;
 let musicTimer = null, musicStep = 0, bossTimer = 0, deathStyle = "bonk", deathReason = "";
 let transitionTimer = 0, transitionFromWorld = 0;
+let transitionGroundY = 365, fireballCooldown = 0;
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
 const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" };
 const particles = [];
+const fireballs = [];
 const boss = { x: 11910, y: 354, w: 96, h: 98, defeated: false };
 
 const subjects = [
@@ -215,7 +217,7 @@ function resetGame() {
   Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" });
   questions.forEach(q => q.passed = false); coins.forEach(c => c.taken = false); enemies.forEach(e => e.alive = true);
   boss.defeated = false; bossTimer = 0;
-  particles.length = 0; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
+  particles.length = 0; fireballs.length = 0; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
   startMusic();
   ui.start.hidden = true; ui.win.hidden = true; ui.question.hidden = true; updateHud();
 }
@@ -246,10 +248,13 @@ function answerQuestion(index, button) {
   if (index !== activeQuestion.correct) {
     button.classList.add("wrong"); killMario("MISINPUT! Wrong answer."); return;
   }
+  // Stop the countdown immediately. Previously, a last-second correct answer
+  // could time out during its 1.2-second success message and play a fake death.
+  asking = false;
   button.classList.add("correct"); activeQuestion.passed = true; state.cleared += 1; state.coins += 10;
-  // Resume before the cleared gate. This gives the TAS enough runway to
-  // evaluate the next pit or enemy instead of teleporting onto level geometry.
-  state.checkpoint = placePlayerSafely(activeQuestion.x - 180); ui.question.classList.add("success");
+  // A correct answer is always a win. Resume beyond the cleared gate on solid
+  // ground so a success can never look like a pit death or enemy collision.
+  state.checkpoint = placePlayerSafely(activeQuestion.x + 90); ui.question.classList.add("success");
   ui.feedback.textContent = `FRAME PERFECT! ${activeQuestion.explanation}`;
   spawnParticles(player.x, player.y, subjects[activeQuestion.subjectIndex].color, 25);
   beep(760, .09); setTimeout(() => beep(1020, .18), 100); updateHud();
@@ -263,6 +268,9 @@ function answerQuestion(index, button) {
 function startWorldTransition() {
   transitionFromWorld = Math.max(0, Math.floor(state.cleared / 4) - 1);
   transitionTimer = TEST_MODE ? 1 : 240;
+  transitionGroundY = player.y;
+  player.vx = 0; player.vy = 0; player.onGround = false;
+  fireballs.length = 0; fireballCooldown = 0;
   paused = false;
   spawnParticles(player.x, player.y, palette.gold, 55);
   beep(523, .1, "square", .05); beep(659, .1, "square", .05, .11); beep(784, .2, "square", .05, .22);
@@ -307,6 +315,25 @@ function updateParticles() {
   }
 }
 
+function launchFireball() {
+  fireballs.push({ x: player.x + player.w, y: player.y + 22, vx: 10.5, vy: -2.8, life: 95, spin: 0 });
+  beep(520, .05, "square", .035); wobble(760, 390, .1, "sine", .025);
+}
+
+function updateFireballs() {
+  for (let i = fireballs.length - 1; i >= 0; i--) {
+    const ball = fireballs[i]; ball.x += ball.vx; ball.y += ball.vy; ball.vy += .18; ball.spin += .35; ball.life -= 1;
+    if (ball.y > GROUND_Y - 12) ball.vy = -4.8;
+    for (const enemy of enemies) {
+      if (!enemy.alive || Math.abs(ball.x - (enemy.x + enemy.w / 2)) > 28 || Math.abs(ball.y - (enemy.y + enemy.h / 2)) > 28) continue;
+      enemy.alive = false; ball.life = 0; state.coins += 2;
+      spawnParticles(enemy.x + 16, enemy.y + 14, palette.orange, 28); beep(180, .06, "square", .035);
+      break;
+    }
+    if (ball.life <= 0) fireballs.splice(i, 1);
+  }
+}
+
 function update() {
   updateParticles();
   if (!started || won) return;
@@ -319,14 +346,34 @@ function update() {
   }
   if (transitionTimer > 0) {
     const transitionElapsed = 240 - transitionTimer;
-    if (transitionElapsed > 55 && transitionElapsed < 125) player.form = "fire";
-    if (transitionElapsed >= 125) player.form = "tanooki";
+    // Keep advancing through the same open world, but do not fly past the
+    // first gate of the next concept while the class is watching the cutscene.
+    player.x += 1.4;
+    if (transitionElapsed > 55 && transitionElapsed < 145) {
+      player.form = "fire";
+      player.y = transitionGroundY - Math.sin((transitionElapsed - 55) / 90 * Math.PI) * 38;
+      fireballCooldown -= 1;
+      if (transitionElapsed > 70 && fireballCooldown <= 0) { launchFireball(); fireballCooldown = 22; }
+    }
+    if (transitionElapsed >= 145) {
+      player.form = "tanooki";
+      const flight = Math.min(1, (transitionElapsed - 145) / 55);
+      const landing = Math.max(0, (transitionElapsed - 215) / 25);
+      player.y = transitionGroundY - Math.sin(flight * Math.PI / 2) * 215 + landing * 215;
+      player.frame += .7;
+    }
+    updateFireballs();
+    cameraX += ((player.x - W * .31) - cameraX) * .07;
     transitionTimer -= 1;
     if (transitionTimer === 0) {
+      placePlayerSafely(player.x + 30);
+      state.checkpoint = player.x;
       player.form = "tanooki";
       spawnParticles(player.x, player.y, palette.gold, 40);
       beep(784, .08); beep(988, .08, "square", .05, .09); beep(1319, .22, "square", .05, .18);
     }
+    updateHud();
+    return;
   }
   if (paused && !player.dead) return;
 
@@ -335,6 +382,8 @@ function update() {
     if (deathTimer <= 0) respawn();
     cameraX += ((player.x - W * .35) - cameraX) * .05; return;
   }
+
+  updateFireballs();
 
   const speed = TEST_MODE ? 36 : 5.1 + Math.min(1.7, state.cleared * .07);
   player.vx += (speed - player.vx) * .08;
@@ -463,7 +512,6 @@ function drawPlatform(p) {
 
 function drawMario() {
   const transitionElapsed = transitionTimer > 0 ? 240 - transitionTimer : 0;
-  if (transitionElapsed > 165) return;
   const x = Math.round(player.x - cameraX), y = Math.round(player.y), run = Math.floor(player.frame) % 2;
   if (!player.onGround && !player.dead) {
     ctx.save(); ctx.globalAlpha=.38; ctx.fillStyle=palette.gold;
@@ -481,12 +529,28 @@ function drawMario() {
   block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
   if (player.form === "tanooki" && !player.dead) {
-    // Tanooki ears and a striped tail remain after the world-transition cutscene.
+    // Ears, mask, and a wagging striped tail turn Mario into a flying Tanooki.
     block(8, y - 11, 8, 9, "#8b572a"); block(23, y - 11, 8, 9, "#8b572a");
-    block(31, y + 27, 15, 8, "#b97836"); block(42, y + 20, 12, 8, "#6d3a21");
-    block(50, y + 14, 10, 7, "#b97836");
+    block(7, y + 9, 24, 5, "#6d3a21"); block(18, y + 9, 4, 4, palette.white);
+    const wag = Math.sin(player.frame * .7) * 8;
+    block(31, y + 27, 15, 8, "#b97836"); block(42, y + 20 + wag, 12, 8, "#6d3a21");
+    block(50, y + 14 + wag, 12, 7, "#b97836");
+    if (transitionElapsed >= 145) {
+      block(-3, y + 20, 11, 7, "#b97836"); block(29, y + 18, 13, 7, "#b97836");
+    }
   }
   ctx.restore();
+}
+
+function drawFireballs() {
+  for (const ball of fireballs) {
+    const x = ball.x - cameraX, y = ball.y;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ball.spin);
+    ctx.fillStyle = palette.gold; ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = palette.orange; ctx.beginPath(); ctx.arc(2, -2, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = palette.white; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 12, .4, 2.2); ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function drawWorldTransition() {
@@ -513,14 +577,13 @@ function drawWorldTransition() {
       ctx.font = "27px sans-serif"; ctx.fillText("🔥", marioX + Math.cos(angle)*58, marioY + Math.sin(angle)*42);
     }
     ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("FIRE MARIO", marioX, marioY-82);
-  } else if (elapsed < 165) {
+  } else if (elapsed < 145) {
     const leafX = marioX + 70 - (elapsed-125) * 1.8;
     const leafY = marioY - 70 + Math.sin(elapsed*.25)*28;
     ctx.save(); ctx.translate(leafX, leafY); ctx.rotate(elapsed*.18); ctx.font = "45px sans-serif"; ctx.fillText("🍂", 0, 0); ctx.restore();
     ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("TANOOKI SUIT!", marioX, marioY-110);
   } else {
-    const flight = Math.min(1, (elapsed - 165) / 75);
-    const flyingY = marioY - flight * 235 + Math.sin(elapsed * .22) * 8;
+    const flight = Math.min(1, (elapsed - 145) / 55);
     // Speed lines and clouds pass over the still-scrolling world.
     ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 5;
     for (let streak = 0; streak < 9; streak++) {
@@ -528,8 +591,8 @@ function drawWorldTransition() {
       const sy = 75 + (streak * 61) % 360;
       ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx+120, sy); ctx.stroke();
     }
-    ctx.font = "68px sans-serif"; ctx.fillText("🦝", marioX, flyingY);
-    ctx.font = "32px sans-serif"; ctx.fillText("🧢", marioX-2, flyingY-42);
+    ctx.fillStyle = palette.gold; ctx.font = "bold 22px monospace";
+    ctx.fillText(flight < .75 ? "TAIL SPIN!" : "TANOOKI FLIGHT!", marioX, 145);
     ctx.fillStyle = nextWorld.color; ctx.strokeStyle = palette.black; ctx.lineWidth = 6;
     ctx.font = "bold 34px monospace"; ctx.strokeText(`WORLD ${nextWorld.world}`, W/2, 72); ctx.fillText(`WORLD ${nextWorld.world}`, W/2, 72);
     ctx.fillStyle = palette.white; ctx.font = "bold 18px monospace"; ctx.fillText(nextWorld.name, W/2, 102);
@@ -665,7 +728,7 @@ function drawParticles() { particles.forEach(p => block(p.x-cameraX,p.y,p.size,p
 function draw() {
   drawBackground(); drawDecorations(); ground.forEach(drawGround); platforms.forEach(drawPlatform);
   coins.forEach(c => { if(c.taken)return; const x=c.x-cameraX;if(x<-30||x>W+30)return;const y=c.y+Math.sin(c.phase)*6;block(x-7,y-13,14,26,palette.gold);block(x-2,y-9,4,18,"#fff5a4"); });
-  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario(); drawDeathGag(); drawWorldTransition();
+  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawFireballs(); drawMario(); drawDeathGag(); drawWorldTransition();
   if (started && !asking && !won) {
     ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,14,260,32);ctx.fillStyle=palette.green;ctx.font="bold 15px monospace";ctx.fillText("TAS AUTO-RUN • INPUT LOCKED",27,36);
   }
