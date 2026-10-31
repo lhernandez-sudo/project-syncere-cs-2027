@@ -388,6 +388,36 @@ PAGES = [
     ]),
 ]
 
+# Condensed print edition: preserve every card while combining related pages.
+def merge_reference_pages(first_title, second_title, merged_title, merged_subtitle):
+    first_index = next(i for i, page in enumerate(PAGES) if page[0] == first_title)
+    second_index = next(i for i, page in enumerate(PAGES) if page[0] == second_title)
+    first_cards = PAGES[first_index][2]
+    second_cards = PAGES[second_index][2]
+    PAGES[first_index] = (merged_title, merged_subtitle, first_cards + second_cards)
+    PAGES.pop(second_index)
+
+merge_reference_pages("Python Field Guide", "How to use this guide", "Python Field Guide", "Reference map and lookup routine")
+merge_reference_pages("Testing", "Style and readable code", "Testing and readable code", "Check behavior and communicate intent")
+merge_reference_pages("Glossary", "Plan a program", "Glossary and project planning", "Programming language and a path from idea to code")
+merge_reference_pages("Nested data", "Comprehensions and sorting", "Nested data and comprehensions", "Future patterns for structured and transformed data")
+
+def guide_page(title):
+    return next(i + 1 for i, page in enumerate(PAGES) if page[0] == title)
+
+index_position = next(i for i, page in enumerate(PAGES) if page[0] == "Index and official sources")
+source_cards = PAGES[index_position][2][-3:]
+worked_start = guide_page("Worked types examples")
+worked_end = guide_page("Worked function examples")
+PAGES[index_position] = ("Index and official sources", "Find the topic then verify deeper details", [
+    ("Current foundations", f"Variables {guide_page('Variables and names')}   Types {guide_page('Types overview')}-{guide_page('Numbers booleans and None')}   Strings {guide_page('Strings')}   Lists {guide_page('Lists and tuples')}   Input {guide_page('Input and conversion')}   Operators {guide_page('Operators and expressions')}"),
+    ("Control and organization", f"Conditions {guide_page('Conditions')}   For loops {guide_page('For loops and range')}   While loops {guide_page('While loops')}   Functions {guide_page('Functions')}-{guide_page('Functions in depth')}   Debugging {guide_page('Debugging current work')}"),
+    ("Future foundations", f"Dictionaries {guide_page('Dictionaries and sets')}   Exceptions {guide_page('Exceptions')}   Files {guide_page('Files and JSON')}   Modules {guide_page('Modules and libraries')}   Classes {guide_page('Classes and objects')}"),
+    ("Practice and design", f"Testing and style {guide_page('Testing and readable code')}   Glossary and planning {guide_page('Glossary and project planning')}   Nested data and comprehensions {guide_page('Nested data and comprehensions')}   Worked examples {worked_start}-{worked_end}"),
+] + source_cards)
+
+assert len(PAGES) == 28
+
 ACCENT = "000000"
 INK = "000000"
 MUTED = "444444"
