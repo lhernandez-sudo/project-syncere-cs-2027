@@ -49,6 +49,12 @@ const subjects = [
   { name: "WHILE LOOPS", world: "4-1", color: "#ff6a3d" },
   { name: "FUNCTIONS", world: "5-1", color: "#55c8ff" },
 ];
+const stagePowerUps = [
+  { form: "super", label: "SUPER MUSHROOM", icon: "🍄", color: "#ff4b45" },
+  { form: "fire", label: "FIRE FLOWER", icon: "🌼", color: "#ff9b21" },
+  { form: "tanooki", label: "TANOOKI SUIT", icon: "🍂", color: "#b97836" },
+  { form: "star", label: "INVINCIBILITY STAR", icon: "⭐", color: "#ffe34d" },
+];
 
 const rawQuestions = [
   [
@@ -271,6 +277,7 @@ function startWorldTransition() {
   transitionFromWorld = Math.max(0, Math.floor(state.cleared / 4) - 1);
   transitionTimer = TEST_MODE ? 1 : 240;
   transitionGroundY = player.y;
+  player.form = stagePowerUps[transitionFromWorld].form;
   player.vx = 0; player.vy = 0; player.onGround = false;
   fireballs.length = 0; fireballCooldown = 0;
   paused = false;
@@ -363,21 +370,35 @@ function update() {
   }
   if (transitionTimer > 0) {
     const transitionElapsed = 240 - transitionTimer;
+    const powerUp = stagePowerUps[transitionFromWorld];
     // Keep advancing through the same open world, but do not fly past the
     // first gate of the next concept while the class is watching the cutscene.
     player.x += 1.4;
-    if (transitionElapsed > 55 && transitionElapsed < 145) {
+    if (powerUp.form === "super") {
+      player.form = "super";
+      player.y = transitionGroundY - Math.sin(Math.min(1, transitionElapsed / 180) * Math.PI) * 58;
+      if (transitionElapsed % 18 === 0) spawnParticles(player.x + 18, player.y + 18, powerUp.color, 10);
+    } else if (powerUp.form === "fire") {
       player.form = "fire";
-      player.y = transitionGroundY - Math.sin((transitionElapsed - 55) / 90 * Math.PI) * 38;
+      player.y = transitionGroundY - Math.sin(transitionElapsed / 240 * Math.PI) * 58;
       fireballCooldown -= 1;
-      if (transitionElapsed > 70 && fireballCooldown <= 0) { launchFireball(); fireballCooldown = 22; }
-    }
-    if (transitionElapsed >= 145) {
+      if (transitionElapsed > 45 && transitionElapsed < 205 && fireballCooldown <= 0) { launchFireball(); fireballCooldown = 22; }
+    } else if (powerUp.form === "tanooki") {
       player.form = "tanooki";
-      const flight = Math.min(1, (transitionElapsed - 145) / 55);
-      const landing = Math.max(0, (transitionElapsed - 215) / 25);
+      const flight = Math.min(1, transitionElapsed / 105);
+      const landing = Math.max(0, (transitionElapsed - 190) / 50);
       player.y = transitionGroundY - Math.sin(flight * Math.PI / 2) * 215 + landing * 215;
       player.frame += .7;
+    } else if (powerUp.form === "star") {
+      player.form = "star";
+      player.y = transitionGroundY - Math.abs(Math.sin(transitionElapsed * .075)) * 72;
+      player.frame += 1.1;
+      if (transitionElapsed % 6 === 0) spawnParticles(player.x + 18, player.y + 20, subjects[transitionFromWorld + 1].color, 8);
+      for (const enemy of enemies) {
+        if (enemy.alive && enemy.x > player.x && enemy.x < player.x + 150) {
+          enemy.alive = false; spawnParticles(enemy.x, enemy.y, palette.gold, 24); state.coins += 2;
+        }
+      }
     }
     updateFireballs();
     cameraX += ((player.x - W * .31) - cameraX) * .07;
@@ -385,7 +406,7 @@ function update() {
     if (transitionTimer === 0) {
       placePlayerSafely(player.x + 30);
       state.checkpoint = player.x;
-      player.form = "tanooki";
+      player.form = powerUp.form;
       spawnParticles(player.x, player.y, palette.gold, 40);
       beep(784, .08); beep(988, .08, "square", .05, .09); beep(1319, .22, "square", .05, .18);
     }
@@ -452,13 +473,12 @@ function update() {
     }
   }
   // The auto-run should never look like a wrong-answer death. If a dropped
-  // browser frame misses a pit jump, Tanooki Mario performs an instant air save
+  // browser frame misses a pit jump, Mario performs an instant air save
   // at platform height instead of falling through the bottom of the scene.
   if (!autoJump && !hasFloorUnderPlayer() && player.y > GROUND_Y - player.h - 6) {
     const landing = nextGroundAfterPlayer();
     if (landing) placePlayerSafely(landing.x + 54);
     player.vx = speed; player.vy = 0;
-    player.form = "tanooki";
     spawnParticles(player.x, player.y + player.h, palette.gold, 24);
     beep(988, .06, "square", .04); beep(1319, .09, "square", .035, .06);
   }
@@ -577,6 +597,15 @@ function drawMario() {
   if (player.form === "fire") {
     block(8, y + 25, 21, 14, palette.white); block(11, y + 23, 5, 12, palette.orange); block(23, y + 23, 5, 12, palette.orange);
   }
+  if (player.form === "super") {
+    block(4, y - 3, 29, 5, palette.red); block(7, y + 21, 25, 5, palette.red);
+  }
+  if (player.form === "star" && !player.dead) {
+    const rainbow = ["#ffe34d", "#55e6ff", "#ff6ac1", "#8dff72"];
+    ctx.globalAlpha = .55 + Math.sin(player.frame) * .25;
+    ctx.strokeStyle = rainbow[Math.floor(player.frame) % rainbow.length]; ctx.lineWidth = 5;
+    ctx.strokeRect(0, y - 9, 39, 61); ctx.globalAlpha = 1;
+  }
   block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
   if (player.form === "tanooki" && !player.dead) {
@@ -586,7 +615,7 @@ function drawMario() {
     const wag = Math.sin(player.frame * .7) * 8;
     block(31, y + 27, 15, 8, "#b97836"); block(42, y + 20 + wag, 12, 8, "#6d3a21");
     block(50, y + 14 + wag, 12, 7, "#b97836");
-    if (transitionElapsed >= 145) {
+    if (transitionTimer > 0) {
       block(-3, y + 20, 11, 7, "#b97836"); block(29, y + 18, 13, 7, "#b97836");
     }
   }
@@ -608,42 +637,38 @@ function drawWorldTransition() {
   if (transitionTimer <= 0) return;
   const elapsed = 240 - transitionTimer;
   const nextWorld = subjects[Math.min(4, transitionFromWorld + 1)];
+  const powerUp = stagePowerUps[transitionFromWorld];
   const marioX = Math.round(player.x - cameraX) + 18;
   const marioY = Math.round(player.y) + 20;
   ctx.save();
   ctx.textAlign = "center";
   if (elapsed < 55) {
-    // The block and flower move with Mario instead of replacing the world.
+    // Each concept world awards a different visible power-up.
     const itemX = marioX + 95 - elapsed * 1.2;
-    const flowerY = marioY - 105 + Math.sin(elapsed * .18) * 8;
+    const itemY = marioY - 105 + Math.sin(elapsed * .18) * 8;
     ctx.fillStyle = palette.orange; ctx.fillRect(itemX-25, marioY-42, 50, 44);
     ctx.fillStyle = palette.gold; ctx.font = "bold 32px monospace"; ctx.fillText("?", itemX, marioY-10);
-    ctx.font = "47px sans-serif"; ctx.fillText("🌼", itemX, flowerY);
-    ctx.fillStyle = palette.white; ctx.font = "bold 22px monospace"; ctx.fillText("FIRE FLOWER!", marioX+25, marioY-145);
-  } else if (elapsed < 125) {
-    const pulse = 34 + Math.sin(elapsed * .4) * 10;
-    ctx.strokeStyle = palette.orange; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(marioX, marioY, pulse, 0, Math.PI*2); ctx.stroke();
-    for (let fireball = 0; fireball < 4; fireball++) {
-      const angle = elapsed * .13 + fireball * Math.PI / 2;
-      ctx.font = "27px sans-serif"; ctx.fillText("🔥", marioX + Math.cos(angle)*58, marioY + Math.sin(angle)*42);
-    }
-    ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("FIRE MARIO", marioX, marioY-82);
-  } else if (elapsed < 145) {
-    const leafX = marioX + 70 - (elapsed-125) * 1.8;
-    const leafY = marioY - 70 + Math.sin(elapsed*.25)*28;
-    ctx.save(); ctx.translate(leafX, leafY); ctx.rotate(elapsed*.18); ctx.font = "45px sans-serif"; ctx.fillText("🍂", 0, 0); ctx.restore();
-    ctx.fillStyle = palette.white; ctx.font = "bold 21px monospace"; ctx.fillText("TANOOKI SUIT!", marioX, marioY-110);
+    ctx.font = "47px sans-serif"; ctx.fillText(powerUp.icon, itemX, itemY);
+    ctx.fillStyle = palette.white; ctx.font = "bold 22px monospace"; ctx.fillText(`${powerUp.label}!`, marioX+25, marioY-145);
   } else {
-    const flight = Math.min(1, (elapsed - 145) / 55);
-    // Speed lines and clouds pass over the still-scrolling world.
-    ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 5;
-    for (let streak = 0; streak < 9; streak++) {
-      const sx = (streak * 133 - elapsed * 12) % (W + 180);
-      const sy = 75 + (streak * 61) % 360;
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx+120, sy); ctx.stroke();
+    const pulse = 34 + Math.sin(elapsed * .4) * 10;
+    ctx.strokeStyle = powerUp.color; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(marioX, marioY, pulse, 0, Math.PI*2); ctx.stroke();
+    if (powerUp.form === "fire") {
+      for (let fireball = 0; fireball < 4; fireball++) {
+        const angle = elapsed * .13 + fireball * Math.PI / 2;
+        ctx.font = "27px sans-serif"; ctx.fillText("🔥", marioX + Math.cos(angle)*58, marioY + Math.sin(angle)*42);
+      }
     }
-    ctx.fillStyle = palette.gold; ctx.font = "bold 22px monospace";
-    ctx.fillText(flight < .75 ? "TAIL SPIN!" : "TANOOKI FLIGHT!", marioX, 145);
+    if (powerUp.form === "tanooki") {
+      ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 5;
+      for (let streak = 0; streak < 9; streak++) {
+        const sx = (streak * 133 - elapsed * 12) % (W + 180), sy = 75 + (streak * 61) % 360;
+        ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx+120, sy); ctx.stroke();
+      }
+    }
+    ctx.fillStyle = powerUp.color; ctx.font = "bold 22px monospace";
+    const action = powerUp.form === "super" ? "SUPER SIZE!" : powerUp.form === "fire" ? "FIREBALL BLAST!" : powerUp.form === "tanooki" ? "TANOOKI FLIGHT!" : "STAR POWER!";
+    ctx.fillText(action, marioX, 145);
     ctx.fillStyle = nextWorld.color; ctx.strokeStyle = palette.black; ctx.lineWidth = 6;
     ctx.font = "bold 34px monospace"; ctx.strokeText(`WORLD ${nextWorld.world}`, W/2, 72); ctx.fillText(`WORLD ${nextWorld.world}`, W/2, 72);
     ctx.fillStyle = palette.white; ctx.font = "bold 18px monospace"; ctx.fillText(nextWorld.name, W/2, 102);
