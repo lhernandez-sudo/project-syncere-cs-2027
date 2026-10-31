@@ -12,7 +12,9 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 
 OUT = Path(__file__).parent
 DOCX = OUT / "python-field-guide-editable.docx"
-PDF = OUT / "python-field-guide-print-booklet.pdf"
+PDF_DIR = OUT.parent / "python-guide-pdf"
+PDF_DIR.mkdir(parents=True, exist_ok=True)
+PDF = PDF_DIR / "python-field-guide-print-booklet.pdf"
 
 PAGES = [
     ("Python Field Guide", "A beginner lookup guide", [

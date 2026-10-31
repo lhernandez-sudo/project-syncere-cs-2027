@@ -1,6 +1,6 @@
 # Python Field Guide printing instructions
 
-Use `python-field-guide-print-booklet.pdf` for printing.
+Use [`../python-guide-pdf/python-field-guide-print-booklet.pdf`](../python-guide-pdf/python-field-guide-print-booklet.pdf) for printing.
 
 1. Print on US Letter paper at actual size or 100 percent scale.
 2. Print double-sided.

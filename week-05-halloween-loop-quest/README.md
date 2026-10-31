@@ -66,6 +66,8 @@ After playing, students work in pairs to locate one variable, list, conditional,
 
 The main Week 5 lesson uses three browser notebooks. Each module begins with teacher modeling, a silent prediction, a whole-class trace, and one guided change before students work independently.
 
+The print-ready black-and-white reference booklet is in [`python-guide-pdf/`](python-guide-pdf/). The editable Word source and guide generator remain in [`handouts/`](handouts/).
+
 ### Student Google Workspace launch
 
 Students do not need to clone the repository or configure Python locally.
