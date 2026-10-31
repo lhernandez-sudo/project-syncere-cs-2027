@@ -28,101 +28,183 @@ def checkpoint(name, passed):
 
 banner("TRAINING MODE READY")''')
 
-write("module-1-game-loadout.ipynb","Module 1: Build a Game Loadout",[
-    common_setup,
-    md('''## Level 1 — Variables are labeled boxes
+write("module-1-game-loadout.ipynb","Module 1: Super Mario Team Quest",[
+    code('''from IPython.display import display, HTML
 
-A variable stores one value under a name. Read `coins = 5` as: **put the value 5 in the box named coins**.
+def mario_scene(title, message, color="#e52521", character="🍄", coins=0):
+    coin_row = "🟡 " * coins
+    display(HTML(f"""
+    <div style="position:relative;overflow:hidden;height:280px;border:8px solid #222;
+                border-radius:20px;background:linear-gradient(#55b9ff 0 68%,#73c94b 68% 82%,#b86b32 82%);
+                font-family:Arial;text-align:center;color:white;box-shadow:0 10px 0 #222">
+      <style>
+        @keyframes run {{0%{{left:-10%}} 45%{{left:45%;transform:translateY(0)}} 55%{{left:55%;transform:translateY(-75px)}} 100%{{left:105%;transform:translateY(0)}}}}
+        @keyframes pop {{0%,100%{{transform:scale(1)}} 50%{{transform:scale(1.25) rotate(-3deg)}}}}
+        @keyframes drift {{from{{transform:translateX(-120px)}} to{{transform:translateX(900px)}}}}
+        .runner {{position:absolute;bottom:42px;font-size:64px;animation:run 4s ease-in-out infinite}}
+        .cloud {{position:absolute;top:30px;font-size:45px;animation:drift 8s linear infinite}}
+      </style>
+      <div class="cloud">☁️</div><div class="runner">{character}</div>
+      <h1 style="font-size:38px;text-shadow:4px 4px #222;margin:24px 10px 8px">{title}</h1>
+      <div style="display:inline-block;background:{color};padding:12px 22px;border:5px solid white;
+                  border-radius:14px;font-size:24px;font-weight:bold;animation:pop 1.2s infinite">{message}</div>
+      <div style="font-size:25px;margin-top:20px">{coin_row}</div>
+    </div>"""))
 
-### Teacher practice
-Before running, point to each variable and say its value and type.'''),
-    code('''player_name = "Maya"     # str: text
-coins = 5                # int: whole number
-has_key = False          # bool: True or False
+def checkpoint(name, passed):
+    icon = "✅" if passed else "🔁"
+    print(f"{icon} {name}: {'CLEARED' if passed else 'TRY AGAIN'}")
 
-print(player_name)
-print(coins)
-print(has_key)'''),
-    md('''### Whole-class prediction
+mario_scene("MUSHROOM KINGDOM TEAM QUEST", "Choose your crew!", character="🏃", coins=3)'''),
+    md('''## Party setup — Teams of 3 or 4
 
-What prints after the final line? Trace the box named `coins` after each assignment.'''),
-    code('''coins = 5
+Move next to your teammates. Choose one role now. Rotate after every level.
+
+- **Driver:** edits and runs the code.
+- **Navigator:** reads each instruction aloud.
+- **Predictor:** announces the result before Run.
+- **Reporter:** explains what the team changed.
+
+Every teammate must agree before the Driver presses **Run**.'''),
+    md('''## Level 1 — Create your Mario team
+
+Variables are labeled boxes. Your team fills the boxes together.
+
+1. Pick a team name.
+2. Choose one character emoji: `🍄`, `⭐`, `🐢`, `👻`, or `🔥`.
+3. Choose a team color from the examples.
+4. Predict what the cell will display, then run it.'''),
+    code('''team_name = "Fire Flower Crew"       # change the text
+team_character = "🔥"                  # change the emoji
+team_color = "#e52521"                 # try #e52521, #149ece, #43b047, or #fbd000
+starting_coins = 3                      # choose 1 through 5
+
+mario_scene(team_name, "TEAM READY!", team_color, team_character, starting_coins)'''),
+    md('''### Team checkpoint
+
+The Reporter points to the code and answers:
+
+- Which variable stores text?
+- Which variable stores a whole number?
+- If `starting_coins` changes, which part of the scene changes?'''),
+    code('''checkpoint("Team name is text", type(team_name) == str)
+checkpoint("Coins are a whole number", type(starting_coins) == int)
+checkpoint("Team selected 1 to 5 coins", starting_coins >= 1 and starting_coins <= 5)'''),
+    md('''## Level 2 — Mystery Block Relay
+
+Lists are backpacks that keep several values in order.
+
+1. The Navigator reads the three power-ups.
+2. The Predictor chooses which item sits at index `0`.
+3. The Driver runs the cell.
+4. Everyone performs the action shown on screen.'''),
+    code('''power_ups = ["Super Star", "Fire Flower", "Super Mushroom"]
+power_icons = ["⭐", "🔥", "🍄"]
+
+print("Power-up at index 0:", power_ups[0])
+print("Its matching icon:", power_icons[0])
+print("Items in the block:", len(power_ups))'''),
+    md('''### Add your own power-up
+
+As a team, invent one classroom-safe power-up and its celebration move. Add it to both lists.'''),
+    code('''power_ups.append("Team High Five")
+power_icons.append("🙌")
+
+chosen_power = power_ups[-1]
+chosen_icon = power_icons[-1]
+mario_scene("MYSTERY BLOCK OPEN!", chosen_power, team_color, chosen_icon, len(power_ups))
+
+checkpoint("Both lists match", len(power_ups) == len(power_icons))'''),
+    md('''## Level 3 — Coin Rush at 10:00
+
+This is the class photo challenge. Each team sends one Runner to another team.
+
+1. The visiting Runner gives that team a number from 1 to 5.
+2. The Driver stores it in `visitor_bonus`.
+3. The Predictor calculates the final coins without running.
+4. Both teams compare predictions.
+5. Run the cell together for the animated reveal.'''),
+    code('''coins = starting_coins
+visitor_bonus = 4       # visiting student chooses 1 through 5
+question_bonus = 3      # team earns this after explaining one variable
+
 print("Start:", coins)
-coins = coins + 3
-print("After treasure:", coins)
-coins = coins - 1
-print("After the shop:", coins)'''),
-    md('''### Guided change
-
-Change the treasure from 3 coins to 10 coins. Predict all three printed values first.'''),
-    code('''coins = 5
-treasure = 3  # TODO: change this to 10
-coins = coins + treasure
-coins = coins - 1
-print("Final coins:", coins)
-
-checkpoint("Variable update", coins == 7)  # change 7 after you change treasure'''),
-    md('''## Level 2 — Lists are backpacks
-
-A list stores several values in order. The first position is index `0`.'''),
-    code('''backpack = ["map", "key", "potion"]
-print("Whole backpack:", backpack)
-print("First item:", backpack[0])
-print("Last item:", backpack[-1])
-print("Number of items:", len(backpack))'''),
-    md('''### Guided practice
-
-1. Predict the list after each line.  
-2. Run it.  
-3. Change `shield` to an item you would want in a game.'''),
-    code('''backpack = ["map", "key"]
-backpack.append("shield")
-print(backpack)
-
-checkpoint("List grows", len(backpack) == 3)
-checkpoint("Key is packed", "key" in backpack)'''),
-    md('''## Level 3 — Conditions choose a path
-
-Python runs the indented block only when its condition is `True`. Trace the condition before choosing an answer.'''),
-    code('''coins = 8
+coins = coins + visitor_bonus
+print("After visitor bonus:", coins)
+coins = coins + question_bonus
+print("After question bonus:", coins)
 
 if coins >= 10:
-    message = "You unlocked the gold skin!"
+    finish = "SECRET PIPE UNLOCKED!"
+    finish_icon = "🌟"
+    finish_color = "#43b047"
 else:
-    message = "Collect more coins."
+    finish = "ONE MORE COIN RUSH!"
+    finish_icon = "🍄"
+    finish_color = "#e52521"
 
-print(message)'''),
-    md('''### Pair practice: predict before Run
+mario_scene(team_name, finish, finish_color, finish_icon, coins)
+checkpoint("Coin math", coins == starting_coins + visitor_bonus + question_bonus)'''),
+    md('''## Level 4 — Warp Pipe Decision
 
-Test `coins` with 9, 10, and 11. Write which branch runs each time. Why is 10 the boundary?'''),
-    code('''coins = 10  # test 9, 10, and 11
+An `if` condition chooses one path. Teams must negotiate their strategy.
+
+- Blue pipe needs at least 8 coins.
+- Green pipe needs a key.
+- Gold pipe needs both at least 10 coins **and** a key.
+
+Choose one pipe as a team, then change the variables and run the result.'''),
+    code('''chosen_pipe = "gold"     # choose "blue", "green", or "gold"
 has_key = True
 
-if coins >= 10 and has_key:
-    result = "BOSS DOOR OPEN"
+if chosen_pipe == "gold" and coins >= 10 and has_key:
+    pipe_result = "BOWSER CASTLE SHORTCUT!"
+    pipe_icon = "🏰"
+elif chosen_pipe == "green" and has_key:
+    pipe_result = "UNDERGROUND BONUS ROOM!"
+    pipe_icon = "🟢"
+elif chosen_pipe == "blue" and coins >= 8:
+    pipe_result = "SKY WORLD!"
+    pipe_icon = "🔵"
 else:
-    result = "DOOR LOCKED"
+    pipe_result = "PIPE LOCKED — CHANGE YOUR PLAN"
+    pipe_icon = "🔒"
 
-print(result)
-checkpoint("Decision", result == "BOSS DOOR OPEN")'''),
-    md('''## Boss challenge — Loadout checker
+mario_scene("WARP PIPE RESULT", pipe_result, team_color, pipe_icon, coins)'''),
+    md('''## Final boss — Class Castle Battle
 
-Complete the condition so a player is ready only when they have a key and at least 2 items.'''),
-    code('''player = "Jordan"
-inventory = ["key", "potion"]
-has_key = "key" in inventory
+Pair with another team. One team becomes **Mario**, and the other becomes **Bowser**.
 
-# TODO: replace True with a condition using has_key and len(inventory)
-if True:
-    status = "READY"
+1. Mario team chooses an attack value from 1 to 5.
+2. Bowser team chooses a defense value from 1 to 5.
+3. Both Predictors decide whether the attack lands.
+4. Run the cell.
+5. Switch roles and play again.'''),
+    code('''mario_attack = 5       # Mario team chooses 1 through 5
+bowser_defense = 3     # Bowser team chooses 1 through 5
+team_has_star = True
+
+if mario_attack > bowser_defense and team_has_star:
+    battle_result = "BOWSER DEFEATED! CLASS VICTORY!"
+    battle_icon = "🏆"
+    battle_color = "#fbd000"
 else:
-    status = "KEEP SEARCHING"
+    battle_result = "BOWSER BLOCKED IT — PLAN A REMATCH!"
+    battle_icon = "🐲"
+    battle_color = "#e52521"
 
-print(player, status)
-checkpoint("Loadout boss", status == "READY")'''),
-    md('''## Exit check
+mario_scene("FINAL CASTLE BATTLE", battle_result, battle_color, battle_icon, coins)
+checkpoint("Attack is a number", type(mario_attack) == int)
+checkpoint("Decision produced a result", battle_result != "")'''),
+    md('''## Team debrief
 
-Explain aloud: What is stored in a variable? Why is the first list index 0? How does Python choose an `if` branch?''')
+Each Reporter shares one sentence:
+
+- “A **variable** changed our game by…”
+- “A **list** helped our team store…”
+- “The **if condition** chose a result when…”
+
+Save a screenshot of your final castle battle before moving to Module 2.''')
 ])
 
 write("module-2-arcade-loops.ipynb","Module 2: Arcade Loop Trainer",[

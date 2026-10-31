@@ -76,7 +76,7 @@ The main Week 5 lesson uses three browser notebooks. Each module begins with tea
 | --- | --- |
 | 9:00-9:15 | Student arrival, sign-in, browser setup, and settling in |
 | 9:15-9:35 | Mario review game and class voting |
-| 9:35-10:25 | Human loop demonstration and Module 1 guided practice |
+| 9:35-10:25 | Super Mario Team Quest in Module 1; 10:00 photo showcase |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Module 2 Arcade Loop Trainer |
 | 11:20-11:30 | Break |
@@ -84,7 +84,7 @@ The main Week 5 lesson uses three browser notebooks. Each module begins with tea
 | 12:15-12:40 | Loop boss challenge and peer debugging |
 | 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v2.pptx`.
+The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v3.pptx`.
 
 ## Challenge artifact
 

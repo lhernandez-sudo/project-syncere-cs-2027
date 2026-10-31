@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week5-slides");
 const outputDir = path.join(workspaceDir, "week-05-halloween-loop-quest", "slides");
-const finalPath = path.join(outputDir, "week-05-beginner-loop-workshop-v2.pptx");
+const finalPath = path.join(outputDir, "week-05-beginner-loop-workshop-v3.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1025.11240\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF";
@@ -40,7 +40,7 @@ text(s,"Python Loop Workshop",72,138,1080,90,52,white,true); text(s,"Beginner pr
 text(s,"Week 5  •  Mario review  •  Three guided Colab labs",76,584,1080,36,20,"#D9E8F5",false);
 
 s=base("Today’s path","Class ends at 1:00 PM — the first 15 minutes are for arrival and setup");
-bullets(s,["9:00–9:15  Arrive, sign in, open the browser, and get settled","9:15–9:35  Mario review and class voting","9:35–10:25  Loop demonstration and Module 1","10:25–10:35  Break","10:35–11:20  Module 2: Arcade Loop Trainer","11:20–11:30  Break","11:30–12:15  Module 3: Power-Up Functions","12:15–1:00  Boss challenge, peer debugging, exit ticket, and save"],72,132,1140,20,62);
+bullets(s,["9:00–9:15  Arrive, sign in, open the browser, and get settled","9:15–9:35  Mario review and class voting","9:35–10:25  Super Mario Team Quest in Module 1","10:00  Coin Rush photo showcase","10:25–10:35  Break","10:35–11:20  Module 2: Arcade Loop Trainer","11:20–11:30  Break","11:30–1:00  Module 3, boss challenge, peer debugging, and exit"],72,132,1140,20,62);
 
 s=base("Participation routine","Every student gets thinking time before anyone answers");
 bullets(s,["Think silently for 20 seconds","Write one prediction","Compare with one partner","Vote with fingers: 1, 2, or 3","Run the code only after the vote","Explain the result in plain English"],110,150,1050,24,72);
@@ -73,13 +73,13 @@ text(s,"Changes",820,328,320,40,22,coral,true); text(s,"energy = energy - 1",820
 s=base("Loop check before Module 1","Answer with a partner");
 bullets(s,["How many times does a for loop run over a four-item list?","What does the loop variable hold during one iteration?","Why does an accumulator start before the loop?","What must change inside most while loops?"],96,176,1080,27,104);
 
-s=base("Module 1 practice","Game Loadout: variables, lists, and decisions");
-bullets(s,["Teacher models the first variable trace","Class predicts the backpack after append","Pairs test the decision boundary at 9, 10, and 11","Students complete the loadout boss challenge"],100,182,1080,27,100);
+s=base("Super Mario Team Quest","Module 1 is the main showcase from 9:35 to 10:25");
+bullets(s,["Teams choose Driver, Navigator, Predictor, and Reporter roles","Each code cell changes an animated Mario scene","Students visit another team for the 10:00 Coin Rush","Pairs finish with a Mario versus Bowser castle battle"],100,182,1080,27,100);
 text(s,"Open module-1-game-loadout.ipynb in Colab",100,590,1080,46,24,blue,true);
 
-s=base("Practice before Module 1","No typing for the first prediction");
-codeBlock(s,'coins = 5\ncoins = coins + 3\ncoins = coins - 1\n\nprint(coins)',115,190,650,300);
-text(s,"1. Write the starting value\n2. Update after treasure\n3. Update after the shop\n4. Compare with a partner\n5. Run and explain",830,190,340,300,25,ink,false);
+s=base("Coin Rush photo showcase","At 10:00, every team visits another team and triggers the reveal");
+codeBlock(s,'coins = starting_coins\ncoins = coins + visitor_bonus\ncoins = coins + question_bonus\n\nif coins >= 10:\n    finish = "SECRET PIPE UNLOCKED!"',80,170,700,350);
+text(s,"Photo moment",850,180,290,42,25,coral,true); text(s,"Teams stand together\n\nPredictors announce the total\n\nDrivers run at the same time\n\nAnimated results fill every screen",850,240,330,310,25,ink,false);
 
 s=base("Break","10 minutes"); text(s,"Stand up. Get water. Be back when the timer ends.",140,270,1000,70,32,navy,true,"Arial","center");
 
@@ -113,5 +113,5 @@ for(let i=0;i<deck.slides.items.length;i++){
 const montage=await deck.export({format:"webp",montage:true}); await fs.writeFile(path.join(buildDir,"montage.webp"),new Uint8Array(await montage.arrayBuffer()));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"container_tools","artifact_tool_utils.mjs")).href);
 const candidate=path.join(buildDir,"candidate.pptx"); await (await PresentationFile.exportPptx(deck)).save(candidate);
-await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v2.json")});
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v3.json")});
 console.log(finalPath);
