@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week5-slides");
 const outputDir = path.join(workspaceDir, "week-05-halloween-loop-quest", "slides");
-const finalPath = path.join(outputDir, "week-05-review-game-labs-v7.pptx");
+const finalPath = path.join(outputDir, "week-05-review-game-labs-v8.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1025.11240\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF";
@@ -57,15 +57,15 @@ text(s,"4",86,455,55,55,35,teal,true,"Arial","center"); text(s,"Change one thing
 text(s,"The Mario labs use failure animations because engineers learn by testing and repairing systems.",82,570,1100,48,22,coral,true,"Arial","center");
 
 s=base("Mario Python review game","Use the game to identify which concepts need practice today");
-bullets(s,["Open game/index.html and press Enter","Vote on each Python gate before the 20-second timer ends","Name the concept after every answer","Notice how variables, lists, conditions, loops, and functions control Mario"],100,165,1080,27,92);
-text(s,"After the final gate, keep the same teams and open Module 1.",100,574,1080,48,26,coral,true,"Arial","center");
+bullets(s,["We play together on the projector as one class","One student controls the answer while everyone votes","Vote before the 20-second timer ends","Name the concept after every answer","Rotate the controller after each Python world"],100,145,1080,25,82);
+text(s,"After the final gate, form teams of 3 or 4 for Module 1.",100,574,1080,48,26,coral,true,"Arial","center");
 
-s=base("Google Colab setup","The Mario game leads directly into the first team notebook");
-bullets(s,["Open Module 1 from the Week 5 GitHub README","Sign into the Google account you will use for class","Choose File, then Save a copy in Drive","Rename the copy with your name and module number","Stay with the same team from the review game"],88,150,1090,25,78);
+s=base("Google Colab setup","The whole-class Mario game leads into the first team notebook");
+bullets(s,["Form a team of 3 or 4 after the review game","Open Module 1 from the Week 5 GitHub README","Sign into the Google account you will use for class","Choose File, then Save a copy in Drive","Rename the copy with your name and module number"],88,150,1090,25,78);
 text(s,"git pull updates a repository on a local computer. You do not need it for today’s Colab lesson.",88,574,1095,48,21,coral,true);
 
 s=base("Super Mario Debug Quest","Module 1 continues the same concepts and team energy");
-bullets(s,["Keep the same team from the review game","Choose Driver, Navigator, Predictor, and Debugger roles","Run each broken mission once and watch Mario fail","Use the tips to repair variables, lists, and conditions","Finish with the Mario versus Bowser coding challenge"],100,158,1080,25,86);
+bullets(s,["Work in the team you formed after the class game","Choose Driver, Navigator, Predictor, and Debugger roles","Run each broken mission once and watch Mario fail","Use the tips to repair variables, lists, and conditions","Finish with the Mario versus Bowser coding challenge"],100,158,1080,25,86);
 text(s,"Open module-1-game-loadout.ipynb in Colab",100,590,1080,46,24,blue,true);
 
 s=base("Break","10 minutes"); text(s,"Stand up. Get water. Be back when the timer ends.",140,270,1000,70,32,navy,true,"Arial","center");
@@ -100,5 +100,5 @@ for(let i=0;i<deck.slides.items.length;i++){
 const montage=await deck.export({format:"webp",montage:true}); await fs.writeFile(path.join(buildDir,"montage.webp"),new Uint8Array(await montage.arrayBuffer()));
 const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"container_tools","artifact_tool_utils.mjs")).href);
 const candidate=path.join(buildDir,"candidate.pptx"); await (await PresentationFile.exportPptx(deck)).save(candidate);
-await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v7.json")});
+await finalizePresentation({workspaceDir,candidatePath:candidate,finalPath,pythonExecutable:python,integrityValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_package_integrity.py"),layoutValidatorPath:path.join(skillDir,"container_tools","inspect_presentation_layout_geometry.py"),layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],fontPolicy:{basis:"design",families:["Aptos"]},verifyArtifactToolImport:true,receiptPath:path.join(buildDir,"validation-v8.json")});
 console.log(finalPath);

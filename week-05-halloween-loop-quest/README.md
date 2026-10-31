@@ -25,7 +25,7 @@ By the end of the game, students can:
 ## Suggested facilitation: 9:15–9:35
 
 1. **9:15–9:18:** Launch the game and explain that Mario's movement is a tool-assisted speedrun.
-2. **9:18–9:30:** Assign a student to submit each timed input. At every gate, the class has 20 seconds to vote before the input is entered.
+2. **9:18–9:30:** Play together as one class. Assign one student to submit each timed input, have everyone vote within 20 seconds, and rotate the controller after each Python world.
 3. **9:30–9:33:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
 4. **9:33–9:35:** Ask students which concept needs the most practice today.
 
@@ -99,7 +99,7 @@ Students do not need to clone the repository or configure Python locally.
 | 12:15-12:40 | Loop boss challenge and peer debugging |
 | 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-review-game-labs-v7.pptx`.
+The editable teaching deck is in `slides/week-05-review-game-labs-v8.pptx`.
 
 ## Challenge artifact
 
