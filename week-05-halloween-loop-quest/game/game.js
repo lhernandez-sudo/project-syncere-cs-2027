@@ -62,7 +62,7 @@ const rawQuestions = [
   [
     ['total = 0\nfor coin in [2, 4, 6]:\n    total = total + coin', "What is total?", ["6", "10", "12"], 2, "The accumulator changes 0 → 2 → 6 → 12."],
     ['for enemy in ["Boo", "Goomba"]:\n    print(enemy)', "How many times does print run?", ["1", "2", "3"], 1, "The loop runs once for each of 2 items."],
-    ['count = 0\nfor number in range(4):\n    count += 1', "What is count?", ["3", "4", "5"], 1, "range(4) produces 0, 1, 2, 3: four iterations."],
+    ['count = 0\nfor number in [4, 8, 12, 16]:\n    count += 1', "What is count?", ["3", "4", "5"], 1, "The list contains four values, so the loop runs four times."],
     ['stars = []\nfor n in [1, 2, 3]:\n    stars.append(n * 2)', "What is stars?", ["[1, 2, 3]", "[2, 4, 6]", "6"], 1, "Each value is doubled before append."],
   ],
   [
