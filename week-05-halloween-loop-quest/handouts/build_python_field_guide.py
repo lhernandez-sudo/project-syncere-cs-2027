@@ -180,6 +180,25 @@ INK = "000000"
 MUTED = "444444"
 PALE = "F5F5F5"
 
+CODE_STARTS = (
+    "def ", "class ", "if ", "elif ", "else:", "for ", "while ",
+    "try:", "except ", "with ", "import ", "from ", "return ",
+    "print(", "assert ", "break", "continue",
+)
+
+def is_code_block(body):
+    """Only style actual multi-line snippets as code, not prose mentioning code."""
+    lines = body.split("\n")
+    if len(lines) < 2:
+        return False
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith(CODE_STARTS) or " = " in stripped or ".append(" in stripped:
+            return True
+    return False
+
 def set_cell_shading(cell, fill):
     tc_pr = cell._tc.get_or_add_tcPr()
     shd = OxmlElement("w:shd")
@@ -220,7 +239,7 @@ def build_docx():
             for i, line in enumerate(lines):
                 p = cell.add_paragraph() if i or p.text else p
                 p.paragraph_format.space_after = Pt(1)
-                is_code = any(x in body for x in [" = ", "def ", "for ", "while ", "if ", "print(", "range(", ".append"])
+                is_code = is_code_block(body)
                 add_run(p, line, False, 8.4 if is_code else 8.8, INK, "Consolas" if is_code else "Aptos")
             spacer = doc.add_paragraph(); spacer.paragraph_format.space_after = Pt(3)
         footer = doc.add_paragraph(); footer.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -238,6 +257,29 @@ def wrap(canvas, text, font, size, width):
     if line: lines.append(line)
     return lines
 
+def wrap_code(text, font, size, width):
+    """Wrap code without destroying indentation, which is Python syntax."""
+    text = text.expandtabs(4)
+    if stringWidth(text, font, size) <= width:
+        return [text]
+    indent = text[:len(text) - len(text.lstrip(" "))]
+    continuation = indent + "    "
+    remaining = text
+    lines = []
+    first = True
+    while remaining:
+        prefix = "" if first else continuation
+        room = max(8, int((width - stringWidth(prefix, font, size)) / stringWidth("M", font, size)))
+        cut = min(len(remaining), room)
+        if cut < len(remaining):
+            natural = max(remaining.rfind(" ", 0, cut), remaining.rfind(",", 0, cut) + 1)
+            if natural > max(8, cut // 2):
+                cut = natural
+        lines.append(prefix + remaining[:cut].rstrip())
+        remaining = remaining[cut:].lstrip()
+        first = False
+    return lines
+
 def draw_logical_page(c, x0, y0, title, subtitle, cards, page_no):
     w, h = 5.5*72, 8.5*72
     c.setFillColor(white); c.rect(x0,y0,w,h,fill=1,stroke=0)
@@ -251,7 +293,7 @@ def draw_logical_page(c, x0, y0, title, subtitle, cards, page_no):
     available = y-(y0+36); gap=7
     heights=[]
     for heading, body in cards:
-        code = any(k in body for k in [" = ","def ","for ","while ","if ","print(","range(",".append"])
+        code = is_code_block(body)
         font="Courier" if code else "Helvetica"; size=7.5 if code else 8
         n=sum(max(1,len(wrap(c,line,font,size,w-82))) for line in body.split("\n"))
         heights.append(28+n*10)
@@ -261,11 +303,12 @@ def draw_logical_page(c, x0, y0, title, subtitle, cards, page_no):
         c.setFillColor(white); c.setStrokeColor(HexColor("#B8B8B8")); c.setLineWidth(.7)
         c.roundRect(x0+34,y-ch,w-68,ch,5,fill=1,stroke=1)
         c.setFillColor(black); c.setFont("Helvetica-Bold",9); c.drawString(x0+43,y-15,heading)
-        code = any(k in body for k in [" = ","def ","for ","while ","if ","print(","range(",".append"])
+        code = is_code_block(body)
         font="Courier" if code else "Helvetica"; size=7.5 if code else 8
         ty=y-28; c.setFont(font,size); c.setFillColor(black)
         for source_line in body.split("\n"):
-            for line in wrap(c,source_line,font,size,w-86) or [""]:
+            rendered_lines = wrap_code(source_line,font,size,w-86) if code else wrap(c,source_line,font,size,w-86)
+            for line in rendered_lines or [""]:
                 c.drawString(x0+43,ty,line); ty-=10*scale
         y-=ch+gap
     c.setFillColor(HexColor("#556070")); c.setFont("Helvetica-Bold",7)
