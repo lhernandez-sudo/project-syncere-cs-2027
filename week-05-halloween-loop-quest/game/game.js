@@ -31,7 +31,7 @@ const palette = {
 
 let started = false, paused = false, asking = false, won = false, audioOn = true;
 let cameraX = 0, lastTime = 0, activeQuestion = null, deadline = 0, deathTimer = 0;
-let musicTimer = null, musicStep = 0, bossTimer = 0;
+let musicTimer = null, musicStep = 0, bossTimer = 0, deathStyle = "bonk", deathReason = "";
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
 const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0 };
@@ -217,10 +217,13 @@ function answerQuestion(index, button) {
 
 function killMario(reason) {
   if (player.dead) return;
-  player.dead = true; asking = false; paused = false; deathTimer = 85;
+  player.dead = true; asking = false; paused = false; deathTimer = 150; deathReason = reason;
   state.deaths += 1; state.lives -= 1; if (state.lives <= 0) state.lives = 3;
+  deathStyle = reason.startsWith("TIMEOUT") ? "timeout" : ["bonk", "bug", "yeet"][state.deaths % 3];
   player.vx = 0; player.vy = -13; ui.question.classList.add("danger"); ui.feedback.textContent = `${reason} Mario dies and the TAS retries.`;
-  beep(150, .42, "sawtooth"); updateHud();
+  beep(180, .18, "sawtooth", .07); beep(135, .2, "square", .055, .16); beep(82, .5, "sawtooth", .06, .34);
+  if (deathStyle === "timeout") beep(880, .055, "square", .04, .02);
+  updateHud();
   setTimeout(() => { ui.question.hidden = true; }, 650);
 }
 
@@ -398,13 +401,74 @@ function drawMario() {
     for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(x-10-i*11,y+28+i*3,7-i,0,Math.PI*2);ctx.fill();}
     ctx.restore();
   }
-  ctx.save(); ctx.translate(x, 0); if (player.dead) ctx.rotate((85 - deathTimer) * .08);
+  ctx.save(); ctx.translate(x, 0); if (player.dead) ctx.rotate((150 - deathTimer) * .08);
   block(6, y, 23, 6, palette.red); block(11, y - 5, 15, 6, palette.red); block(3, y + 6, 29, 6, palette.redDark);
   block(8, y + 7, 21, 15, palette.skin); block(24, y + 10, 9, 7, palette.skin); block(18, y + 8, 4, 5, palette.black);
   block(8, y + 17, 18, 5, palette.brown); block(4, y + 22, 28, 5, palette.red);
   block(8, y + 25, 21, 14, palette.blue); block(11, y + 23, 5, 12, palette.blueLight); block(23, y + 23, 5, 12, palette.blueLight);
   block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
+  ctx.restore();
+}
+
+function drawDeathGag() {
+  if (!player.dead) return;
+  const elapsed = 150 - deathTimer;
+  const progress = Math.min(1, elapsed / 115);
+  const centerX = W / 2;
+  const captions = {
+    timeout: ["TIME RAN OUT!", "MARIO WAS STILL READING THE VARIABLE NAME"],
+    bonk: ["BONK!", "THE GOOMBA HAS SUBMITTED A BUG REPORT"],
+    bug: ["MARIO.EXE STOPPED WORKING", "CAUSE: CONFIDENTLY WRONG INPUT"],
+    yeet: ["WRONG ANSWER DETECTED", "MARIO HAS LEFT THE CODEBASE"],
+  };
+  const [headline, subhead] = captions[deathStyle];
+  ctx.save();
+  // Comic-book impact flash and screen shake.
+  const shake = elapsed < 22 ? Math.sin(elapsed * 2.7) * (22 - elapsed) : 0;
+  ctx.translate(shake, 0);
+  ctx.fillStyle = `rgba(35,0,45,${Math.min(.72, progress)})`;
+  ctx.fillRect(0, 0, W, H);
+  if (elapsed < 42) {
+    ctx.fillStyle = deathStyle === "timeout" ? "#ffd43b" : "#ffef5a";
+    ctx.beginPath();
+    for (let point = 0; point < 20; point++) {
+      const angle = point * Math.PI / 10;
+      const radius = point % 2 ? 82 : 165;
+      const px = centerX + Math.cos(angle) * radius;
+      const py = 255 + Math.sin(angle) * radius;
+      if (point === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+  // Mario's ghost floats away while his hat gives up and falls separately.
+  const ghostY = 390 - progress * 245;
+  ctx.globalAlpha = Math.min(1, progress * 2);
+  ctx.font = "70px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("👻", centerX + 110, ghostY);
+  ctx.save(); ctx.translate(centerX - 105, 230 + progress * 170); ctx.rotate(progress * 5.5);
+  ctx.font = "52px sans-serif"; ctx.fillText("🧢", 0, 0); ctx.restore();
+  if (deathStyle === "timeout") {
+    ctx.font = "82px sans-serif"; ctx.fillText("⏰", centerX - 150, 265 + Math.sin(elapsed) * 8);
+  } else {
+    ctx.font = "68px sans-serif"; ctx.fillText(deathStyle === "yeet" ? "🚀" : "🍄", centerX - 165, 290);
+  }
+  // Tombstone arrives late for the punchline.
+  if (elapsed > 55) {
+    const stoneY = Math.min(430, 560 - (elapsed - 55) * 5);
+    ctx.fillStyle = "#777083"; ctx.fillRect(centerX - 72, stoneY, 144, 90);
+    ctx.fillStyle = "#aaa4b2"; ctx.fillRect(centerX - 61, stoneY + 9, 122, 7);
+    ctx.fillStyle = "#17121d"; ctx.font = "bold 18px monospace";
+    ctx.fillText("RIP MARIO", centerX, stoneY + 38); ctx.font = "14px monospace";
+    ctx.fillText(deathStyle === "timeout" ? "WAITED TOO LONG" : "INPUT MISMATCH", centerX, stoneY + 64);
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#ffffff"; ctx.strokeStyle = "#130b18"; ctx.lineWidth = 8;
+  ctx.font = "bold 42px monospace"; ctx.strokeText(headline, centerX, 84); ctx.fillText(headline, centerX, 84);
+  ctx.fillStyle = "#ffd43b"; ctx.font = "bold 19px monospace";
+  ctx.fillText(subhead, centerX, 120);
+  ctx.fillStyle = "#ffffff"; ctx.font = "bold 17px monospace";
+  ctx.fillText("TAS REWINDING... PRETEND THAT NEVER HAPPENED", centerX, 505);
   ctx.restore();
 }
 
@@ -475,7 +539,7 @@ function drawParticles() { particles.forEach(p => block(p.x-cameraX,p.y,p.size,p
 function draw() {
   drawBackground(); drawDecorations(); ground.forEach(drawGround); platforms.forEach(drawPlatform);
   coins.forEach(c => { if(c.taken)return; const x=c.x-cameraX;if(x<-30||x>W+30)return;const y=c.y+Math.sin(c.phase)*6;block(x-7,y-13,14,26,palette.gold);block(x-2,y-9,4,18,"#fff5a4"); });
-  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario();
+  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario(); drawDeathGag();
   if (started && !asking && !won) {
     ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,14,260,32);ctx.fillStyle=palette.green;ctx.font="bold 15px monospace";ctx.fillText("TAS AUTO-RUN • INPUT LOCKED",27,36);
   }
