@@ -18,7 +18,7 @@ const ui = {
 };
 
 const W = canvas.width, H = canvas.height, GROUND_Y = 452;
-const COURSE_END = 12600, QUESTION_SECONDS = 20, POWERUP_FRAMES = 150;
+const COURSE_END = 12600, QUESTION_SECONDS = 20, POWERUP_FRAMES = 150, POWER_USE_FRAMES = 210;
 const TEST_MODE = new URLSearchParams(window.location.search).has("autotest");
 const palette = {
   skyTop: "#120b35", skyBottom: "#423079", mist: "#786ba0", moon: "#fff1a8",
@@ -35,6 +35,7 @@ let musicTimer = null, musicStep = 0, bossTimer = 0, deathStyle = "bonk", deathR
 let transitionTimer = 0, transitionFromWorld = 0;
 let transitionGroundY = 365, fireballCooldown = 0;
 let autoJump = null;
+let powerUseClock = 0;
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
 const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" };
@@ -224,7 +225,7 @@ function resetGame() {
   Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" });
   questions.forEach(q => q.passed = false); coins.forEach(c => c.taken = false); enemies.forEach(e => e.alive = true);
   boss.defeated = false; bossTimer = 0;
-  particles.length = 0; fireballs.length = 0; autoJump = null; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
+  particles.length = 0; fireballs.length = 0; autoJump = null; powerUseClock = 0; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
   startMusic();
   ui.start.hidden = true; ui.win.hidden = true; ui.question.hidden = true; updateHud();
 }
@@ -278,6 +279,7 @@ function startWorldTransition() {
   transitionTimer = TEST_MODE ? 1 : POWERUP_FRAMES;
   transitionGroundY = player.y;
   player.form = stagePowerUps[transitionFromWorld].form;
+  powerUseClock = transitionFromWorld * POWER_USE_FRAMES;
   player.vx = 0; player.vy = 0; player.onGround = false;
   fireballs.length = 0; fireballCooldown = 0;
   paused = false;
@@ -358,6 +360,37 @@ function updateFireballs() {
   }
 }
 
+function useUnlockedPowerUps() {
+  const unlocked = Math.min(stagePowerUps.length, Math.floor(state.cleared / 4));
+  if (unlocked === 0) return 0;
+  powerUseClock += 1;
+  const powerIndex = Math.floor(powerUseClock / POWER_USE_FRAMES) % unlocked;
+  player.form = stagePowerUps[powerIndex].form;
+
+  if (player.form === "fire") {
+    fireballCooldown -= 1;
+    if (fireballCooldown <= 0) { launchFireball(); fireballCooldown = 48; }
+  }
+  if (player.form === "tanooki") {
+    player.frame += .35;
+    for (const enemy of enemies) {
+      if (!enemy.alive || enemy.x < player.x - 25 || enemy.x > player.x + 92 || Math.abs(enemy.y - player.y) > 95) continue;
+      enemy.alive = false; state.coins += 2;
+      spawnParticles(enemy.x + 16, enemy.y + 14, "#b97836", 25); beep(310, .06, "square", .03);
+    }
+  }
+  if (player.form === "star") {
+    if (powerUseClock % 7 === 0) spawnParticles(player.x + 18, player.y + 22, palette.gold, 5);
+    for (const enemy of enemies) {
+      if (!enemy.alive || enemy.x < player.x - 20 || enemy.x > player.x + 125) continue;
+      enemy.alive = false; state.coins += 2;
+      spawnParticles(enemy.x + 16, enemy.y + 14, subjects[3].color, 30); beep(1047, .045, "square", .025);
+    }
+    return 2.2;
+  }
+  return 0;
+}
+
 function update() {
   updateParticles();
   if (!started || won) return;
@@ -424,7 +457,8 @@ function update() {
 
   updateFireballs();
 
-  const speed = TEST_MODE ? 36 : 7.4 + Math.min(2.1, state.cleared * .09);
+  const powerSpeed = useUnlockedPowerUps();
+  const speed = TEST_MODE ? 36 : 7.4 + Math.min(2.1, state.cleared * .09) + powerSpeed;
   player.vx += (speed - player.vx) * .14;
   const obstacle = nextObstacleDistance();
   const pit = nextPitDistance();
@@ -436,6 +470,7 @@ function update() {
         startY: player.y,
         targetX: landing.x + 54,
         targetY: landing.y - player.h,
+        arcHeight: player.form === "tanooki" ? 225 : 145,
         progress: 0,
       };
       player.onGround = false;
@@ -452,7 +487,7 @@ function update() {
     autoJump.progress = Math.min(1, autoJump.progress + speed / jumpDistance);
     const t = autoJump.progress;
     player.x = autoJump.startX + jumpDistance * t;
-    player.y = autoJump.startY + (autoJump.targetY - autoJump.startY) * t - Math.sin(t * Math.PI) * 145;
+    player.y = autoJump.startY + (autoJump.targetY - autoJump.startY) * t - Math.sin(t * Math.PI) * autoJump.arcHeight;
     player.vx = speed; player.vy = 0; player.onGround = false;
     if (t >= 1) {
       player.x = autoJump.targetX; player.y = autoJump.targetY;
@@ -493,9 +528,11 @@ function update() {
   enemies.forEach(e => {
     if (!e.alive) return; e.y = 418 + Math.sin(performance.now() / 350 + e.phase) * 2;
     if (rectsTouch(player, e)) {
-      // TAS movement is frame-perfect: every Goomba contact becomes a stomp.
+      // Every earned form remains useful during the run: Super smashes,
+      // Tanooki tail-spins, Star blasts through, and Fire attacks at range.
       e.alive = false; player.vy = -8; state.coins += 2;
-      spawnParticles(e.x, e.y, e.kind === "koopa" ? "#73d34f" : "#ff9b45", 22); beep(250, .07);
+      const impactColor = player.form === "star" ? palette.gold : player.form === "super" ? palette.red : e.kind === "koopa" ? "#73d34f" : "#ff9b45";
+      spawnParticles(e.x, e.y, impactColor, player.form === "super" ? 38 : 22); beep(player.form === "super" ? 145 : 250, .07);
     }
   });
 
@@ -622,7 +659,7 @@ function drawMario() {
     const wag = Math.sin(player.frame * .7) * 8;
     block(31, y + 27, 15, 8, "#b97836"); block(42, y + 20 + wag, 12, 8, "#6d3a21");
     block(50, y + 14 + wag, 12, 7, "#b97836");
-    if (transitionTimer > 0) {
+    if (transitionTimer > 0 || (autoJump && autoJump.arcHeight > 145)) {
       block(-3, y + 20, 11, 7, "#b97836"); block(29, y + 18, 13, 7, "#b97836");
     }
   }
@@ -814,6 +851,8 @@ function draw() {
   questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawFireballs(); drawMario(); drawDeathGag(); drawWorldTransition();
   if (started && !asking && !won) {
     ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,14,260,32);ctx.fillStyle=palette.green;ctx.font="bold 15px monospace";ctx.fillText("TAS AUTO-RUN • INPUT LOCKED",27,36);
+    const activePower = stagePowerUps.find(power => power.form === player.form);
+    if (activePower) { ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,50,260,30);ctx.fillStyle=activePower.color;ctx.fillText(`POWER • ${activePower.label}`,27,71); }
   }
   if (paused && !asking && started && !won && !player.dead) {ctx.fillStyle="rgba(0,0,0,.58)";ctx.fillRect(0,0,W,H);ctx.fillStyle=palette.white;ctx.font="bold 42px monospace";ctx.fillText("PAUSED",W/2-85,H/2);}
 }
