@@ -18,7 +18,7 @@ const ui = {
 };
 
 const W = canvas.width, H = canvas.height, GROUND_Y = 452;
-const COURSE_END = 12600, QUESTION_SECONDS = 20;
+const COURSE_END = 12600, QUESTION_SECONDS = 20, POWERUP_FRAMES = 150;
 const TEST_MODE = new URLSearchParams(window.location.search).has("autotest");
 const palette = {
   skyTop: "#120b35", skyBottom: "#423079", mist: "#786ba0", moon: "#fff1a8",
@@ -275,7 +275,7 @@ function answerQuestion(index, button) {
 
 function startWorldTransition() {
   transitionFromWorld = Math.max(0, Math.floor(state.cleared / 4) - 1);
-  transitionTimer = TEST_MODE ? 1 : 240;
+  transitionTimer = TEST_MODE ? 1 : POWERUP_FRAMES;
   transitionGroundY = player.y;
   player.form = stagePowerUps[transitionFromWorld].form;
   player.vx = 0; player.vy = 0; player.onGround = false;
@@ -369,24 +369,25 @@ function update() {
     return;
   }
   if (transitionTimer > 0) {
-    const transitionElapsed = 240 - transitionTimer;
+    const transitionElapsed = POWERUP_FRAMES - transitionTimer;
+    const transitionProgress = transitionElapsed / POWERUP_FRAMES;
     const powerUp = stagePowerUps[transitionFromWorld];
     // Keep advancing through the same open world, but do not fly past the
     // first gate of the next concept while the class is watching the cutscene.
-    player.x += 1.4;
+    player.x += 2.1;
     if (powerUp.form === "super") {
       player.form = "super";
-      player.y = transitionGroundY - Math.sin(Math.min(1, transitionElapsed / 180) * Math.PI) * 58;
-      if (transitionElapsed % 18 === 0) spawnParticles(player.x + 18, player.y + 18, powerUp.color, 10);
+      player.y = transitionGroundY - Math.sin(transitionProgress * Math.PI) * 58;
+      if (transitionElapsed % 12 === 0) spawnParticles(player.x + 18, player.y + 18, powerUp.color, 10);
     } else if (powerUp.form === "fire") {
       player.form = "fire";
-      player.y = transitionGroundY - Math.sin(transitionElapsed / 240 * Math.PI) * 58;
+      player.y = transitionGroundY - Math.sin(transitionProgress * Math.PI) * 58;
       fireballCooldown -= 1;
-      if (transitionElapsed > 45 && transitionElapsed < 205 && fireballCooldown <= 0) { launchFireball(); fireballCooldown = 22; }
+      if (transitionElapsed > 24 && transitionElapsed < 132 && fireballCooldown <= 0) { launchFireball(); fireballCooldown = 16; }
     } else if (powerUp.form === "tanooki") {
       player.form = "tanooki";
-      const flight = Math.min(1, transitionElapsed / 105);
-      const landing = Math.max(0, (transitionElapsed - 190) / 50);
+      const flight = Math.min(1, transitionElapsed / 65);
+      const landing = Math.max(0, (transitionElapsed - 115) / 35);
       player.y = transitionGroundY - Math.sin(flight * Math.PI / 2) * 215 + landing * 215;
       player.frame += .7;
     } else if (powerUp.form === "star") {
@@ -520,8 +521,8 @@ function update() {
 }
 
 function drawBackground() {
-  const transitionElapsed = transitionTimer > 0 ? 240 - transitionTimer : 240;
-  const stage = transitionTimer > 0 && transitionElapsed < 165
+  const transitionElapsed = transitionTimer > 0 ? POWERUP_FRAMES - transitionTimer : POWERUP_FRAMES;
+  const stage = transitionTimer > 0 && transitionElapsed < POWERUP_FRAMES * .68
     ? transitionFromWorld
     : Math.min(4, Math.floor(state.cleared / 4));
   const themes = [
@@ -582,7 +583,7 @@ function drawPlatform(p) {
 }
 
 function drawMario() {
-  const transitionElapsed = transitionTimer > 0 ? 240 - transitionTimer : 0;
+  const transitionElapsed = transitionTimer > 0 ? POWERUP_FRAMES - transitionTimer : 0;
   const x = Math.round(player.x - cameraX), y = Math.round(player.y), run = Math.floor(player.frame) % 2;
   if (!player.onGround && !player.dead) {
     ctx.save(); ctx.globalAlpha=.38; ctx.fillStyle=palette.gold;
@@ -591,8 +592,11 @@ function drawMario() {
   }
   ctx.save(); ctx.translate(x, 0); if (player.dead) ctx.rotate((150 - deathTimer) * .08);
   block(6, y, 23, 6, palette.red); block(11, y - 5, 15, 6, palette.red); block(3, y + 6, 29, 6, palette.redDark);
-  block(8, y + 7, 21, 15, palette.skin); block(24, y + 10, 9, 7, palette.skin); block(18, y + 8, 4, 5, palette.black);
-  block(8, y + 17, 18, 5, palette.brown); block(4, y + 22, 28, 5, palette.red);
+  // Signature cap badge, face, nose, sideburn, and chunky pixel mustache.
+  block(16, y - 3, 7, 5, palette.white); block(17, y - 2, 2, 3, palette.redDark); block(21, y - 2, 2, 3, palette.redDark);
+  block(8, y + 7, 21, 15, palette.skin); block(24, y + 10, 11, 8, palette.skin); block(18, y + 8, 4, 5, palette.black);
+  block(7, y + 9, 5, 11, palette.brown); block(15, y + 17, 5, 4, palette.brown); block(20, y + 18, 10, 5, palette.brown);
+  block(4, y + 22, 28, 5, palette.red);
   block(8, y + 25, 21, 14, palette.blue); block(11, y + 23, 5, 12, palette.blueLight); block(23, y + 23, 5, 12, palette.blueLight);
   if (player.form === "fire") {
     block(8, y + 25, 21, 14, palette.white); block(11, y + 23, 5, 12, palette.orange); block(23, y + 23, 5, 12, palette.orange);
@@ -606,7 +610,10 @@ function drawMario() {
     ctx.strokeStyle = rainbow[Math.floor(player.frame) % rainbow.length]; ctx.lineWidth = 5;
     ctx.strokeRect(0, y - 9, 39, 61); ctx.globalAlpha = 1;
   }
-  block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
+  // White gloves and overall buttons make the running silhouette read clearly.
+  block(2, y + 25 + run * 2, 8, 9, palette.red); block(29, y + 25 + (1-run)*2, 7, 9, palette.red);
+  block(0, y + 32 + run * 2, 10, 7, palette.white); block(29, y + 32 + (1-run)*2, 9, 7, palette.white);
+  block(12, y + 25, 4, 4, palette.gold); block(24, y + 25, 4, 4, palette.gold);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
   if (player.form === "tanooki" && !player.dead) {
     // Ears, mask, and a wagging striped tail turn Mario into a flying Tanooki.
@@ -635,16 +642,16 @@ function drawFireballs() {
 
 function drawWorldTransition() {
   if (transitionTimer <= 0) return;
-  const elapsed = 240 - transitionTimer;
+  const elapsed = POWERUP_FRAMES - transitionTimer;
   const nextWorld = subjects[Math.min(4, transitionFromWorld + 1)];
   const powerUp = stagePowerUps[transitionFromWorld];
   const marioX = Math.round(player.x - cameraX) + 18;
   const marioY = Math.round(player.y) + 20;
   ctx.save();
   ctx.textAlign = "center";
-  if (elapsed < 55) {
+  if (elapsed < 30) {
     // Each concept world awards a different visible power-up.
-    const itemX = marioX + 95 - elapsed * 1.2;
+    const itemX = marioX + 78 - elapsed * 2.25;
     const itemY = marioY - 105 + Math.sin(elapsed * .18) * 8;
     ctx.fillStyle = palette.orange; ctx.fillRect(itemX-25, marioY-42, 50, 44);
     ctx.fillStyle = palette.gold; ctx.font = "bold 32px monospace"; ctx.fillText("?", itemX, marioY-10);
