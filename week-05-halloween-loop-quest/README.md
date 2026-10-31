@@ -89,8 +89,9 @@ Students do not need to clone the repository or configure Python locally.
 | Time | Block |
 | --- | --- |
 | 9:00-9:15 | Student arrival, sign-in, browser setup, and settling in |
-| 9:15-9:35 | Mario review game and class voting |
-| 9:35-10:25 | Super Mario Team Quest in Module 1; 10:00 photo showcase |
+| 9:15-9:22 | Fast engineering concept review |
+| 9:22-9:40 | Mario review game and class voting |
+| 9:40-10:25 | Super Mario Debug Quest in Module 1 |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Module 2 Arcade Loop Trainer |
 | 11:20-11:30 | Break |
@@ -98,7 +99,7 @@ Students do not need to clone the repository or configure Python locally.
 | 12:15-12:40 | Loop boss challenge and peer debugging |
 | 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-engineering-foundations-workshop-v6.pptx`.
+The editable teaching deck is in `slides/week-05-review-game-labs-v7.pptx`.
 
 ## Challenge artifact
 
