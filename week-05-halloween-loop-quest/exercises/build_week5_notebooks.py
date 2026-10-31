@@ -10,8 +10,21 @@ def code(text):
     return {"cell_type":"code","execution_count":None,"metadata":{},"outputs":[],"source":[line+"\n" for line in text.strip().splitlines()]}
 
 def write(name, title, cells):
+    colab_url = f"https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/{name}"
     intro = md(f'''<div style="background:#071a33;color:white;padding:22px;border-radius:16px">
 <h1>{title}</h1><p>Week 5 beginner practice • Read → Predict → Run → Change → Explain</p></div>
+
+## Open and save your Google Workspace copy
+
+[**Open this notebook in Google Colab**]({colab_url})
+
+1. Sign into the Google account you will use for class.
+2. In Colab, choose **File → Save a copy in Drive**.
+3. Rename the copy with your name and the module number.
+4. Confirm that **Copy of** no longer appears in the title.
+5. Complete the lesson in your saved Google Drive copy.
+
+> **Git reminder:** `git pull` downloads the newest repository changes to a local computer. We are not using `git pull` for today's labs. The GitHub-to-Colab link opens the newest notebook in your browser, and **Save a copy in Drive** puts your editable copy in your Google account.
 
 **How to work:** Do not rush past a cell you cannot explain. Ask a partner what changes before you press Run.''')
     notebook={"cells":[intro]+cells,"metadata":{"kernelspec":{"display_name":"Python 3","language":"python","name":"python3"},"language_info":{"name":"python","version":"3.12"}},"nbformat":4,"nbformat_minor":5}

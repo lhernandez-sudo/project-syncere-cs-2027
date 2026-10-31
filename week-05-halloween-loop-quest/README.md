@@ -66,6 +66,18 @@ After playing, students work in pairs to locate one variable, list, conditional,
 
 The main Week 5 lesson uses three browser notebooks. Each module begins with teacher modeling, a silent prediction, a whole-class trace, and one guided change before students work independently.
 
+### Student Google Workspace launch
+
+Students do not need to clone the repository or configure Python locally.
+
+1. Click the Colab link for the current module.
+2. Sign into the Google account that should own the classwork.
+3. Choose **File → Save a copy in Drive**.
+4. Rename the copy with the student's name and module number.
+5. Work from the saved Google Drive copy for the rest of class.
+
+**Git reminder:** `git pull` downloads new commits from a remote repository into an existing local repository. It does not move a notebook into Google Drive. For this class, the GitHub-to-Colab link replaces the local pull/setup step: GitHub supplies the master notebook, Colab runs it, and **Save a copy in Drive** connects the editable copy to the student's Google account.
+
 1. [Module 1 Game Loadout](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) reviews variables, lists, and decisions.
 2. [Module 2 Arcade Loop Trainer](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) gives repeated practice with loop variables, counters, accumulators, list building, and stopping conditions.
 3. [Module 3 Power-Up Functions](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb) connects parameters, return values, decisions, and loops inside functions.
@@ -84,7 +96,7 @@ The main Week 5 lesson uses three browser notebooks. Each module begins with tea
 | 12:15-12:40 | Loop boss challenge and peer debugging |
 | 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v4.pptx`.
+The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v5.pptx`.
 
 ## Challenge artifact
 
