@@ -21,6 +21,7 @@ By the end of the game, students can:
 - Trace an accumulator through a `for` loop.
 - Explain why a `while` loop stops.
 - Identify function arguments, parameters, and return values.
+- Explain how a class creates objects with independent attributes and shared methods.
 
 ## Suggested facilitation: 9:15–9:35
 
@@ -57,6 +58,10 @@ The earlier terminal version remains in `examples/haunted_mushroom_kingdom.py` a
 - **Argument:** A value supplied when calling a function.
 - **Parameter:** A function variable that receives an argument.
 - **Return value:** A result sent back to the caller.
+- **Class:** A blueprint that groups related data and behavior.
+- **Object:** One instance created from a class.
+- **Attribute:** A value stored on an object.
+- **Method:** A function defined inside a class.
 
 ## Guided exercise
 
@@ -64,7 +69,7 @@ After playing, students work in pairs to locate one variable, list, conditional,
 
 ## Beginner recovery workshop
 
-The main Week 5 lesson uses three browser notebooks. Each module begins with teacher modeling, a silent prediction, a whole-class trace, and one guided change before students work independently.
+The main Week 5 lesson uses four browser notebooks. Each module begins with teacher modeling, a silent prediction, a whole-class trace, and one guided change before students work independently. Module 4 is a short, beginner-friendly classes lesson added because the instructor will be out next week.
 
 The print-ready black-and-white reference booklet is in [`python-guide-pdf/`](python-guide-pdf/). The editable Word source and guide generator remain in [`handouts/`](handouts/).
 
@@ -80,11 +85,12 @@ Students do not need to clone the repository or configure Python locally.
 
 **Git reminder:** `git pull` downloads new commits from a remote repository into an existing local repository. It does not move a notebook into Google Drive. For this class, the GitHub-to-Colab link replaces the local pull/setup step: GitHub supplies the master notebook, Colab runs it, and **Save a copy in Drive** connects the editable copy to the student's Google account.
 
-Use these current Google Workspace launch links. Each notebook also contains the complete three-module launch panel.
+Use these current Google Workspace launch links. Each notebook also contains the complete four-module launch panel.
 
 1. [Open Module 1: Game Loadout in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-1-game-loadout.ipynb) combines variables, lists, loops, multi-part decisions, and a boss function.
 2. [Open Module 2: Arcade Loop Trainer in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-2-arcade-loops.ipynb) practices counters, filtered accumulators, list building, stopping conditions, and multi-output loop challenges.
 3. [Open Module 3: Power-Up Functions in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-3-power-up-functions.ipynb) combines parameters, guarded returns, Boolean decisions, loops inside functions, and multi-result reports.
+4. [Open Module 4: Friendly Classes in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-05-halloween-loop-quest/exercises/module-4-friendly-classes.ipynb) introduces classes, objects, attributes, methods, `__init__`, `self`, independent state, and a small game-object system.
 
 ### Saturday agenda
 
@@ -97,9 +103,10 @@ Use these current Google Workspace launch links. Each notebook also contains the
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Module 2 Arcade Loop Trainer |
 | 11:20-11:30 | Break |
-| 11:30-12:15 | Module 3 Power-Up Functions |
-| 12:15-12:40 | Loop boss challenge and peer debugging |
-| 12:40-1:00 | Exit ticket, sharing, and notebook download |
+| 11:30-12:10 | Module 3 Power-Up Functions |
+| 12:10-12:40 | Module 4 Friendly Classes: theory and guided objects |
+| 12:40-12:52 | Classes mini-project and peer testing |
+| 12:52-1:00 | Exit ticket, sharing, and notebook download |
 
 The editable teaching deck is in `slides/week-05-review-game-labs-v8.pptx`.
 
@@ -111,6 +118,7 @@ Students choose one small extension and demonstrate it to a partner:
 - Add a fourth haunted door.
 - Change the coin values and update the trace.
 - Write a second function that calculates a bonus.
+- Add one attribute and one method to a class from Module 4.
 
 ## Peer review
 
@@ -122,6 +130,7 @@ Partners run the modified level, predict the result, and verify that the explana
 2. What must change inside most `while` loops?
 3. What is the difference between `print()` and `return`?
 4. Which game variable or list represented changing state?
+5. When would a class be more useful than a few separate variables?
 
 ## Optional extensions
 
