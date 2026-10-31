@@ -1,6 +1,6 @@
 # Week 5 Icebreaker: Super Mario Haunted Python Kingdom
 
-This unofficial, fan-made Super Mario Halloween side-scroller reviews the Week 3 and Week 4 Python foundations. Students run, jump, stomp Goombas, collect coins, hit question blocks, enter warp pipes, and unlock five Python gates on the way to Bowser's castle. The game uses original canvas-drawn pixel art and original sound effects. It does not contain copied Nintendo sprites, music, or level files.
+This unofficial, fan-made Super Mario Halloween side-scroller reviews the Week 3 and Week 4 Python foundations. It plays like a classroom TAS: Mario runs, jumps, stomps Goombas, collects coins, and moves through the course automatically. The class supplies the inputs at 20 Python gates on the way to Bowser's castle. The game uses original canvas-drawn pixel art and original sound effects. It does not contain copied Nintendo sprites, music, or level files.
 
 ## Run the game
 
@@ -10,13 +10,13 @@ You can also open this file directly:
 
 [`game/index.html`](game/index.html)
 
-Controls: arrow keys or `A`/`D` to run, Space/Up/`W` to jump, and `P` to pause. Number keys `1`–`3` answer Python gates. No packages, server, or development-environment setup are required.
+Mario's movement is automatic. Click an answer or use number keys `1`–`3` at each gate. Every question has a 15-second countdown. A wrong answer or timeout causes a visible TAS misinput death, then Mario retries from the previous checkpoint. Press `P` to pause between gates. No packages, server, or development-environment setup are required.
 
 ## Icebreaker learning objectives
 
 By the end of the game, students can:
 
-- Explain how variables and lists store game state.
+- Explain how variables and lists store game state across four questions.
 - Predict which branch an `if` statement selects.
 - Trace an accumulator through a `for` loop.
 - Explain why a `while` loop stops.
@@ -24,22 +24,22 @@ By the end of the game, students can:
 
 ## Suggested facilitation: 9:00–9:25
 
-1. **9:00–9:03:** Launch the game and demonstrate run, jump, and Goomba stomping.
-2. **9:03–9:18:** Let students take turns playing. At each locked gate, let the class vote before choosing an answer.
+1. **9:00–9:03:** Launch the game and explain that Mario's movement is a tool-assisted speedrun.
+2. **9:03–9:18:** Assign a student to submit each timed input. At every gate, the class has 15 seconds to vote before the input is entered.
 3. **9:18–9:22:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
 4. **9:22–9:25:** Ask students which concept needs the most practice today.
 
-Wrong gate answers do not end the game. The gate asks students to trace the code and try again.
+Wrong answers and timeouts trigger a Mario death animation and count as a TAS misinput. The same concept returns after the checkpoint retry.
 
 ## Instructor concept map
 
-| Level | Concept | Key question |
+| World | Concept | Four-question focus |
 | --- | --- | --- |
-| Toad's Inventory Pipe | Variables and lists | How do `append()` and `len()` change or inspect a list? |
-| Boo's Haunted House | Conditions and logic | How do `and` and `not` combine Boolean values? |
-| Super Mario Coin Road | `for` loops | How does an accumulator change each iteration? |
-| Warp Pipe Maze | `while` loops | Which state change makes the loop condition false? |
-| Bowser's Function Castle | Functions | How do arguments become parameters and produce a return value? |
+| 1-1 | Variables and lists | Assignment, `append()`, indexing, and value types |
+| 2-1 | Conditions and logic | Comparisons, `if`/`else`, `and`, `or`, and `not` |
+| 3-1 | `for` loops | Iteration counts, ranges, list building, and accumulators |
+| 4-1 | `while` loops | Conditions, state changes, stopping, and iteration tracing |
+| 5-1 | Functions | Arguments, parameters, return values, and `None` |
 
 ## Technical fallback
 
