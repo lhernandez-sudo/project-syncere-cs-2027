@@ -98,10 +98,11 @@ Use these current Google Workspace launch links. Each notebook also contains the
 | 10:35-11:20 | Module 2 Arcade Loop Trainer |
 | 11:20-11:30 | Break |
 | 11:30-12:15 | Module 3 Power-Up Functions |
-| 12:15-12:40 | Loop boss challenge and peer debugging |
-| 12:40-1:00 | Exit ticket, sharing, and notebook download |
+| 12:15-12:35 | Function boss challenge and peer debugging |
+| 12:35-12:50 | Instructor preview of classes and objects in the slides |
+| 12:50-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-review-game-labs-v8.pptx`.
+The editable teaching deck is in `slides/week-05-review-game-labs-v9.pptx`.
 
 ## Challenge artifact
 
