@@ -32,9 +32,10 @@ const palette = {
 let started = false, paused = false, asking = false, won = false, audioOn = true;
 let cameraX = 0, lastTime = 0, activeQuestion = null, deadline = 0, deathTimer = 0;
 let musicTimer = null, musicStep = 0, bossTimer = 0, deathStyle = "bonk", deathReason = "";
+let transitionTimer = 0, transitionFromWorld = 0;
 const held = new Set();
 const state = { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 };
-const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0 };
+const player = { x: 60, y: 365, w: 36, h: 48, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" };
 const particles = [];
 const boss = { x: 11910, y: 354, w: 96, h: 98, defeated: false };
 
@@ -211,10 +212,10 @@ function updateHud() {
 
 function resetGame() {
   Object.assign(state, { lives: 3, coins: 0, cleared: 0, deaths: 0, checkpoint: 60 });
-  Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0 });
+  Object.assign(player, { x: 60, y: 365, vx: 0, vy: 0, onGround: false, dead: false, frame: 0, form: "small" });
   questions.forEach(q => q.passed = false); coins.forEach(c => c.taken = false); enemies.forEach(e => e.alive = true);
   boss.defeated = false; bossTimer = 0;
-  particles.length = 0; cameraX = 0; won = false; asking = false; paused = false; started = true;
+  particles.length = 0; cameraX = 0; won = false; asking = false; paused = false; transitionTimer = 0; started = true;
   startMusic();
   ui.start.hidden = true; ui.win.hidden = true; ui.question.hidden = true; updateHud();
 }
@@ -252,7 +253,19 @@ function answerQuestion(index, button) {
   ui.feedback.textContent = `FRAME PERFECT! ${activeQuestion.explanation}`;
   spawnParticles(player.x, player.y, subjects[activeQuestion.subjectIndex].color, 25);
   beep(760, .09); setTimeout(() => beep(1020, .18), 100); updateHud();
-  setTimeout(() => { ui.question.hidden = true; asking = false; paused = false; activeQuestion = null; }, TEST_MODE ? 20 : 1200);
+  const worldClear = state.cleared % 4 === 0 && state.cleared < 20;
+  setTimeout(() => {
+    ui.question.hidden = true; asking = false; activeQuestion = null;
+    if (worldClear) startWorldTransition(); else paused = false;
+  }, TEST_MODE ? 20 : 1200);
+}
+
+function startWorldTransition() {
+  transitionFromWorld = Math.max(0, Math.floor(state.cleared / 4) - 1);
+  transitionTimer = TEST_MODE ? 1 : 300;
+  paused = true;
+  spawnParticles(player.x, player.y, palette.gold, 55);
+  beep(523, .1, "square", .05); beep(659, .1, "square", .05, .11); beep(784, .2, "square", .05, .22);
 }
 
 function killMario(reason) {
@@ -302,6 +315,16 @@ function update() {
     ui.timerText.textContent = left.toFixed(1); ui.timerBar.style.transform = `scaleX(${left / QUESTION_SECONDS})`;
     if (left <= 5) ui.question.classList.add("danger");
     if (left <= 0) killMario("TIMEOUT! No answer received.");
+    return;
+  }
+  if (transitionTimer > 0) {
+    transitionTimer -= 1;
+    if (transitionTimer === 0) {
+      player.form = "tanooki";
+      paused = false;
+      spawnParticles(player.x, player.y, palette.gold, 40);
+      beep(784, .08); beep(988, .08, "square", .05, .09); beep(1319, .22, "square", .05, .18);
+    }
     return;
   }
   if (paused && !player.dead) return;
@@ -448,6 +471,65 @@ function drawMario() {
   block(8, y + 25, 21, 14, palette.blue); block(11, y + 23, 5, 12, palette.blueLight); block(23, y + 23, 5, 12, palette.blueLight);
   block(2, y + 25 + run * 2, 8, 12, palette.skin); block(29, y + 25 + (1-run)*2, 7, 12, palette.skin);
   block(7, y + 39 - run*2, 11, 8, palette.brown); block(22, y + 39 - (1-run)*2, 12, 8, palette.brown);
+  if (player.form === "tanooki" && !player.dead) {
+    // Tanooki ears and a striped tail remain after the world-transition cutscene.
+    block(8, y - 11, 8, 9, "#8b572a"); block(23, y - 11, 8, 9, "#8b572a");
+    block(31, y + 27, 15, 8, "#b97836"); block(42, y + 20, 12, 8, "#6d3a21");
+    block(50, y + 14, 10, 7, "#b97836");
+  }
+  ctx.restore();
+}
+
+function drawWorldTransition() {
+  if (transitionTimer <= 0) return;
+  const elapsed = 300 - transitionTimer;
+  const nextWorld = subjects[Math.min(4, transitionFromWorld + 1)];
+  ctx.save();
+  // Moving sky creates the feeling that Tanooki Mario leaves the level vertically.
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, "#188fe8"); sky.addColorStop(1, "#b8efff");
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+  for (let cloud = 0; cloud < 8; cloud++) {
+    const cloudY = ((cloud * 93 + elapsed * 3.2) % (H + 120)) - 80;
+    const cloudX = 70 + (cloud * 137) % 820;
+    ctx.fillStyle = "rgba(255,255,255,.9)";
+    ctx.beginPath(); ctx.arc(cloudX, cloudY, 28, 0, Math.PI*2); ctx.arc(cloudX+35, cloudY-8, 35, 0, Math.PI*2); ctx.arc(cloudX+75, cloudY, 27, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.textAlign = "center";
+  if (elapsed < 75) {
+    const flowerY = 170 + Math.sin(elapsed * .12) * 10;
+    ctx.fillStyle = palette.orange; ctx.fillRect(W/2-48, 245, 96, 72);
+    ctx.fillStyle = palette.gold; ctx.font = "bold 58px monospace"; ctx.fillText("?", W/2, 302);
+    ctx.font = "72px sans-serif"; ctx.fillText("🌼", W/2, flowerY);
+    ctx.fillStyle = palette.white; ctx.font = "bold 38px monospace"; ctx.fillText("POWER-UP BLOCK!", W/2, 75);
+    ctx.font = "bold 22px monospace"; ctx.fillText("FIRE FLOWER ACQUIRED", W/2, 112);
+  } else if (elapsed < 145) {
+    const pulse = 1 + Math.sin(elapsed * .35) * .12;
+    ctx.translate(W/2, 270); ctx.scale(pulse, pulse);
+    ctx.fillStyle = "rgba(255,110,20,.35)"; ctx.beginPath(); ctx.arc(0,0,115,0,Math.PI*2); ctx.fill();
+    ctx.font = "100px sans-serif"; ctx.fillText("🔥", 0, 25);
+    ctx.fillStyle = palette.white; ctx.font = "bold 34px monospace"; ctx.fillText("FIRE MARIO!", 0, -125);
+    ctx.setTransform(1,0,0,1,0,0);
+    for (let fireball = 0; fireball < 6; fireball++) {
+      const angle = elapsed * .09 + fireball * Math.PI / 3;
+      ctx.font = "36px sans-serif"; ctx.fillText("🔥", W/2 + Math.cos(angle)*150, 270 + Math.sin(angle)*105);
+    }
+  } else if (elapsed < 215) {
+    const spin = elapsed * .16;
+    ctx.save(); ctx.translate(W/2, 235); ctx.rotate(spin); ctx.font = "82px sans-serif"; ctx.fillText("🍂", 0, 0); ctx.restore();
+    ctx.font = "105px sans-serif"; ctx.fillText("🦝", W/2, 390);
+    ctx.fillStyle = palette.white; ctx.font = "bold 35px monospace"; ctx.fillText("TANOOKI SUIT!", W/2, 82);
+    ctx.font = "bold 19px monospace"; ctx.fillText("RUN FAST. WAG TAIL. IGNORE GRAVITY.", W/2, 116);
+  } else {
+    const flight = Math.min(1, (elapsed - 215) / 75);
+    const marioY = 390 - flight * 245 + Math.sin(elapsed * .18) * 12;
+    ctx.font = "92px sans-serif"; ctx.fillText("🦝", W/2, marioY);
+    ctx.font = "45px sans-serif"; ctx.fillText("🧢", W/2-5, marioY-58);
+    ctx.fillStyle = palette.white; ctx.font = "bold 38px monospace"; ctx.fillText("FLYING TO THE NEXT WORLD!", W/2, 72);
+    ctx.fillStyle = nextWorld.color; ctx.strokeStyle = palette.black; ctx.lineWidth = 8;
+    ctx.font = "bold 48px monospace"; ctx.strokeText(`WORLD ${nextWorld.world}`, W/2, 470); ctx.fillText(`WORLD ${nextWorld.world}`, W/2, 470);
+    ctx.fillStyle = palette.white; ctx.font = "bold 22px monospace"; ctx.fillText(nextWorld.name, W/2, 510);
+  }
   ctx.restore();
 }
 
@@ -579,7 +661,7 @@ function drawParticles() { particles.forEach(p => block(p.x-cameraX,p.y,p.size,p
 function draw() {
   drawBackground(); drawDecorations(); ground.forEach(drawGround); platforms.forEach(drawPlatform);
   coins.forEach(c => { if(c.taken)return; const x=c.x-cameraX;if(x<-30||x>W+30)return;const y=c.y+Math.sin(c.phase)*6;block(x-7,y-13,14,26,palette.gold);block(x-2,y-9,4,18,"#fff5a4"); });
-  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario(); drawDeathGag();
+  questions.forEach(drawGate); enemies.forEach(drawGoomba); drawBowser(); drawParticles(); drawMario(); drawDeathGag(); drawWorldTransition();
   if (started && !asking && !won) {
     ctx.fillStyle="rgba(10,6,28,.82)";ctx.fillRect(14,14,260,32);ctx.fillStyle=palette.green;ctx.font="bold 15px monospace";ctx.fillText("TAS AUTO-RUN • INPUT LOCKED",27,36);
   }
