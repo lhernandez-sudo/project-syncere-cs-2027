@@ -182,6 +182,26 @@ Work in teams of 3 or 4. Rotate roles after every level.
 - **Debugger:** points to the exact variable, list item, or condition that needs repair.
 
 The first run should fail. A failure animation means the code gave you useful information.'''),
+    md('''## Practice run — rehearse the roles first
+
+This example already works. Do not edit it.
+
+1. Navigator reads the goal and code aloud.
+2. Predictor announces the result before Run.
+3. Debugger points to the variable and condition.
+4. Driver runs the cell only after all three students speak.
+
+Rotate roles once after the successful animation. Then begin Level 1.'''),
+    code('''practice_coins = 3
+practice_ready = practice_coins >= 2
+
+mario_level("TEAM PRACTICE", "Predict whether 3 coins passes a 2-coin gate",
+            practice_ready, "The rehearsal should pass without edits.",
+            enemy="🚩", coins=practice_coins)
+integrity_check("Team rehearsal", [
+    (practice_coins == 3, "Keep the rehearsal value unchanged."),
+    (practice_ready is True, "Trace the comparison before running."),
+])'''),
     md('''## Level 1 — Jump Power Variable
 
 **Concept reminder:** A variable stores one value under a name. Changing the value changes what the program can do.
@@ -395,6 +415,27 @@ Keep the same team for this module. Every student must speak during the human tr
 With three students, the Accumulator also checks conditions. Rotate roles after every level.
 
 **Human loop routine:** point to one list item, say the loop variable, update the accumulator, evaluate the condition, then move to the next item.'''),
+    md('''## Practice run — become the loop
+
+This loop already works. Do not edit it. Physically trace both iterations before Run.
+
+The Loop Variable points to `2`, then `3`. The Accumulator says the total before and after each addition. The Condition Checker says whether each value is at least `3`. The Driver waits, then runs the cell.
+
+Rotate roles once after the check passes. Then begin the opening diagnostic.'''),
+    code('''practice_values = [2, 3]
+practice_total = 0
+practice_high_values = 0
+
+for value in practice_values:
+    practice_total += value
+    if value >= 3:
+        practice_high_values += 1
+
+integrity_check("Human-loop rehearsal", [
+    (practice_values == [2, 3], "Keep the rehearsal list unchanged."),
+    (practice_total == 5, "Trace both accumulator updates."),
+    (practice_high_values == 1, "Only one value passes the condition."),
+])'''),
     md('''## Opening diagnostic — repair the round tracker
 
 Before the walkthrough, repair one loop that must count rounds, total points, and count high-scoring rounds. Run it once first, then use the failed checks as clues.
@@ -580,6 +621,22 @@ Keep the same team, but take a new role. Act out every function call before the 
 With three students, the Caller also serves as Return Tester. Rotate roles after every level.
 
 **Human function routine:** call the function, match arguments to parameters, trace the body, then send the return value back to the caller.'''),
+    md('''## Practice run — become the function
+
+This function already works. Do not edit it.
+
+The Caller says `add_bonus(4, 2)`. The Parameter matches `4` to `score` and `2` to `bonus`. The Function Runner calculates the body. The Return Tester announces `6`. The Driver runs the cell last.
+
+Rotate roles once after the check passes. Then begin the opening diagnostic.'''),
+    code('''def practice_add_bonus(score, bonus):
+    result = score + bonus
+    return result
+
+practice_result = practice_add_bonus(4, 2)
+integrity_check("Human-function rehearsal", [
+    (practice_result == 6, "Match arguments to parameters and trace the addition."),
+    (practice_add_bonus(10, 3) == 13, "The function must work with other arguments."),
+])'''),
     md('''## Opening diagnostic — repair the power-up function
 
 This function must approve a power-up only when it has uses remaining **and** its name is in the allowed list. Replace `False` with one Boolean expression. Do not change the checks.'''),

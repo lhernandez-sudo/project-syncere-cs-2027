@@ -80,6 +80,8 @@ Students do not need to clone the repository or configure Python locally.
 
 Modules 2 and 3 use teams of 3 or 4. Students keep the same team but rotate the active role after every level. Each team completes a spoken human trace before the Driver runs the code.
 
+Every module begins with a short, already-working practice run after teams assign roles. Students rehearse the complete team routine once before opening the first diagnostic or repair challenge.
+
 **Git reminder:** `git pull` downloads new commits from a remote repository into an existing local repository. It does not move a notebook into Google Drive. For this class, the GitHub-to-Colab link replaces the local pull/setup step: GitHub supplies the master notebook, Colab runs it, and **Save a copy in Drive** connects the editable copy to the student's Google account.
 
 Use these current Google Workspace launch links. Each notebook also contains the complete three-module launch panel.
