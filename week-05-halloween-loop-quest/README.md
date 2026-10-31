@@ -22,12 +22,12 @@ By the end of the game, students can:
 - Explain why a `while` loop stops.
 - Identify function arguments, parameters, and return values.
 
-## Suggested facilitation: 9:00–9:25
+## Suggested facilitation: 9:15–9:35
 
-1. **9:00–9:03:** Launch the game and explain that Mario's movement is a tool-assisted speedrun.
-2. **9:03–9:18:** Assign a student to submit each timed input. At every gate, the class has 15 seconds to vote before the input is entered.
-3. **9:18–9:22:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
-4. **9:22–9:25:** Ask students which concept needs the most practice today.
+1. **9:15–9:18:** Launch the game and explain that Mario's movement is a tool-assisted speedrun.
+2. **9:18–9:30:** Assign a student to submit each timed input. At every gate, the class has 15 seconds to vote before the input is entered.
+3. **9:30–9:33:** Open `game/game.js` and locate one example of a variable, list, condition, loop, and function.
+4. **9:33–9:35:** Ask students which concept needs the most practice today.
 
 Wrong answers and timeouts trigger a Mario death animation and count as a TAS misinput. The same concept returns after the checkpoint retry.
 
@@ -74,16 +74,17 @@ The main Week 5 lesson uses three browser notebooks. Each module begins with tea
 
 | Time | Block |
 | --- | --- |
-| 9:00-9:25 | Mario review game and class voting |
-| 9:25-10:25 | Human loop demonstration and Module 1 guided practice |
+| 9:00-9:15 | Student arrival, sign-in, browser setup, and settling in |
+| 9:15-9:35 | Mario review game and class voting |
+| 9:35-10:25 | Human loop demonstration and Module 1 guided practice |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Module 2 Arcade Loop Trainer |
 | 11:20-11:30 | Break |
-| 11:30-12:20 | Module 3 Power-Up Functions |
-| 12:20-12:45 | Loop boss challenge and peer debugging |
-| 12:45-1:00 | Exit ticket and notebook download |
+| 11:30-12:15 | Module 3 Power-Up Functions |
+| 12:15-12:40 | Loop boss challenge and peer debugging |
+| 12:40-1:00 | Exit ticket, sharing, and notebook download |
 
-The editable teaching deck is in `slides/week-05-beginner-loop-workshop.pptx`.
+The editable teaching deck is in `slides/week-05-beginner-loop-workshop-v2.pptx`.
 
 ## Challenge artifact
 
