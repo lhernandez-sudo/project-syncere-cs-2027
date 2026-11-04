@@ -8,9 +8,8 @@ No local Python setup is required. Open the notebooks directly in Google Colab:
 
 1. [Icebreaker: Secret Identity Generator](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/00-icebreaker-secret-identity.ipynb)
 2. [Beginner Programming: Dictionary Arcade](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/01-dictionary-arcade.ipynb)
-3. [Optional Extension: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
-4. [Optional Extension: Data Model Showdown](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/03-data-model-showdown.ipynb)
-5. [Group Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
+3. [Notebook 2: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
+4. [Group Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
 
 In Colab, choose **File → Save a copy in Drive** before editing.
 

@@ -23,8 +23,7 @@ Students should open each notebook, choose **File → Save a copy in Drive**, an
 1. [Icebreaker: Secret Identity Generator](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/00-icebreaker-secret-identity.ipynb)
 2. [Notebook 1: Dictionary Arcade](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/01-dictionary-arcade.ipynb)
 3. [Notebook 2: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
-4. [Notebook 3: Data Model Showdown](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/03-data-model-showdown.ipynb)
-5. [Tech Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
+4. [Tech Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
 
 ## Saturday agenda
 
@@ -34,7 +33,7 @@ Students should open each notebook, choose **File → Save a copy in Drive**, an
 | 9:15-9:30 | Secret Identity Generator icebreaker |
 | 9:30-10:25 | Notebook 1: Dictionary Arcade, beginner practices A and B |
 | 10:25-10:35 | Break |
-| 10:35-11:20 | Finish Dictionary Arcade; continue to classes only if ready |
+| 10:35-11:20 | Notebook 2: Friendly Character Classes |
 | 11:20-11:30 | Break and form groups of 2 or 3 |
 | 11:30-11:45 | Open the Tech Investigation and choose a topic |
 | 11:45-12:15 | Research and complete the evidence organizer |
@@ -80,11 +79,11 @@ Syntax errors must be fixed before a cell can reach its checks. Functionality ch
 
 ## Guided exercises
 
-Notebook 1 assumes students have never seen dictionaries and begins with reading, changing, and adding one value at a time. Notebook 2 builds simple `Character` and `PowerUp` classes. Notebook 3 is an optional extension for students who finish early. The Tech Investigation guides groups through business models, lawsuits, and social questions involving TikTok, Google, Meta, Amazon, Apple, and generative AI.
+Notebook 1 assumes students have never seen dictionaries and begins with reading, changing, and adding one value at a time. Notebook 2 then builds simple `Character` and `PowerUp` classes. The Tech Investigation guides groups through business models, lawsuits, and social questions involving TikTok, Google, Meta, Amazon, Apple, and generative AI. Notebook 3 remains archived in the folder but is not part of this class plan.
 
 ## Challenge artifact
 
-Every student should complete the first two dictionary practices and at least one dictionary challenge. Faster students may continue into the class and data-model notebooks.
+Every student should complete the first two dictionary practices, at least one dictionary challenge, and the guided sections of Notebook 2. The final class boss is a stretch goal if time permits.
 
 ## Technology investigation
 
@@ -104,4 +103,4 @@ At 11:30, students form groups of 2 or 3 and choose one of six technology topics
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v6.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v7.pptx`.

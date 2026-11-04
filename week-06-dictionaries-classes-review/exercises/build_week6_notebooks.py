@@ -20,7 +20,6 @@ def intro(name, title, subtitle):
         f"[Icebreaker]({BASE}/00-icebreaker-secret-identity.ipynb)",
         f"[Dictionaries]({BASE}/01-dictionary-arcade.ipynb)",
         f"[Classes]({BASE}/02-friendly-character-classes.ipynb)",
-        f"[Final challenge]({BASE}/03-data-model-showdown.ipynb)",
         f"[Tech investigation]({BASE}/04-tech-controversy-investigation.ipynb)",
     ])
     return md(f'''<div style="background:#071a33;color:white;padding:22px;border-radius:16px">
