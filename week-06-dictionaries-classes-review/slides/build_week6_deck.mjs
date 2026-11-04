@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week6-slides");
 const outputDir = path.join(workspaceDir, "week-06-dictionaries-classes-review", "slides");
-const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v7.pptx");
+const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v8.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1030.10813\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF", gold="#D89B18";
@@ -42,10 +42,7 @@ text(s,"Beginner programming and technology awareness",76,242,1080,48,30,"#B8D7F
 text(s,"Week 6 self-guided Colab session",76,584,1080,36,21,"#D9E8F5");
 
 s=base("Today’s plan","Programming first, technology investigation after the second break");
-bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:30  Secret Identity Generator","9:30–10:25  Notebook 1: Dictionary Arcade","10:25–10:35  Break","10:35–11:20  Notebook 2: Friendly Character Classes","11:20–11:30  Break and form groups of 2 or 3","11:30–12:15  Technology research","12:15–12:45  Share-outs and discussion","12:45–1:00  Individual exit ticket"],72,126,1140,18,55);
-
-s=base("Work style","Independent programming, then small-group investigation");
-bullets(s,["Save an individual Google Drive copy","Read each notebook cell before running it","Try one repair before asking for help","Complete Notebook 1, then open Notebook 2","Form groups of 2 or 3 after the second break","Use evidence and respectful disagreement","Complete the final exit ticket independently"],86,136,1100,22,66);
+bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:25  Secret Identity Generator","9:25–10:30  Notebook 1: Dictionary Arcade","10:30–10:40  Break","10:40–11:35  Notebook 2: Friendly Character Classes","11:35–11:45  Break and form groups of 2 or 3","11:45–12:15  Choose a technology topic and research","12:15–12:45  Share-outs and discussion","12:45–1:00  Individual exit ticket"],72,126,1140,18,55);
 
 s=base("Week 6 Colab links","Choose either route, then open the Week 6 README");
 text(s,"LOCAL PROJECT",80,152,470,34,20,teal,true);
@@ -68,9 +65,9 @@ s=base("Notebook 2: Friendly Character Classes","A second guided notebook before
 bullets(s,["Read the blueprint and object explanation","Run the working Player example","Complete the Character constructor","Add one method that changes an object","Check that two objects keep separate values","Attempt the PowerUp boss only if time permits"],90,142,1090,24,76);
 
 s=base("Break","10 minutes");
-text(s,"Step away from the screen. Return at 10:35.",140,270,1000,70,34,navy,true,"Aptos","center");
+text(s,"Step away from the screen. Return at 10:40.",140,270,1000,70,34,navy,true,"Aptos","center");
 
-s=base("Break and group setup","11:20 to 11:30");
+s=base("Break and group setup","11:35 to 11:45");
 text(s,"Form a group of 2 or 3. Open the Tech Investigation notebook.",140,245,1000,70,32,navy,true,"Aptos","center");
 text(s,"Choose one topic together. You may divide the work in any way.",140,345,1000,60,26,muted,false,"Aptos","center");
 
@@ -117,7 +114,7 @@ const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"cont
 const candidate=path.join(buildDir,"candidate.pptx");
 await (await PresentationFile.exportPptx(deck)).save(candidate);
 await finalizePresentation({
-  explicitTotalSlideCount:16,
+  explicitTotalSlideCount:15,
   requiredNativeTableOwnerSlides:[],
   requiredNativeChartOwnerSlides:[],
   workspaceDir,
@@ -129,6 +126,6 @@ await finalizePresentation({
   layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],
   fontPolicy:{basis:"design",families:["Aptos"]},
   verifyArtifactToolImport:true,
-  receiptPath:path.join(buildDir,"validation-v7.json"),
+  receiptPath:path.join(buildDir,"validation-v8.json"),
 });
 console.log(finalPath);

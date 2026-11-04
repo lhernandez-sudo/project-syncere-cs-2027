@@ -30,13 +30,12 @@ Students should open each notebook, choose **File → Save a copy in Drive**, an
 | Time | Block |
 | --- | --- |
 | 9:00-9:15 | Arrival, sign-in, and open the Week 6 README |
-| 9:15-9:30 | Secret Identity Generator icebreaker |
-| 9:30-10:25 | Notebook 1: Dictionary Arcade, beginner practices A and B |
-| 10:25-10:35 | Break |
-| 10:35-11:20 | Notebook 2: Friendly Character Classes |
-| 11:20-11:30 | Break and form groups of 2 or 3 |
-| 11:30-11:45 | Open the Tech Investigation and choose a topic |
-| 11:45-12:15 | Research and complete the evidence organizer |
+| 9:15-9:25 | Secret Identity Generator icebreaker |
+| 9:25-10:30 | Notebook 1: Dictionary Arcade |
+| 10:30-10:40 | Break |
+| 10:40-11:35 | Notebook 2: Friendly Character Classes |
+| 11:35-11:45 | Break and form groups of 2 or 3 |
+| 11:45-12:15 | Open the Tech Investigation, choose a topic, and research |
 | 12:15-12:45 | Two-minute group share-outs and class discussion |
 | 12:45-1:00 | Individual exit ticket and save notebooks to Drive |
 
@@ -103,4 +102,4 @@ At 11:30, students form groups of 2 or 3 and choose one of six technology topics
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v7.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v8.pptx`.
