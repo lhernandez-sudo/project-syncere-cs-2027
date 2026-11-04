@@ -2,9 +2,17 @@
 
 ## Students: start Week 6
 
-### [OPEN THE DICTIONARIES AND CLASSES REVIEW](week-06-dictionaries-classes-review/README.md)
+### [OPEN THE WEEK 6 CODE AND CONSEQUENCES GUIDE](week-06-dictionaries-classes-review/README.md)
 
-Open the Week 6 Colab notebooks from the README. No local Python setup is required.
+No local Python setup is required. Open the notebooks directly in Google Colab:
+
+1. [Icebreaker: Secret Identity Generator](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/00-icebreaker-secret-identity.ipynb)
+2. [Beginner Programming: Dictionary Arcade](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/01-dictionary-arcade.ipynb)
+3. [Optional Extension: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
+4. [Optional Extension: Data Model Showdown](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/03-data-model-showdown.ipynb)
+5. [Group Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
+
+In Colab, choose **File → Save a copy in Drive** before editing.
 
 Python and computer science lessons, exercises, projects, and resources for the Project Syncere 2027 cohort.
 
@@ -18,7 +26,7 @@ The course meets on Saturdays for four hours, including two breaks. New lesson f
 | Data applications | Modules, SQLite, APIs, JSON, collaboration, and code review | Team data application |
 | AI applications | AI literacy, model APIs, evaluation, safeguards, and product development | Final AI capstone |
 
-See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 6 dictionaries and classes review](week-06-dictionaries-classes-review/README.md).
+See the [complete curriculum roadmap](curriculum-roadmap.md), the [Saturday schedule](shared/saturday-schedule.md), and the current [Week 6 Code and Consequences guide](week-06-dictionaries-classes-review/README.md).
 
 The roadmap intentionally leaves approximately one out of every four Saturdays flexible for review, cancellations, setup problems, and additional project time. The data-application arc includes a complete [database foundations lesson](lessons/database-foundations/README.md).
 
@@ -44,7 +52,7 @@ week-02-input-ai-workflow/  AI-assisted app building and peer feedback
 week-03-programming-foundations/  Data, decisions, loops, and functions
 week-04-foundations-cloud/         Foundations review and cloud computing
 week-05-halloween-loop-quest/      Interactive Halloween Python review game
-week-06-dictionaries-classes-review/  Self-guided dictionaries and classes review
+week-06-dictionaries-classes-review/  Beginner programming and technology awareness
 ```
 
 Course materials live in this repository. Student submissions should be completed in the repository provided for each assignment.
