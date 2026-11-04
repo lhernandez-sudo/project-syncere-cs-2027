@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week6-slides");
 const outputDir = path.join(workspaceDir, "week-06-dictionaries-classes-review", "slides");
-const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v8.pptx");
+const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v9.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1030.10813\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF", gold="#D89B18";
@@ -34,6 +34,10 @@ function bullets(slide,items,left=88,top=150,width=1100,size=25,gap=76,color=tea
 }
 function codeBlock(slide,code,left=80,top=165,width=760,height=390){
   box(slide,left,top,width,height,"#F4F7FA","#C8D3DF","rounded-lg"); text(slide,code,left+30,top+20,width-60,height-40,23,ink,false,"Consolas");
+}
+async function imageBytes(filePath){
+  const bytes=await fs.readFile(filePath);
+  return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
 }
 
 let s=deck.slides.add(); s.background.fill=navy; box(s,0,0,1280,18,coral,"none","none");
@@ -102,6 +106,13 @@ s=base("Individual exit ticket","Finish privately before 1:00 PM");
 bullets(s,["Which business model surprised you most?","What fact can you verify with a reliable source?","What question do you still have?","What should engineers consider besides whether a product works?"],100,165,1080,26,96);
 text(s,"Save your programming and investigation notebooks in Google Drive.",100,605,1080,42,23,blue,true,"Aptos","center");
 
+s=base("Next week: self-driving car capstone","Teams of 3 will combine Python, sensors, and hardware");
+bullets(s,["Use a Raspberry Pi as the car's computer","Read camera, distance, and line sensor input","Write Python decisions for steering and stopping","Start the program remotely, test it, and improve it","Goal: navigate a small obstacle course in the gym"],70,150,570,22,78,teal);
+s.images.add({blob:await imageBytes(path.join(outputDir,"assets","picar-x.webp")),contentType:"image/webp",alt:"SunFounder PiCar-X robot car",fit:"contain",position:{left:690,top:145,width:500,height:300}});
+s.images.add({blob:await imageBytes(path.join(outputDir,"assets","raspberry-pi-4.jpg")),contentType:"image/jpeg",alt:"Raspberry Pi 4 single-board computer",fit:"contain",position:{left:860,top:440,width:300,height:170}});
+text(s,"Each team will share the building, coding, testing, and demonstration work.",70,585,570,52,21,navy,true);
+text(s,"Images: SunFounder PiCar-X product page; ELMIR Raspberry Pi 4 product image",690,620,490,28,10,muted,false,"Aptos","center");
+
 for(let i=0;i<deck.slides.items.length;i++){
   const slide=deck.slides.items[i];
   const blob=await deck.export({slide,format:"png",scale:1});
@@ -114,7 +125,7 @@ const {finalizePresentation}=await import(pathToFileURL(path.join(skillDir,"cont
 const candidate=path.join(buildDir,"candidate.pptx");
 await (await PresentationFile.exportPptx(deck)).save(candidate);
 await finalizePresentation({
-  explicitTotalSlideCount:15,
+  explicitTotalSlideCount:16,
   requiredNativeTableOwnerSlides:[],
   requiredNativeChartOwnerSlides:[],
   workspaceDir,
@@ -126,6 +137,6 @@ await finalizePresentation({
   layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],
   fontPolicy:{basis:"design",families:["Aptos"]},
   verifyArtifactToolImport:true,
-  receiptPath:path.join(buildDir,"validation-v8.json"),
+  receiptPath:path.join(buildDir,"validation-v9.json"),
 });
 console.log(finalPath);

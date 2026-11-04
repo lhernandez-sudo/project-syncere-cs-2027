@@ -102,4 +102,4 @@ At 11:30, students form groups of 2 or 3 and choose one of six technology topics
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v8.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v9.pptx`.
