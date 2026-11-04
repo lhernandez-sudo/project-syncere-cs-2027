@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week6-slides");
 const outputDir = path.join(workspaceDir, "week-06-dictionaries-classes-review", "slides");
-const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review.pptx");
+const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v3.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1030.10813\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF", gold="#D89B18";
@@ -42,23 +42,23 @@ text(s,"Dictionaries and friendly classes",76,242,1050,48,30,"#B8D7F0");
 text(s,"Week 6 self-guided Colab session",76,584,1080,36,21,"#D9E8F5");
 
 s=base("Self-guided day","Follow the slides and notebooks in order");
-bullets(s,["Keep an individual Google Drive copy of every notebook","Work in teams of 3 or 4 for discussion and testing","Read every instruction before running a cell","Treat failed checks as clues","Ask the program assistant for account or safety help","Finish the exit ticket before 1:00 PM"],86,142,1100,23,76);
+bullets(s,["Keep an individual Google Drive copy of every notebook","Complete your own work; neighbor checks are optional","Read every instruction before running a cell","Treat failed checks as clues","Ask the program assistant for account or safety help","Finish the exit ticket before 1:00 PM"],86,142,1100,23,76);
 
 s=base("Today’s schedule","The class still includes two ten-minute breaks");
-bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:35  Secret Identity Draft icebreaker","9:35–10:25  Notebook 1: Dictionary Arcade","10:25–10:35  Break","10:35–11:20  Finish the dictionary boss","11:20–11:30  Break","11:30–12:15  Notebook 2: Friendly Character Classes","12:15–12:40  Notebook 3: Data Model Showdown","12:40–1:00  Partner test and exit ticket"],72,126,1140,18,55);
+bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:35  Secret Identity Generator icebreaker","9:35–10:25  Notebook 1: Dictionary Arcade","10:25–10:35  Break","10:35–11:20  Finish the dictionary boss","11:20–11:30  Break","11:30–12:15  Notebook 2: Friendly Character Classes","12:15–12:40  Notebook 3: Data Model Showdown","12:40–1:00  Final self-test and exit ticket"],72,126,1140,18,55);
 
 s=base("Google Colab setup","Open notebooks from the Week 6 README");
 bullets(s,["Sign into the Google account used for class","Open the current notebook from GitHub","Choose File, then Save a copy in Drive","Rename the copy with your name and notebook number","Work only in the saved copy","Return to the README when the notebook says Finish"],88,142,1090,24,76);
 
-s=base("Icebreaker: Secret Identity Draft","Teams of 3 or 4, about 20 minutes");
-bullets(s,["Choose Driver, Reader, Tracer, and Tester","Run the character deck and reveal three clues","Invent a fun, appropriate team alias","Build the team identity dictionary","Share the alias and coding weakness","Rotate roles before Notebook 1"],90,142,1090,24,76,coral);
+s=base("Icebreaker: Secret Identity Generator","Individual and private, about 20 minutes");
+bullets(s,["Run the generator to get a random draft","Reroll until a combination makes you laugh","Customize your alias, power, snack, and weakness","Run the check and repair any unfinished value","Save your identity card in your Drive copy","Sharing with one person is optional"],90,142,1090,24,76,coral);
 
-s=base("Team roles","Every student speaks before the Driver edits");
-text(s,"DRIVER",90,155,220,34,20,teal,true); text(s,"Runs the current cell and makes agreed edits",90,198,470,70,26,ink,true);
-text(s,"READER",90,335,220,34,20,teal,true); text(s,"Reads instructions and error messages aloud",90,378,470,70,26,ink,true);
-text(s,"TRACER",700,155,220,34,20,coral,true); text(s,"Predicts values and output before Run",700,198,470,70,26,ink,true);
-text(s,"TESTER",700,335,220,34,20,coral,true); text(s,"Reads failed checks and verifies repairs",700,378,470,70,26,ink,true);
-text(s,"With three students, Reader also serves as Tester. Rotate at each notebook.",90,570,1090,48,24,navy,true,"Aptos","center");
+s=base("Work style today","Independent first; optional help second");
+text(s,"1  ATTEMPT",90,155,280,34,20,teal,true); text(s,"Read, predict, and try the task yourself",90,198,470,70,26,ink,true);
+text(s,"2  CHECK",90,335,280,34,20,teal,true); text(s,"Run the cell and read every message",90,378,470,70,26,ink,true);
+text(s,"3  REPAIR",700,155,280,34,20,coral,true); text(s,"Fix one small issue and run it again",700,198,470,70,26,ink,true);
+text(s,"4  OPTIONAL HELP",700,335,320,34,20,coral,true); text(s,"After one repair, quietly compare with a neighbor",700,378,470,80,26,ink,true);
+text(s,"No assigned roles, public voting, or required sharing.",90,570,1090,48,24,navy,true,"Aptos","center");
 
 s=base("Dictionary quick reference","A dictionary stores labeled values");
 codeBlock(s,'player = {\n    "name": "Ari",\n    "score": 12\n}\n\nplayer["score"] = 15\ncity = player.get("city", "unknown")',72,160,650,390);
@@ -88,13 +88,13 @@ s=base("Notebook 2: Friendly Character Classes","Keep the class small and readab
 bullets(s,["Store constructor arguments on self","Create two independent objects","Add methods that update state","Return a useful status string","Build reusable PowerUp objects","Use the checks with multiple objects"],90,142,1090,24,76);
 
 s=base("Notebook 3: Data Model Showdown","Use both structures in one small system");
-text(s,"DICTIONARY",90,160,260,34,20,teal,true); text(s,"One team profile with labeled fields",90,202,470,68,27,ink,true);
+text(s,"DICTIONARY",90,160,260,34,20,teal,true); text(s,"One club profile with labeled fields",90,202,470,68,27,ink,true);
 text(s,"CLASS",90,345,260,34,20,teal,true); text(s,"Many players with shared methods and separate points",90,387,500,82,27,ink,true);
-text(s,"FINAL REPORT",700,160,260,34,20,coral,true); text(s,"A dictionary created from the team record and Player objects",700,202,470,90,27,ink,true);
+text(s,"FINAL REPORT",700,160,260,34,20,coral,true); text(s,"A dictionary created from the club record and Player objects",700,202,470,90,27,ink,true);
 text(s,"The final checks use different test data. Hard-coded answers will fail.",700,390,470,72,25,coral,true);
 
-s=base("Partner test","12:40 PM");
-bullets(s,["Exchange one completed notebook","Reviewer runs the final challenge","Reviewer creates one new test object","Confirm the output uses the new values","Repair one issue together","Add a Markdown note describing the test"],90,142,1090,24,76);
+s=base("Final self-test","12:40 PM");
+bullets(s,["Run your own completed final challenge","Create one new test object","Give it a different name and point value","Confirm the output uses the new values","Repair any issue you discover","Add a Markdown note describing the test"],90,142,1090,24,76);
 
 s=base("Exit ticket","Finish before 1:00 PM");
 bullets(s,["What problem does a dictionary solve?","When is .get() useful?","What is the difference between a class and an object?","Why should two objects keep separate state?","Which structure could help your capstone?"],100,155,1080,26,88);
@@ -124,6 +124,6 @@ await finalizePresentation({
   layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],
   fontPolicy:{basis:"design",families:["Aptos"]},
   verifyArtifactToolImport:true,
-  receiptPath:path.join(buildDir,"validation.json"),
+  receiptPath:path.join(buildDir,"validation-v3.json"),
 });
 console.log(finalPath);

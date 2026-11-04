@@ -17,7 +17,7 @@ By 1:00 PM, students can:
 
 Students should open each notebook, choose **File → Save a copy in Drive**, and work only in the saved copy.
 
-1. [Icebreaker: Secret Identity Draft](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/00-icebreaker-secret-identity.ipynb)
+1. [Icebreaker: Secret Identity Generator](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/00-icebreaker-secret-identity.ipynb)
 2. [Notebook 1: Dictionary Arcade](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/01-dictionary-arcade.ipynb)
 3. [Notebook 2: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
 4. [Notebook 3: Data Model Showdown](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/03-data-model-showdown.ipynb)
@@ -27,26 +27,25 @@ Students should open each notebook, choose **File → Save a copy in Drive**, an
 | Time | Block |
 | --- | --- |
 | 9:00-9:15 | Arrival, sign-in, and open the Week 6 README |
-| 9:15-9:35 | Secret Identity Draft icebreaker |
+| 9:15-9:35 | Secret Identity Generator icebreaker |
 | 9:35-10:25 | Notebook 1: Dictionary Arcade |
 | 10:25-10:35 | Break |
 | 10:35-11:20 | Finish Dictionary Arcade and complete its boss challenge |
 | 11:20-11:30 | Break |
 | 11:30-12:15 | Notebook 2: Friendly Character Classes |
 | 12:15-12:40 | Notebook 3: Data Model Showdown |
-| 12:40-12:52 | Partner test and repair |
+| 12:40-12:52 | Final self-test and repair |
 | 12:52-1:00 | Exit ticket and save notebooks to Drive |
 
-## Team structure
+## Work style
 
-Work in teams of 3 or 4 for the icebreaker and partner checks. Each student keeps an individual Colab copy.
+Each student keeps an individual Colab copy and completes their own work. There are no assigned teams, roles, public votes, or required presentations.
 
-- **Driver:** runs the current cell and makes agreed edits.
-- **Reader:** reads instructions and error messages aloud.
-- **Tracer:** predicts values before Run.
-- **Tester:** reads every failed check and verifies the repair.
-
-With three students, the Reader also serves as Tester. Rotate roles at each notebook.
+- Try each challenge independently first.
+- Predict the result before pressing Run.
+- Read the failed check before changing code.
+- After one repair attempt, students may quietly compare with a neighbor.
+- Sharing an icebreaker identity is optional.
 
 ## Key vocabulary
 
@@ -76,15 +75,15 @@ Syntax errors must be fixed before a cell can reach its checks. Functionality ch
 
 ## Guided exercises
 
-Notebook 1 builds a game inventory and student event record with dictionaries. Notebook 2 builds simple `Character` and `PowerUp` classes. Notebook 3 compares both approaches and produces a small team roster system.
+Notebook 1 builds a game inventory and student event record with dictionaries. Notebook 2 builds simple `Character` and `PowerUp` classes. Notebook 3 compares both approaches and produces a small player roster system.
 
 ## Challenge artifact
 
-Each student finishes with a working roster program that stores a team profile in a dictionary and creates independent `Player` objects. The final cell prints the roster and passes all checks.
+Each student finishes with a working roster program that stores a club profile in a dictionary and creates independent `Player` objects. The final cell prints the roster and passes all checks.
 
-## Peer testing
+## Final self-test
 
-At 12:40, partners exchange one completed notebook. The reviewer runs the final challenge, changes one approved test input, and confirms that the program still works. The reviewer leaves one Markdown note naming a successful design choice and one repaired issue.
+At 12:40, each student runs the final challenge, creates a new test object, changes its values, and confirms that the output updates. Students leave a Markdown note naming one successful design choice and one repaired issue. A neighbor may review the result only if both students want help.
 
 ## Exit ticket
 
@@ -101,4 +100,4 @@ At 12:40, partners exchange one completed notebook. The reviewer runs the final 
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v3.pptx`.

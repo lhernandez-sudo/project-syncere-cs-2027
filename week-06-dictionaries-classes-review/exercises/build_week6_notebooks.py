@@ -68,56 +68,56 @@ def write(name, title, subtitle, cells):
     (OUT / name).write_text(json.dumps(notebook, indent=1), encoding="utf-8")
 
 
-write("00-icebreaker-secret-identity.ipynb", "Icebreaker: Secret Identity Draft", "Team game • no programming lesson required", [
-    md('''## Teams of 3 or 4
+write("00-icebreaker-secret-identity.ipynb", "Icebreaker: Secret Identity Generator", "Individual, private, and low-pressure", [
+    md('''## Make your own ridiculous coding character
 
-Choose Driver, Reader, Tracer, and Tester. With three students, Reader also serves as Tester.
+Work independently. You do not have to present or share anything. This icebreaker uses a dictionary, but you do not need to understand dictionaries yet.
 
-This icebreaker uses dictionaries, but you do not need to understand them yet. Run each cell in order and follow the prompts.'''),
+Run each cell in order. Reroll until you get a combination you like, then customize it.'''),
     code('''from IPython.display import HTML, display
 import random
 
-characters = [
-    {"alias": "Pixel Phantom", "power": "invisibility", "snack": "hot chips", "weakness": "group projects"},
-    {"alias": "Captain Compile", "power": "super speed", "snack": "pizza", "weakness": "missing colons"},
-    {"alias": "DJ Debug", "power": "time rewind", "snack": "cookies", "weakness": "infinite loops"},
-    {"alias": "The Boolean", "power": "truth vision", "snack": "fruit snacks", "weakness": "mixed signals"},
-]
+adjectives = ["Turbo", "Pixel", "Midnight", "Glitchy", "Cosmic", "Sneaky"]
+roles = ["Debugger", "Wizard", "Phantom", "Racer", "Inventor", "Ninja"]
+powers = ["time rewind", "instant debugging", "super speed", "invisibility", "perfect Wi-Fi"]
+snacks = ["hot chips", "pizza", "cookies", "fruit snacks", "tacos"]
+weaknesses = ["missing colons", "infinite loops", "low battery", "mystery errors", "Monday mornings"]
 
-random.shuffle(characters)
-display(HTML("""<div style='background:linear-gradient(135deg,#071a33,#6d28d9);color:white;padding:24px;border-radius:18px;text-align:center'><h2>🕵️ SECRET IDENTITY DRAFT</h2><p>One clue reader. One guess per team. No phones needed.</p></div>"""))
-print("Character deck shuffled:", len(characters), "secret identities")'''),
-    md('''## Round 1: clue battle
+display(HTML("""<div style='background:linear-gradient(135deg,#071a33,#6d28d9);color:white;padding:24px;border-radius:18px;text-align:center'><h2>🕵️ SECRET IDENTITY GENERATOR</h2><p>Your character. Your choices. Sharing is optional.</p></div>"""))'''),
+    md('''## Step 1: generate a draft
 
-The Reader runs the next cell without showing the alias. The team has 30 seconds to invent a better superhero name from the clues. Share the funniest appropriate answer.'''),
-    code('''secret = characters[0]
-print("POWER:", secret["power"])
-print("FAVORITE SNACK:", secret["snack"])
-print("WEAKNESS:", secret["weakness"])
-print("\\nTeam-created alias: ____________________")'''),
-    code('''print("Official ridiculous alias:", secret["alias"])
-print("Give your team's alias one point if the group prefers it.")'''),
-    md('''## Round 2: build the team identity
+Run the next cell as many times as you want. Each run creates a new combination.'''),
+    code('''draft_identity = {
+    "alias": random.choice(adjectives) + " " + random.choice(roles),
+    "power": random.choice(powers),
+    "snack": random.choice(snacks),
+    "weakness": random.choice(weaknesses),
+}
 
-Agree on one team alias, one harmless superpower, one snack, and one coding weakness. The Driver edits only the four values.'''),
-    code('''team_identity = {
+print("🎲 YOUR RANDOM DRAFT")
+for label, value in draft_identity.items():
+    print(label.upper() + ":", value)'''),
+    md('''## Step 2: customize your identity
+
+Copy ideas from the draft or invent appropriate answers. Edit only the four values.'''),
+    code('''my_identity = {
     "alias": "TODO",
     "power": "TODO",
     "snack": "TODO",
     "weakness": "TODO",
 }
 
-integrity_check("Team identity", [
-    (type(team_identity) is dict, "Keep team_identity as a dictionary."),
-    (set(team_identity) == {"alias", "power", "snack", "weakness"}, "Keep all four required keys."),
-    (all(type(value) is str and value.strip() and value != "TODO" for value in team_identity.values()), "Replace every TODO with an appropriate answer."),
+integrity_check("My identity", [
+    (type(my_identity) is dict, "Keep my_identity as a dictionary."),
+    (set(my_identity) == {"alias", "power", "snack", "weakness"}, "Keep all four required keys."),
+    (all(type(value) is str and value.strip() and value != "TODO" for value in my_identity.values()), "Replace every TODO with an appropriate answer."),
 ])
-print("\\nTEAM CARD")
-for label, value in team_identity.items():
+print("\\n✨ SECRET IDENTITY CARD")
+for label, value in my_identity.items():
     print(label.upper() + ":", value)'''),
     md('''## Finish
 
-Each team reads its alias and weakness. Keep the team for Notebook 1, then rotate roles.'''),
+Save the notebook in Drive. If you want, show your alias to one person nearby. Sharing is optional. Then open Notebook 1.'''),
 ])
 
 
@@ -230,7 +230,7 @@ integrity_check("Order functions", [
 ])'''),
     md('''## Notebook 1 exit check
 
-In a Markdown cell, explain when you would use square brackets and when you would use `.get()`. Then rotate team roles and take the first break.'''),
+In a Markdown cell, explain when you would use square brackets and when you would use `.get()`. Then take the first break.'''),
 ])
 
 
@@ -452,9 +452,9 @@ integrity_check("Roster report", [
 ])
 
 print(report)'''),
-    md('''## Peer test
+    md('''## Final self-test
 
-Exchange notebooks with a partner. The reviewer runs the final two cells, changes only a player name in a new test object, and confirms that `summary()` uses the new value. Add a Markdown note describing one successful design choice and one repaired issue.'''),
+Create one new test object with a different player name and points. Run `summary()` and confirm that it uses your new values. Add a Markdown note describing one successful design choice and one repaired issue. If you want help after trying once, compare the result with a neighbor.'''),
     md('''## Exit ticket
 
 Answer in a Markdown cell:
