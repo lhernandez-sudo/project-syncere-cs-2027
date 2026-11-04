@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week6-slides");
 const outputDir = path.join(workspaceDir, "week-06-dictionaries-classes-review", "slides");
-const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v4.pptx");
+const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v5.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1030.10813\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF", gold="#D89B18";
@@ -37,15 +37,15 @@ function codeBlock(slide,code,left=80,top=165,width=760,height=390){
 }
 
 let s=deck.slides.add(); s.background.fill=navy; box(s,0,0,1280,18,coral,"none","none");
-text(s,"Final Foundations Review",72,145,1100,82,52,white,true);
-text(s,"Dictionaries and friendly classes",76,242,1050,48,30,"#B8D7F0");
+text(s,"Code and Consequences",72,145,1100,82,52,white,true);
+text(s,"Beginner programming and technology awareness",76,242,1080,48,30,"#B8D7F0");
 text(s,"Week 6 self-guided Colab session",76,584,1080,36,21,"#D9E8F5");
 
-s=base("Self-guided day","Follow the slides and notebooks in order");
-bullets(s,["Keep an individual Google Drive copy of every notebook","Complete your own work; neighbor checks are optional","Read every instruction before running a cell","Treat failed checks as clues","Ask the program assistant for account or safety help","Finish the exit ticket before 1:00 PM"],86,142,1100,23,76);
+s=base("Today’s plan","Programming first, technology investigation after the second break");
+bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:30  Secret Identity Generator","9:30–10:25  Beginner programming notebook","10:25–10:35  Break","10:35–11:20  Continue programming at your pace","11:20–11:30  Break and form groups of 2 or 3","11:30–12:15  Technology research","12:15–12:45  Share-outs and discussion","12:45–1:00  Individual exit ticket"],72,126,1140,18,55);
 
-s=base("Today’s schedule","The class still includes two ten-minute breaks");
-bullets(s,["9:00–9:15  Arrive, sign in, and open Week 6","9:15–9:35  Secret Identity Generator icebreaker","9:35–10:25  Notebook 1: Dictionary Arcade","10:25–10:35  Break","10:35–11:20  Finish the dictionary boss","11:20–11:30  Break","11:30–12:15  Notebook 2: Friendly Character Classes","12:15–12:40  Notebook 3: Data Model Showdown","12:40–1:00  Final self-test and exit ticket"],72,126,1140,18,55);
+s=base("Work style","Independent programming, then small-group investigation");
+bullets(s,["Save an individual Google Drive copy","Read each notebook cell before running it","Try one repair before asking for help","Stop at the dictionary boss if you need more time","Form groups of 2 or 3 after the second break","Use evidence and respectful disagreement","Complete the final exit ticket independently"],86,136,1100,22,66);
 
 s=base("Week 6 Colab links","Choose either route, then open the Week 6 README");
 text(s,"LOCAL PROJECT",80,152,470,34,20,teal,true);
@@ -54,55 +54,56 @@ text(s,"GITHUB WEBSITE",700,152,470,34,20,coral,true);
 text(s,"1. Paste the repository URL into a browser\n\n2. Open week-06-dictionaries-classes-review\n\n3. Open README.md\n\n4. Click the notebook's Colab link",700,200,500,300,24,ink,false);
 text(s,"https://github.com/lhernandez-sudo/project-syncere-cs-2027.git",80,572,1120,38,18,blue,true,"Consolas","center");
 
-s=base("Icebreaker: Secret Identity Generator","Individual and private, about 20 minutes");
+s=base("Secret Identity Generator","Individual and private, about 15 minutes");
 bullets(s,["Run the generator to get a random draft","Reroll until a combination makes you laugh","Customize your alias, power, snack, and weakness","Run the check and repair any unfinished value","Save your identity card in your Drive copy","Sharing with one person is optional"],90,142,1090,24,76,coral);
 
-s=base("Work style today","Independent first; optional help second");
-text(s,"1  ATTEMPT",90,155,280,34,20,teal,true); text(s,"Read, predict, and try the task yourself",90,198,470,70,26,ink,true);
-text(s,"2  CHECK",90,335,280,34,20,teal,true); text(s,"Run the cell and read every message",90,378,470,70,26,ink,true);
-text(s,"3  REPAIR",700,155,280,34,20,coral,true); text(s,"Fix one small issue and run it again",700,198,470,70,26,ink,true);
-text(s,"4  OPTIONAL HELP",700,335,320,34,20,coral,true); text(s,"After one repair, quietly compare with a neighbor",700,378,470,80,26,ink,true);
-text(s,"No assigned roles, public voting, or required sharing.",90,570,1090,48,24,navy,true,"Aptos","center");
+s=base("Beginner programming block","The notebook teaches the new material step by step");
+text(s,"START",90,155,220,34,20,teal,true); text(s,"Read the explanation and run the working example",90,198,470,70,26,ink,true);
+text(s,"PRACTICE",90,335,220,34,20,teal,true); text(s,"Change one small part using the shown pattern",90,378,470,70,26,ink,true);
+text(s,"CHECK",700,155,220,34,20,coral,true); text(s,"Read the message and repair one issue",700,198,470,70,26,ink,true);
+text(s,"CONTINUE",700,335,220,34,20,coral,true); text(s,"Move forward only after the current check passes",700,378,470,80,26,ink,true);
+text(s,"The class and data-model notebooks are optional extensions today.",90,570,1090,48,24,navy,true,"Aptos","center");
 
-s=base("Dictionary quick reference","A dictionary stores labeled values");
-codeBlock(s,'player = {\n    "name": "Ari",\n    "score": 12\n}\n\nplayer["score"] = 15\ncity = player.get("city", "unknown")',72,160,650,390);
-text(s,"Use dictionaries for",790,170,350,38,24,teal,true);
-text(s,"one profile or record\n\nsettings and configuration\n\ninventory counts\n\ndata returned by an API",790,225,360,290,25,ink,false);
-
-s=base("Notebook 1: Dictionary Arcade","Complete the cells in order");
-bullets(s,["Repair the game inventory","Use .get() for optional keys","Loop through key-value pairs with .items()","Build an event record","Complete the snack order functions","Stop only when every integrity check passes"],90,142,1090,24,76);
+s=base("Programming checkpoint","A successful morning does not require finishing every notebook");
+bullets(s,["Everyone completes Practice A: read one value","Everyone completes Practice B: change and add values","Try the game inventory challenge","Try the loop only after the inventory passes","Stop at the boss if you need more time","Save your work before the second break"],90,142,1090,24,76);
 
 s=base("Break","10 minutes");
 text(s,"Step away from the screen. Return at 10:35.",140,270,1000,70,34,navy,true,"Aptos","center");
 
-s=base("Dictionary boss","One dictionary stores quantities; another stores prices");
-codeBlock(s,'prices = {"chips": 2, "juice": 3}\norder = {"chips": 2, "juice": 1}\n\ndef order_total(order_data, price_data):\n    total = 0\n    # loop through the order\n    return total',72,165,720,390);
-text(s,"Before editing",850,175,300,38,24,coral,true);
-text(s,"Trace one item by hand.\n\nName the key.\n\nName the quantity.\n\nFind the matching price.\n\nMultiply, then accumulate.",850,230,330,300,24,ink,false);
+s=base("Break and group setup","11:20 to 11:30");
+text(s,"Form a group of 2 or 3. Open the Tech Investigation notebook.",140,245,1000,70,32,navy,true,"Aptos","center");
+text(s,"Choose one topic together. You may divide the work in any way.",140,345,1000,60,26,muted,false,"Aptos","center");
 
-s=base("Break","10 minutes");
-text(s,"Reset before classes and objects. Return at 11:30.",140,270,1000,70,34,navy,true,"Aptos","center");
+s=base("Technology behind the screen","Common products raise questions about money, power, privacy, and safety");
+bullets(s,["A free app can earn money from advertising","A subscription earns recurring revenue","An app store can charge fees on digital purchases","Design choices can influence user decisions","Market power can make competition difficult","Engineers help create the systems behind these choices"],90,142,1090,24,76);
 
-s=base("Class quick reference","A class defines shared data and actions");
-codeBlock(s,'class Player:\n    def __init__(self, name):\n        self.name = name\n        self.score = 0\n\n    def earn(self, points):\n        self.score += points',72,160,720,390);
-text(s,"Read it this way",850,170,300,38,24,teal,true);
-text(s,"Player is the blueprint.\n\nself means this object.\n\nname and score are attributes.\n\nearn is a method.",850,225,330,280,25,ink,false);
+s=base("Legal language","Use precise words during the discussion");
+text(s,"ALLEGATION",90,155,260,34,20,teal,true); text(s,"A claim that has not yet been proven in court",90,198,470,70,26,ink,true);
+text(s,"RULING",90,335,260,34,20,teal,true); text(s,"A court's decision on a legal question",90,378,470,70,26,ink,true);
+text(s,"SETTLEMENT",700,155,260,34,20,coral,true); text(s,"The parties resolve a case without completing a trial",700,198,470,80,26,ink,true);
+text(s,"BUSINESS MODEL",700,335,300,34,20,coral,true); text(s,"How a company earns revenue",700,378,470,70,26,ink,true);
+text(s,"Do not describe an allegation as a proven fact.",90,570,1090,48,24,navy,true,"Aptos","center");
 
-s=base("Notebook 2: Friendly Character Classes","Keep the class small and readable");
-bullets(s,["Store constructor arguments on self","Create two independent objects","Add methods that update state","Return a useful status string","Build reusable PowerUp objects","Use the checks with multiple objects"],90,142,1090,24,76);
+s=base("Investigation topics","Choose one topic from the notebook");
+text(s,"TIKTOK",90,160,220,34,20,teal,true); text(s,"Advertising and children's privacy",90,198,450,60,24,ink,true);
+text(s,"GOOGLE",90,310,220,34,20,teal,true); text(s,"Search advertising and competition",90,348,450,60,24,ink,true);
+text(s,"INSTAGRAM",90,460,220,34,20,teal,true); text(s,"Advertising and youth well-being",90,498,450,60,24,ink,true);
+text(s,"AMAZON",700,160,220,34,20,coral,true); text(s,"Prime subscriptions and dark patterns",700,198,450,60,24,ink,true);
+text(s,"APPLE",700,310,220,34,20,coral,true); text(s,"The App Store and smartphone control",700,348,450,60,24,ink,true);
+text(s,"GENERATIVE AI",700,460,260,34,20,coral,true); text(s,"Training data and human creators",700,498,450,60,24,ink,true);
 
-s=base("Notebook 3: Data Model Showdown","Use both structures in one small system");
-text(s,"DICTIONARY",90,160,260,34,20,teal,true); text(s,"One club profile with labeled fields",90,202,470,68,27,ink,true);
-text(s,"CLASS",90,345,260,34,20,teal,true); text(s,"Many players with shared methods and separate points",90,387,500,82,27,ink,true);
-text(s,"FINAL REPORT",700,160,260,34,20,coral,true); text(s,"A dictionary created from the club record and Player objects",700,202,470,90,27,ink,true);
-text(s,"The final checks use different test data. Hard-coded answers will fail.",700,390,470,72,25,coral,true);
+s=base("Research organizer","Complete one shared evidence note");
+bullets(s,["Explain how the product makes money","Build a short timeline of what happened","Label claims as allegations, rulings, or settlements","Name at least two groups affected","Record two facts with source links","Recommend one next step and explain a tradeoff"],90,142,1090,24,76);
 
-s=base("Final self-test","12:40 PM");
-bullets(s,["Run your own completed final challenge","Create one new test object","Give it a different name and point value","Confirm the output uses the new values","Repair any issue you discover","Add a Markdown note describing the test"],90,142,1090,24,76);
+s=base("Source check","Start with the links inside the investigation notebook");
+bullets(s,["Use a government, court, or company source","Check the date and current case status","Separate the source's facts from its argument","Find the company's response when possible","Avoid videos or posts that provide no evidence","Do not sign in or share private account information"],90,142,1090,24,76);
 
-s=base("Exit ticket","Finish before 1:00 PM");
-bullets(s,["What problem does a dictionary solve?","When is .get() useful?","What is the difference between a class and an object?","Why should two objects keep separate state?","Which structure could help your capstone?"],100,155,1080,26,88);
-text(s,"Save all four notebooks in Google Drive before leaving.",100,605,1080,42,23,blue,true,"Aptos","center");
+s=base("Share-out and discussion","Each group has two minutes");
+bullets(s,["Name the product and its business model","Explain the controversy accurately","Share the strongest evidence you found","Ask the class one question","Listen for a tradeoff or missing viewpoint","Disagree with ideas without attacking people"],90,142,1090,24,76);
+
+s=base("Individual exit ticket","Finish privately before 1:00 PM");
+bullets(s,["Which business model surprised you most?","What fact can you verify with a reliable source?","What question do you still have?","What should engineers consider besides whether a product works?"],100,165,1080,26,96);
+text(s,"Save your programming and investigation notebooks in Google Drive.",100,605,1080,42,23,blue,true,"Aptos","center");
 
 for(let i=0;i<deck.slides.items.length;i++){
   const slide=deck.slides.items[i];
@@ -128,6 +129,6 @@ await finalizePresentation({
   layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],
   fontPolicy:{basis:"design",families:["Aptos"]},
   verifyArtifactToolImport:true,
-  receiptPath:path.join(buildDir,"validation-v4.json"),
+  receiptPath:path.join(buildDir,"validation-v5.json"),
 });
 console.log(finalPath);

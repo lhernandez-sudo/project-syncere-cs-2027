@@ -21,6 +21,7 @@ def intro(name, title, subtitle):
         f"[Dictionaries]({BASE}/01-dictionary-arcade.ipynb)",
         f"[Classes]({BASE}/02-friendly-character-classes.ipynb)",
         f"[Final challenge]({BASE}/03-data-model-showdown.ipynb)",
+        f"[Tech investigation]({BASE}/04-tech-controversy-investigation.ipynb)",
     ])
     return md(f'''<div style="background:#071a33;color:white;padding:22px;border-radius:16px">
 <h1>{title}</h1><p>{subtitle}</p></div>
@@ -122,15 +123,17 @@ Save the notebook in Drive. If you want, show your alias to one person nearby. S
 
 
 write("01-dictionary-arcade.ipynb", "Notebook 1: Dictionary Arcade", "Keys, values, updates, loops, and practical records", [
-    md('''## Why dictionaries?
+    md('''## Start here: a dictionary is a labeled container
 
-A list answers **what position?** A dictionary answers **what label?**
+You have not learned dictionaries before. That is expected.
+
+A list stores values by position. A dictionary stores values under labels called **keys**. Think of a game profile where `"name"` labels the player's name and `"score"` labels the score.
 
 ```python
 player = {"name": "Ari", "score": 12, "online": True}
 ```
 
-The keys are `"name"`, `"score"`, and `"online"`. Each key points to one value. Dictionaries work well for profiles, settings, inventory counts, and records returned by web APIs.'''),
+The colon means **this key points to this value**. Run the next cell without changing it.'''),
     md('''## Syntax rules
 
 - Use braces: `{}`
@@ -149,9 +152,54 @@ integrity_check("Working dictionary", [
     (player["name"] == "Ari", "The name key should store Ari."),
     (player["score"] == 12, "The score key should store 12."),
 ])'''),
+    md('''## Practice A: read one value
+
+Square brackets select a value using its key. Follow the pattern:
+
+```python
+player["name"]
+```
+
+Replace only `TODO` below.'''),
+    code('''favorite_game = {
+    "title": "Minecraft",
+    "players": 4,
+    "online": True,
+}
+
+game_title = favorite_game["TODO"]
+
+integrity_check("Read one value", [
+    (game_title == "Minecraft", "Use the title key inside the square brackets."),
+])'''),
+    md('''## Practice B: change and add values
+
+Use the same square-bracket pattern for both actions:
+
+```python
+profile["score"] = 20      # change an existing value
+profile["city"] = "Miami" # add a new key and value
+```
+
+Complete the two lines below.'''),
+    code('''practice_profile = {"name": "Kai", "score": 5}
+
+# Change score to 10
+practice_profile["TODO"] = 10
+
+# Add a snack key with the value "chips"
+practice_profile["TODO"] = "chips"
+
+integrity_check("Change and add", [
+    (practice_profile.get("score") == 10, "Use score as the first key."),
+    (practice_profile.get("snack") == "chips", "Use snack as the second key."),
+    (practice_profile.get("name") == "Kai", "Keep the original name."),
+])'''),
     md('''## Challenge 1: repair a game inventory
 
-Run the starter once. Then add the missing `"coins"` key, update potions to `3`, and keep every original item.'''),
+Run the starter once. Then add the missing `"coins"` key, update potions to `3`, and keep every original item.
+
+**Hint:** copy the pattern from Practice B. You need two assignment lines.'''),
     code('''inventory = {"keys": 1, "potions": 1, "map": True}
 
 # TODO: update potions to 3
@@ -166,20 +214,32 @@ integrity_check("Inventory syntax and structure", [
 ])'''),
     md('''## Safe access with `.get()`
 
-`inventory["shield"]` raises `KeyError` when the key is missing. `inventory.get("shield", 0)` returns the fallback value `0`. Use `.get()` for optional data.'''),
+Sometimes a key might be missing. `inventory["shield"]` would stop with a `KeyError`. `inventory.get("shield", 0)` safely returns the backup value `0`.
+
+Read `.get("shield", 0)` as: **get shield, but use 0 if shield is missing**.'''),
     code('''shield_count = inventory.get("shield", 0)
 coin_count = inventory.get("coins", 0)
 print("Shields:", shield_count)
 print("Coins:", coin_count)
 checkpoint("Safe optional access", shield_count == 0 and coin_count == 25)'''),
+    md('''## Practice C: see a dictionary loop
+
+The `.items()` method gives one key and one value on each loop. Run this example and trace the output.'''),
+    code('''demo_inventory = {"keys": 1, "coins": 5}
+
+for item, amount in demo_inventory.items():
+    print(item, "has value", amount)'''),
     md('''## Challenge 2: loop through key-value pairs
 
-`.items()` gives the key and value together. Complete the loop so it totals only integer item counts. Remember that `bool` is technically related to `int`, so use `type(value) is int` here.'''),
+Complete one line inside the loop. If the value is an integer, add it to `total_items`.
+
+**Hint:** the missing line follows this pattern: `total = total + value`. Keep it indented under the `if`.'''),
     code('''total_items = 0
 
 for item, value in inventory.items():
-    # TODO: if the value's exact type is int, add it to total_items
-    pass
+    if type(value) is int:
+        # TODO: add value to total_items
+        pass
 
 integrity_check("Inventory loop", [
     (total_items == 29, "Add keys, potions, and coins. Do not count the Boolean map."),
@@ -187,7 +247,11 @@ integrity_check("Inventory loop", [
 ])'''),
     md('''## Use case: one event record
 
-A dictionary keeps related facts together. Complete the student event record and write `event_summary(record)` so it works with multiple records.'''),
+A dictionary keeps related facts together. Complete the student event record and function.
+
+**Hint 1:** add `"location": "Lab A"` inside the dictionary.
+
+**Hint 2:** calculate `remaining = record["spots"] - record["registered"]`, then build the sentence from the labeled values.'''),
     code('''event = {
     "title": "Game Night",
     "spots": 20,
@@ -206,7 +270,9 @@ integrity_check("Event record", [
 ])'''),
     md('''## Dictionary boss: snack shop order
 
-Complete the functions. The order dictionary maps an item name to its quantity. The price dictionary maps an item name to its price.'''),
+Complete the functions. The order dictionary maps an item name to its quantity. The price dictionary maps an item name to its price.
+
+Do this only after the earlier checks pass. Trace one item by hand before writing the loop. If time is short, stop here and save your notebook.'''),
     code('''prices = {"chips": 2, "juice": 3, "cookie": 1}
 order = {"chips": 2, "juice": 1, "cookie": 3}
 
@@ -463,6 +529,150 @@ Answer in a Markdown cell:
 2. Why are roster members objects?
 3. Which structure might appear in your capstone?
 4. What failed check helped you most today?'''),
+])
+
+
+write("04-tech-controversy-investigation.ipynb", "Tech Investigation: What Happens Behind the Screen?", "Small-group research, evidence, and discussion", [
+    md('''## The goal
+
+Technology companies make products that many people use every day. They also make business decisions about advertising, subscriptions, privacy, competition, and safety.
+
+In a group of **2 or 3**, investigate one controversy. Your job is not to attack or defend a company. Your job is to understand:
+
+1. How the product makes money.
+2. What the government, consumers, or creators challenged.
+3. What the company or opposing side says.
+4. What evidence is established and what remains an allegation or open question.'''),
+    md('''## Words that matter
+
+- **Allegation:** a claim that has not yet been proven in court.
+- **Lawsuit or complaint:** a legal case presenting one side's claims.
+- **Ruling:** a court's decision on a legal question.
+- **Settlement:** the parties resolve a case without completing a trial. A settlement does not always include an admission of wrongdoing.
+- **Business model:** how a company earns revenue.
+- **Dark pattern:** a design choice that pushes users toward a decision they may not intend.
+
+Use these words accurately when you report.'''),
+    md('''## Topic 1: TikTok, advertising, and children's privacy
+
+**Behind the screen:** TikTok offers advertising tools that let businesses reach audiences. Like other social platforms, attention and user activity make advertising valuable.
+
+**Controversy:** The U.S. Department of Justice sued TikTok and ByteDance in 2024 over alleged violations of children's privacy law. In August 2026, the parties reached a $400 million settlement. The Justice Department stated that the resolved claims were allegations and that the settlement included no determination of liability.
+
+**Start with:**
+
+- [Justice Department announcement of the 2024 complaint](https://www.justice.gov/archives/opa/pr/justice-department-sues-tiktok-and-parent-company-bytedance-widespread-violations-childrens)
+- [Justice Department announcement of the 2026 settlement](https://www.justice.gov/opa/pr/justice-department-secures-400m-settlement-tiktok-and-bytedance-resolve-childrens-privacy)
+
+**Question:** What responsibility should a platform have when young users enter an incorrect age?'''),
+    md('''## Topic 2: Google Search, advertising, and competition
+
+**Behind the screen:** Alphabet says Google Services earns revenue primarily from advertising, along with subscriptions, app sales, and devices.
+
+**Controversy:** A federal court concluded in 2024 that Google unlawfully maintained a monopoly in general search services and search advertising. In 2025, the court restricted certain exclusive distribution agreements and required access to some search data and services for competitors.
+
+**Start with:**
+
+- [Alphabet explanation of Google Services revenue](https://abc.xyz/investor/faqs-and-general-information/)
+- [Justice Department summary of the search remedies](https://www.justice.gov/opa/pr/department-justice-wins-significant-remedies-against-google)
+- [Google's Search case resource center and company position](https://blog.google/competition/search-trial-resource-center/)
+
+**Question:** When does paying to become the default search engine become unfair to competitors or users?'''),
+    md('''## Topic 3: Instagram, advertising, and youth well-being
+
+**Behind the screen:** Meta earns most of its revenue by showing advertisements across products such as Facebook and Instagram.
+
+**Controversy:** A bipartisan group of state attorneys general sued Meta in 2023. Their complaint alleges that Meta designed features that contributed to harms experienced by young users and misrepresented some safety practices. These are legal allegations, not a final ruling.
+
+**Start with:**
+
+- [Meta investor financial information](https://investor.atmeta.com/financials/)
+- [New York Attorney General summary of the multistate lawsuit](https://ag.ny.gov/press-release/2023/attorney-general-james-and-multistate-coalition-sue-meta-harming-youth)
+- [Meta's response about teen safety and the lawsuits](https://about.fb.com/news/2026/01/metas-record-protecting-teens-supporting-parents/)
+
+**Question:** How should a social platform balance engagement, advertising revenue, and the well-being of younger users?'''),
+    md('''## Topic 4: Amazon Prime and dark patterns
+
+**Behind the screen:** Prime uses a recurring subscription. Amazon benefits when people join and remain subscribed.
+
+**Controversy:** The Federal Trade Commission alleged that Amazon enrolled some consumers without clear consent and made cancellation unnecessarily difficult through dark patterns. Amazon reached a $2.5 billion settlement in 2025.
+
+**Start with:**
+
+- [FTC case summary and timeline](https://www.ftc.gov/legal-library/browse/cases-proceedings/2123050-amazoncom-inc-rosca-ftc-v)
+- [FTC consumer explanation of the Prime case](https://consumer.ftc.gov/consumer-alerts/2023/06/were-you-charged-amazon-prime-without-your-permission)
+
+**Question:** Which design choices help users make an informed choice, and which ones manipulate them?'''),
+    md('''## Topic 5: Apple, the App Store, and control of the iPhone
+
+**Behind the screen:** Apple earns money from hardware, subscriptions, and fees connected to apps and digital purchases.
+
+**Controversy:** The Justice Department and multiple states sued Apple in 2024. The complaint alleges that Apple used restrictions on apps, messaging, wallets, watches, and cloud services to protect monopoly power. These claims are allegations in an ongoing legal case unless a source states otherwise.
+
+**Start with:**
+
+- [Justice Department summary of the Apple lawsuit](https://www.justice.gov/archives/opa/pr/justice-department-sues-apple-monopolizing-smartphone-markets)
+- [Justice Department Apple case documents](https://www.justice.gov/atr/case/us-and-plaintiff-states-v-apple-inc)
+- [Apple's explanation of App Store changes and developer policies](https://www.apple.com/newsroom/2021/08/apple-us-developers-agree-to-app-store-updates/)
+
+**Question:** When does controlling a device protect users, and when does it limit competition?'''),
+    md('''## Topic 6: Generative AI, training data, and creators
+
+**Behind the screen:** Generative AI companies sell subscriptions, developer access, and business services. Their systems learn patterns from large collections of data.
+
+**Controversy:** Writers, artists, publishers, and technology companies disagree about when copyrighted works may be used to train AI and what permission or payment should be required. The U.S. Copyright Office continues to study AI training and copyright policy.
+
+**Start with:**
+
+- [U.S. Copyright Office artificial intelligence study](https://copyright.gov/ai/)
+- [Copyright Office report on AI-generated outputs](https://www.copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf)
+
+**Question:** What would a fair relationship between AI developers and human creators look like?'''),
+    md('''## Research organizer
+
+Create a new Markdown cell under this one and answer together.
+
+### Our topic
+
+Company or technology:
+
+### How it makes money
+
+Explain in 2 or 3 sentences.
+
+### What happened
+
+Write a short timeline. Label each item as an **allegation**, **ruling**, or **settlement**.
+
+### Who is affected
+
+Name at least two groups of people and explain the possible impact on each.
+
+### Evidence
+
+Record two facts with links. Use at least one government, court, or company source.
+
+### Our judgment
+
+What should the company, government, or users do next? Explain one tradeoff or disagreement.'''),
+    md('''## Two-minute share-out
+
+Every group prepares four parts:
+
+1. Name the product and explain how it makes money.
+2. Explain the controversy without treating an allegation as a proven fact.
+3. Share the strongest evidence you found.
+4. Ask the class one discussion question.
+
+You may divide the speaking or choose one reporter. No one must share personal experiences or account information.'''),
+    md('''## Individual exit ticket
+
+Answer privately in a Markdown cell:
+
+1. Which business model surprised you most?
+2. What is one fact you can now verify with a reliable source?
+3. What question do you still have?
+4. What should software engineers consider besides whether a product works?'''),
 ])
 
 

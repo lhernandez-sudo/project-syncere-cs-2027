@@ -1,6 +1,6 @@
 # Week 6: Dictionaries and Friendly Classes Review
 
-This is the final foundations review before students begin the December capstone. The instructor is absent, so the session is fully self-guided through Google Colab. The notebooks introduce dictionaries as a core data structure and classes as an optional way to organize related data and behavior.
+This is the final foundations review before students begin the December capstone. The instructor is absent, so the session is fully self-guided through Google Colab. Students learn dictionaries from the beginning, practice simple classes, and finish with a guided investigation of controversies connected to common technology products.
 
 ## Learning objectives
 
@@ -12,6 +12,9 @@ By 1:00 PM, students can:
 - Define a simple class with `__init__`, attributes, and methods.
 - Create two independent objects from the same class.
 - Use embedded checks to locate syntax and functionality problems.
+- Explain how one common technology company earns revenue.
+- Distinguish a legal allegation, court ruling, and settlement.
+- Support a position with evidence from a reliable source.
 
 ## Google Colab launch links
 
@@ -21,31 +24,33 @@ Students should open each notebook, choose **File → Save a copy in Drive**, an
 2. [Notebook 1: Dictionary Arcade](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/01-dictionary-arcade.ipynb)
 3. [Notebook 2: Friendly Character Classes](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/02-friendly-character-classes.ipynb)
 4. [Notebook 3: Data Model Showdown](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/03-data-model-showdown.ipynb)
+5. [Tech Investigation: What Happens Behind the Screen?](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/week-06-dictionaries-classes-review/exercises/04-tech-controversy-investigation.ipynb)
 
 ## Saturday agenda
 
 | Time | Block |
 | --- | --- |
 | 9:00-9:15 | Arrival, sign-in, and open the Week 6 README |
-| 9:15-9:35 | Secret Identity Generator icebreaker |
-| 9:35-10:25 | Notebook 1: Dictionary Arcade |
+| 9:15-9:30 | Secret Identity Generator icebreaker |
+| 9:30-10:25 | Notebook 1: Dictionary Arcade, beginner practices A and B |
 | 10:25-10:35 | Break |
-| 10:35-11:20 | Finish Dictionary Arcade and complete its boss challenge |
-| 11:20-11:30 | Break |
-| 11:30-12:15 | Notebook 2: Friendly Character Classes |
-| 12:15-12:40 | Notebook 3: Data Model Showdown |
-| 12:40-12:52 | Final self-test and repair |
-| 12:52-1:00 | Exit ticket and save notebooks to Drive |
+| 10:35-11:20 | Finish Dictionary Arcade; continue to classes only if ready |
+| 11:20-11:30 | Break and form groups of 2 or 3 |
+| 11:30-11:45 | Open the Tech Investigation and choose a topic |
+| 11:45-12:15 | Research and complete the evidence organizer |
+| 12:15-12:45 | Two-minute group share-outs and class discussion |
+| 12:45-1:00 | Individual exit ticket and save notebooks to Drive |
 
 ## Work style
 
-Each student keeps an individual Colab copy and completes their own work. There are no assigned teams, roles, public votes, or required presentations.
+Students complete the programming block independently. For the technology investigation, students form groups of 2 or 3 and may divide research and speaking in any way that feels comfortable.
 
 - Try each challenge independently first.
 - Predict the result before pressing Run.
 - Read the failed check before changing code.
 - After one repair attempt, students may quietly compare with a neighbor.
 - Sharing an icebreaker identity is optional.
+- Group members discuss evidence, but the final exit ticket is individual.
 
 ## Key vocabulary
 
@@ -75,23 +80,22 @@ Syntax errors must be fixed before a cell can reach its checks. Functionality ch
 
 ## Guided exercises
 
-Notebook 1 builds a game inventory and student event record with dictionaries. Notebook 2 builds simple `Character` and `PowerUp` classes. Notebook 3 compares both approaches and produces a small player roster system.
+Notebook 1 assumes students have never seen dictionaries and begins with reading, changing, and adding one value at a time. Notebook 2 builds simple `Character` and `PowerUp` classes. Notebook 3 is an optional extension for students who finish early. The Tech Investigation guides groups through business models, lawsuits, and social questions involving TikTok, Google, Meta, Amazon, Apple, and generative AI.
 
 ## Challenge artifact
 
-Each student finishes with a working roster program that stores a club profile in a dictionary and creates independent `Player` objects. The final cell prints the roster and passes all checks.
+Every student should complete the first two dictionary practices and at least one dictionary challenge. Faster students may continue into the class and data-model notebooks.
 
-## Final self-test
+## Technology investigation
 
-At 12:40, each student runs the final challenge, creates a new test object, changes its values, and confirms that the output updates. Students leave a Markdown note naming one successful design choice and one repaired issue. A neighbor may review the result only if both students want help.
+At 11:30, students form groups of 2 or 3 and choose one of six technology topics. They use the linked primary sources to explain how the product makes money, identify the controversy, separate established facts from allegations, and prepare a two-minute share-out. Students do not need personal accounts and should not share private experiences or login information.
 
 ## Exit ticket
 
-1. What problem does a dictionary solve?
-2. Why might `.get()` be safer than square brackets for an optional key?
-3. What is the difference between a class and an object?
-4. Why should two `Player` objects keep separate scores?
-5. Which structure might help your capstone: a dictionary, a class, or both? Explain.
+1. Which business model surprised you most?
+2. What is one fact you can verify with a reliable source?
+3. What question do you still have?
+4. What should engineers consider besides whether a product works?
 
 ## Optional extensions
 
@@ -100,4 +104,4 @@ At 12:40, each student runs the final challenge, creates a new test object, chan
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v4.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v5.pptx`.
