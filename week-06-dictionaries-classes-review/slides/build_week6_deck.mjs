@@ -6,7 +6,7 @@ import { Presentation, PresentationFile } from "@oai/artifact-tool";
 const workspaceDir = process.cwd();
 const buildDir = path.join(workspaceDir, ".codex-build", "week6-slides");
 const outputDir = path.join(workspaceDir, "week-06-dictionaries-classes-review", "slides");
-const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v5.pptx");
+const finalPath = path.join(outputDir, "week-06-dictionaries-classes-review-v6.pptx");
 const skillDir = "C:\\Users\\louie\\.codex\\plugins\\cache\\openai-primary-runtime\\presentations\\26.1030.10813\\skills\\presentations";
 const python = "C:\\Users\\louie\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe";
 const navy="#071A33", blue="#1D4ED8", teal="#0F766E", green="#15803D", coral="#E85D4A", ink="#122033", muted="#526174", pale="#EEF4FA", white="#FFFFFF", gold="#D89B18";
@@ -95,8 +95,8 @@ text(s,"GENERATIVE AI",700,460,260,34,20,coral,true); text(s,"Training data and 
 s=base("Research organizer","Complete one shared evidence note");
 bullets(s,["Explain how the product makes money","Build a short timeline of what happened","Label claims as allegations, rulings, or settlements","Name at least two groups affected","Record two facts with source links","Recommend one next step and explain a tradeoff"],90,142,1090,24,76);
 
-s=base("Source check","Start with the links inside the investigation notebook");
-bullets(s,["Use a government, court, or company source","Check the date and current case status","Separate the source's facts from its argument","Find the company's response when possible","Avoid videos or posts that provide no evidence","Do not sign in or share private account information"],90,142,1090,24,76);
+s=base("Source path","Begin with the explainer; legal documents are optional");
+bullets(s,["Read the AP, PBS NewsHour, or Reuters article first","Use it to understand the people, events, and disagreement","Open a legal document only when you want more detail","Check whether the case ended or remains open","Compare the government claim with the company response","Do not sign in or share private account information"],90,142,1090,24,76);
 
 s=base("Share-out and discussion","Each group has two minutes");
 bullets(s,["Name the product and its business model","Explain the controversy accurately","Share the strongest evidence you found","Ask the class one question","Listen for a tradeoff or missing viewpoint","Disagree with ideas without attacking people"],90,142,1090,24,76);
@@ -129,6 +129,6 @@ await finalizePresentation({
   layoutArgs:["--expected-slide-size-emu","12192000,6858000","--validate-heading-fit"],
   fontPolicy:{basis:"design",families:["Aptos"]},
   verifyArtifactToolImport:true,
-  receiptPath:path.join(buildDir,"validation-v5.json"),
+  receiptPath:path.join(buildDir,"validation-v6.json"),
 });
 console.log(finalPath);

@@ -88,7 +88,7 @@ Every student should complete the first two dictionary practices and at least on
 
 ## Technology investigation
 
-At 11:30, students form groups of 2 or 3 and choose one of six technology topics. They use the linked primary sources to explain how the product makes money, identify the controversy, separate established facts from allegations, and prepare a two-minute share-out. Students do not need personal accounts and should not share private experiences or login information.
+At 11:30, students form groups of 2 or 3 and choose one of six technology topics. Each topic begins with a readable Associated Press, PBS NewsHour, or Reuters article. Government filings, court materials, and company statements remain available as optional deeper sources. Students explain how the product makes money, identify the controversy, separate established facts from allegations, and prepare a two-minute share-out. Students do not need personal accounts and should not share private experiences or login information.
 
 ## Exit ticket
 
@@ -104,4 +104,4 @@ At 11:30, students form groups of 2 or 3 and choose one of six technology topics
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v5.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v6.pptx`.
