@@ -100,4 +100,4 @@ At 12:40, each student runs the final challenge, creates a new test object, chan
 - Add input validation without changing the integrity checks.
 - Create a second object type only if the first class is fully understood.
 
-The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v3.pptx`.
+The editable substitute deck is in `slides/week-06-dictionaries-classes-review-v4.pptx`.
