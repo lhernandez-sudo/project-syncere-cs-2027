@@ -47,6 +47,32 @@ def control_step(car, memory):
 
 6. Read `score_report.txt`, improve one weakness, and test again.
 
+## Two lessons
+
+Run `python run_simulation.py` and open `simulation_replay.html`. Use the
+same cul-de-sac course for both lessons. Rerun the command and refresh the
+page after changing your controller.
+
+1. **Build a safe driver.** Focus on the approach to the turnaround.
+   Use `car.scan()` to recognize the stop sign and pedestrian. Use the grayscale
+   list to follow the line and the ultrasonic reading to slow or stop before a
+   box. Check the replay and explain one decision using an `if` statement.
+2. **Navigate the cul-de-sac.** Drive through the 11 checkpoint zones in order, go
+   around boxes using either side of the open pavement, and return to the
+   entrance. Use a small memory dictionary to remember a turn or recovery state.
+   Run `python evaluate.py` and compare your checkpoint and collision counts.
+
+Run `python run_strict.py` to test the supplied controller under strict rules.
+The attempt ends on a collision, missed stop sign, course boundary hit, or
+sustained stall. The replay shows the reason and checkpoints earned.
+
+Keep the controller in `control_step(car, memory)`. The steering, motor,
+ultrasonic, and grayscale calls follow the PiCar-X interface. On the physical
+course, use tape to mark the road edges and cardboard boxes for the obstacles.
+The simulated camera labels from `scan()` need a camera adapter on hardware.
+Use the grayscale and distance readings to make decisions that can transfer
+to the physical course.
+
 ## Student-facing API
 
 | Command or sensor | Meaning |
@@ -57,6 +83,9 @@ def control_step(car, memory):
 | `car.set_dir_servo_angle(angle)` | Steer from -35 degrees to +35 degrees. |
 | `car.ultrasonic.read()` | Distance to the nearest object ahead in centimeters. |
 | `car.get_grayscale_data()` | Three virtual ground-sensor readings: left, center, right. |
+| `car.scan()` | Camera result: `"human"`, `"stop sign"`, or `"clear"`. |
+| `car.turn_left(speed)` | Readable helper that steers and moves left. |
+| `car.turn_right(speed)` | Readable helper that steers and moves right. |
 | `memory` | A dictionary that remembers information between simulation steps. |
 
 The student challenge deliberately matches the first six weeks:
@@ -69,6 +98,22 @@ The student challenge deliberately matches the first six weeks:
 - **Dictionaries:** keep a small amount of memory between steps.
 - **Classes:** use the provided `car` object and its methods; students are not
   required to construct the simulator's classes.
+
+The simulator repeatedly calls `control_step()`, so students write the logic
+that conceptually belongs inside `while driving():` without creating an infinite
+loop that could freeze the shared evaluator:
+
+```python
+def control_step(car, memory):
+    scan_input = car.scan()
+
+    if scan_input == "human":
+        car.stop()
+    elif scan_input == "stop sign":
+        car.stop()
+    else:
+        car.forward(35)
+```
 
 The simulator also provides `car.is_simulation`, which is useful only for
 debugging. Navigation logic should not depend on it.
@@ -114,14 +159,16 @@ not a mysterious one-shot grade.
 
 | Category | Points | Evidence |
 | --- | ---: | --- |
-| Mission completion | 30 | Reaches goals and checkpoints on multiple courses. |
-| Safety | 25 | Avoids crashes, boundaries, and uncontrolled motion. |
-| Robustness and edge cases | 15 | Handles invalid readings and unfamiliar obstacle layouts. |
-| Efficiency | 10 | Uses reasonable time, distance, and steering changes. |
-| Code quality | 10 | Uses readable names, functions, comments, and manageable complexity. |
+| Mission completion | 50 | Earns checkpoint credit and reaches the finish on the cul-de-sac course. |
+| Safety | 15 | Makes progress while obeying traffic rules and avoiding contact. |
+| Robustness | 10 | Makes progress and stops safely without controller errors. |
+| Efficiency | 5 | Finishes within the step and steering limits. |
+| Code quality | 10 | Uses descriptive names, focused functions, a called helper, and useful documentation. |
 | Engineering explanation | 10 | Explains the design, tests, failure evidence, and improvements. |
 
-The automated score covers the first five categories (90 points). The instructor
+The automated score uses the strict course rules and gives up to 80 points for
+driving behavior and 10 for code quality. Replay checkpoint points show course
+progress. Run `python evaluate.py` for the rubric score. The instructor
 awards the final 10 points for the demonstration and engineering explanation.
 
 ## Required showcase artifacts

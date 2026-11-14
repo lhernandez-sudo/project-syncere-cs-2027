@@ -21,10 +21,16 @@ def code_quality(path: Path) -> tuple[float, list[str]]:
     points = 0.0
     if any(node.name == "control_step" for node in functions):
         points += 2
-    if len(functions) >= 2:
+    entry = next((node for node in tree.body
+                  if isinstance(node, ast.FunctionDef) and node.name == "control_step"), None)
+    helper_names = {node.name for node in functions} - {"control_step"}
+    if entry and any(
+        isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+        and node.func.id in helper_names for node in ast.walk(entry)
+    ):
         points += 2
     else:
-        notes.append("Add at least one helper function.")
+        notes.append("Move a distinct driving decision into a helper function and call it from control_step.")
     if all((node.end_lineno or node.lineno) - node.lineno <= 35 for node in functions):
         points += 2
     else:
@@ -48,19 +54,24 @@ def score_runs(results: list[RunResult], quality_points: float) -> tuple[float, 
     checkpoint_total = sum(result.total_checkpoints for result in results)
     checkpoint_rate = sum(result.checkpoints_reached for result in results) / max(1, checkpoint_total)
     crashes = sum(result.collisions + result.boundary_hits for result in results)
+    human_hits = sum(result.human_hits for result in results)
+    stop_violations = sum(result.stop_sign_violations for result in results)
     invalid = sum(result.invalid_commands for result in results)
     errors = sum(bool(result.controller_errors) for result in results)
-    safely_stopped = sum(result.stopped_safely for result in results) / count
+    safely_stopped = sum(
+        result.stopped_safely and not (result.human_hits or result.stop_sign_violations)
+        for result in results
+    ) / count
 
-    mission = 22 * goal_rate + 8 * checkpoint_rate
-    safety = max(0, 25 - crashes * 2.5 - invalid * 0.5 - errors * 5)
-    fault_result = next(item for item in results if item.scenario == "sensor_fault")
-    unseen_result = next(item for item in results if item.scenario == "unseen")
-    robustness = 5 * safely_stopped + 5 * (not fault_result.controller_errors) + 5 * (
-        unseen_result.reached_goal or unseen_result.checkpoints_reached >= 2
+    mission = 25 * goal_rate + 25 * checkpoint_rate
+    safety = max(0, 15 * checkpoint_rate - crashes * 2.5 - human_hits * 8
+                 - stop_violations * 5 - invalid * 0.5 - errors * 5)
+    robustness = 10 * checkpoint_rate * safely_stopped * (1 - errors / count)
+    efficient_runs = sum(
+        result.reached_goal and result.steps < 650 and result.steering_changes < 120
+        for result in results
     )
-    efficient_runs = sum(result.steps < 650 and result.steering_changes < 120 for result in results)
-    efficiency = 10 * efficient_runs / count
+    efficiency = 5 * efficient_runs / count
     total = round(mission + safety + robustness + efficiency + quality_points, 1)
 
     feedback: list[str] = []
@@ -68,11 +79,11 @@ def score_runs(results: list[RunResult], quality_points: float) -> tuple[float, 
         feedback.append("Mission: tune navigation so the controller reaches more goals.")
     if crashes:
         feedback.append("Safety: slow down sooner or improve escape steering near obstacles and walls.")
-    if fault_result.controller_errors:
-        feedback.append("Robustness: handle an ultrasonic value of -1 without crashing.")
-    if not unseen_result.reached_goal:
-        feedback.append("Generalization: avoid hard-coded moves tied to the practice map.")
-    if efficiency < 7:
+    if human_hits:
+        feedback.append("Human safety: stop earlier and wait before navigating around a person.")
+    if stop_violations:
+        feedback.append("Traffic rules: remain stopped long enough before passing a stop sign.")
+    if goal_rate and efficiency < 5:
         feedback.append("Efficiency: reduce unnecessary steering changes or long recovery loops.")
     return min(90.0, total), feedback
 
@@ -80,7 +91,7 @@ def score_runs(results: list[RunResult], quality_points: float) -> tuple[float, 
 def main() -> None:
     controller = load_controller(CONTROLLER)
     scenarios = scenario_catalog()
-    results = [run_scenario(controller, scenario) for scenario in scenarios.values()]
+    results = [run_scenario(controller, scenarios["warehouse"], strict=True)]
     quality, quality_notes = code_quality(CONTROLLER)
     score, feedback = score_runs(results, quality)
 
@@ -88,6 +99,8 @@ def main() -> None:
         "VIRTUAL PICAR-X EVALUATION",
         "=" * 32,
         f"Automated score: {score}/90",
+        f"Driving behavior: {round(score - quality, 1)}/80",
+        f"Code quality: {quality}/10",
         "Instructor demonstration: ___/10",
         f"Possible final score: {score}/100 before demonstration points",
         "",
@@ -97,7 +110,8 @@ def main() -> None:
         lines.append(
             f"- {result.scenario:12} goal={str(result.reached_goal):5} "
             f"checkpoints={result.checkpoints_reached}/{result.total_checkpoints} "
-            f"collisions={result.collisions} boundaries={result.boundary_hits} steps={result.steps}"
+            f"collisions={result.collisions} human_hits={result.human_hits} "
+            f"stop_violations={result.stop_sign_violations} steps={result.steps}"
         )
     lines.extend(["", "NEXT IMPROVEMENTS"])
     for note in feedback + quality_notes:
