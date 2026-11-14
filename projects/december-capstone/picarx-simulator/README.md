@@ -32,26 +32,25 @@ def control_step(car, memory):
 1. Open `student_controller.py`.
 2. Complete `control_step()` using variables, conditions, lists or dictionaries,
    loops, and helper functions.
-3. Run the practice course:
+3. From this folder, run the simulator:
 
    ```bash
-   python run_simulation.py
+   python run_student.py
    ```
 
-4. Open `simulation_replay.html` in a browser.
-5. Run the full evaluator:
+4. Watch the replay in your browser. The script runs your controller once under
+   the strict rules, starts playback, and shows your automated score out of 90.
+   If your browser does not open, open `strict_replay.html` from this folder.
+5. Read `score_report.txt`, improve one weakness, and run the same command again.
 
-   ```bash
-   python evaluate.py
-   ```
-
-6. Read `score_report.txt`, improve one weakness, and test again.
+Use Python 3.12 or newer. The simulator uses Python's standard library and a
+regular browser, so there are no packages to install. On Windows, use
+`py -3 run_student.py` if `python` does not start Python.
 
 ## Two lessons
 
-Run `python run_simulation.py` and open `simulation_replay.html`. Use the
-same cul-de-sac course for both lessons. Rerun the command and refresh the
-page after changing your controller.
+Run `python run_student.py` for both lessons and rerun it after changing your
+controller. Both lessons use the same cul-de-sac course.
 
 1. **Build a safe driver.** Focus on the approach to the turnaround.
    Use `car.scan()` to recognize the stop sign and pedestrian. Use the grayscale
@@ -60,10 +59,9 @@ page after changing your controller.
 2. **Navigate the cul-de-sac.** Drive through the 11 checkpoint zones in order, go
    around boxes using either side of the open pavement, and return to the
    entrance. Use a small memory dictionary to remember a turn or recovery state.
-   Run `python evaluate.py` and compare your checkpoint and collision counts.
+   Compare your checkpoint and collision counts across runs.
 
-Run `python run_strict.py` to test the supplied controller under strict rules.
-The attempt ends on a collision, missed stop sign, course boundary hit, or
+The strict attempt ends on a collision, missed stop sign, course boundary hit, or
 sustained stall. The replay shows the reason and checkpoints earned.
 
 Keep the controller in `control_step(car, memory)`. The steering, motor,
@@ -168,14 +166,14 @@ not a mysterious one-shot grade.
 
 The automated score uses the strict course rules and gives up to 80 points for
 driving behavior and 10 for code quality. Replay checkpoint points show course
-progress. Run `python evaluate.py` for the rubric score. The instructor
+progress. The replay and score report show the automated rubric score. The instructor
 awards the final 10 points for the demonstration and engineering explanation.
 
 ## Required showcase artifacts
 
 - `student_controller.py`
 - `score_report.txt`
-- `simulation_replay.html`
+- `strict_replay.html`
 - A short README or reflection describing the approach and one improvement
 - Git commits showing a baseline, tested improvement, and final version
 

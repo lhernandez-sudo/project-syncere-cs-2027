@@ -460,7 +460,10 @@ def render_replay(result: RunResult, scenario: Scenario, output: Path) -> None:
     render_replays([(result, scenario)], output)
 
 
-def render_replays(runs: list[tuple[RunResult, Scenario]], output: Path) -> None:
+def render_replays(
+    runs: list[tuple[RunResult, Scenario]], output: Path, *,
+    autoplay: bool = False, evaluation_score: float | None = None,
+) -> None:
     payload = json.dumps([{
         "result": {key: value for key, value in result.__dict__.items() if key != "replay"},
         "frames": result.replay,
@@ -478,8 +481,9 @@ def render_replays(runs: list[tuple[RunResult, Scenario]], output: Path) -> None
     template = """<!doctype html><html><head><meta charset="utf-8"><title>Virtual PiCar-X Replay</title>
 <style>body{font-family:Arial;background:#071b2e;color:white;margin:0;padding:22px}main{max-width:1100px;margin:auto}.card{background:#102d46;border:1px solid #2d6383;border-radius:14px;padding:16px;margin:12px 0}.views{display:grid;grid-template-columns:2fr 1fr;gap:14px}canvas{width:100%;background:#d9f0df;border-radius:10px}button,input{font-size:16px;margin-right:10px}strong{color:#55d6be}.legend span{margin-right:18px}@media(max-width:800px){.views{grid-template-columns:1fr}}</style></head>
 <body><main><h1>Virtual PiCar-X Chase View</h1><div class="card" id="summary"></div><div class="views"><canvas id="driver" width="760" height="470"></canvas><canvas id="course"></canvas></div>
-<div class="card"><button id="play">Play</button><button id="reset">Reset</button><input id="slider" type="range" min="0" value="0"><span id="step"></span> · <strong id="score"></strong></div>
+<div class="card"><button id="play">Play / Pause</button><button id="reset">Reset</button><input id="slider" type="range" min="0" value="0"><span id="step"></span> · <strong id="score"></strong></div>
 <p class="card" id="hint" role="status" hidden></p>
+__EVALUATION__
 <div class="legend"><span>🟦 Car</span><span>🟥 Obstacle</span><span>🟨 Checkpoint</span><span>🟩 Goal</span></div></main>
 <script>const runs=__DATA__,c=document.querySelector('#course'),x=c.getContext('2d'),d=document.querySelector('#driver'),v=d.getContext('2d');
 const slider=document.querySelector('#slider');
@@ -675,5 +679,13 @@ playButton.onclick=play;
 document.querySelector('#reset').onclick=()=>{pause();i=0;draw()};
 slider.oninput=e=>{pause();i=Number(e.target.value);draw()};
 selector.onchange=selectCourse;
-selectCourse();</script></body></html>"""
-    output.write_text(template.replace("__DATA__", payload), encoding="utf-8")
+selectCourse();__AUTOPLAY__</script></body></html>"""
+    evaluation = (
+        f'<p class="card">Automated rubric score: <strong>{evaluation_score:g}/90</strong>'
+        ' · <a style="color:#55d6be" href="score_report.txt">Read the score report</a></p>'
+        if evaluation_score is not None else ""
+    )
+    page = template.replace("__EVALUATION__", evaluation).replace(
+        "__AUTOPLAY__", "play();" if autoplay else ""
+    )
+    output.write_text(page.replace("__DATA__", payload), encoding="utf-8")

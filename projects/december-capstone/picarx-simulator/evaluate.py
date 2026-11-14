@@ -88,11 +88,8 @@ def score_runs(results: list[RunResult], quality_points: float) -> tuple[float, 
     return min(90.0, total), feedback
 
 
-def main() -> None:
-    controller = load_controller(CONTROLLER)
-    scenarios = scenario_catalog()
-    results = [run_scenario(controller, scenarios["warehouse"], strict=True)]
-    quality, quality_notes = code_quality(CONTROLLER)
+def write_score_report(results: list[RunResult], controller_path: Path, output: Path) -> float:
+    quality, quality_notes = code_quality(controller_path)
     score, feedback = score_runs(results, quality)
 
     lines = [
@@ -113,14 +110,26 @@ def main() -> None:
             f"collisions={result.collisions} human_hits={result.human_hits} "
             f"stop_violations={result.stop_sign_violations} steps={result.steps}"
         )
+        if result.replay and result.replay[-1]["failure"]:
+            lines.append(f"  Attempt ended: {result.replay[-1]['failure']}")
+        if result.controller_errors:
+            lines.append(f"  Controller error: {result.controller_errors[0]}")
     lines.extend(["", "NEXT IMPROVEMENTS"])
     for note in feedback + quality_notes:
         lines.append(f"- {note}")
     if not feedback and not quality_notes:
         lines.append("- Strong result. Explain why the design works and identify one remaining limitation.")
     report = "\n".join(lines) + "\n"
-    (HERE / "score_report.txt").write_text(report, encoding="utf-8")
+    output.write_text(report, encoding="utf-8")
     print(report)
+    return score
+
+
+def main() -> None:
+    controller = load_controller(CONTROLLER)
+    scenario = scenario_catalog()["warehouse"]
+    result = run_scenario(controller, scenario, strict=True)
+    write_score_report([result], CONTROLLER, HERE / "score_report.txt")
 
 
 if __name__ == "__main__":
