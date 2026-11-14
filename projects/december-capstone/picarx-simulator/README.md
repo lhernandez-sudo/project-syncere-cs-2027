@@ -16,8 +16,11 @@ With a physical PiCar-X, the same decision-making function can receive a real
 `Picarx` object.
 
 ```python
-def control_step(car, memory):
-    distance = car.ultrasonic.read()
+from simulator import VirtualPicarx
+
+
+def control_step(car: VirtualPicarx, memory: dict[str, object]) -> None:
+    distance: float = car.ultrasonic.read()
 
     if distance < 25:
         car.set_dir_servo_angle(30)
@@ -71,6 +74,13 @@ The simulated camera labels from `scan()` need a camera adapter on hardware.
 Use the grayscale and distance readings to make decisions that can transfer
 to the physical course.
 
+In the starter's type hints, `car: VirtualPicarx` means the simulator hands
+you a virtual car with methods such as `forward()` and `stop()`.
+`memory: dict[str, object]` means you use string keys and can store different
+kinds of values, such as a Boolean or a number. The simulator keeps that
+dictionary between calls. `-> None` means your function has no value to
+return. Calling a car method is how you tell it what to do.
+
 ## Student-facing API
 
 | Command or sensor | Meaning |
@@ -102,8 +112,8 @@ that conceptually belongs inside `while driving():` without creating an infinite
 loop that could freeze the shared evaluator:
 
 ```python
-def control_step(car, memory):
-    scan_input = car.scan()
+def control_step(car: VirtualPicarx, memory: dict[str, object]) -> None:
+    scan_input: str = car.scan()
 
     if scan_input == "human":
         car.stop()
