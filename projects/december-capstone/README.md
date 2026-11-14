@@ -2,6 +2,15 @@
 
 Build a useful Python program that addresses a clearly defined problem for a real or realistic user.
 
+## Current capstone option: Virtual PiCar-X
+
+The recommended three-class capstone is the [Virtual PiCar-X Navigation
+Capstone](picarx-simulator/README.md). Students build a self-navigation
+controller against a simulated version of the PiCar-X Python interface, test it
+on visible and unseen courses, and present evidence of reliability at the
+showcase. This replaces the physical-car requirement while preserving hardware-
+relevant Python, sensors, testing, and engineering decision-making.
+
 ## Schedule
 
 ### Saturday 1 - Plan
