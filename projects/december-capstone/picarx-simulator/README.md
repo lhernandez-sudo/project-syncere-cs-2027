@@ -32,7 +32,7 @@ def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
 
 ## Start here
 
-The [guided driving teaching deck](../slides/picarx-guided-driving-lab.pptx)
+The [guided driving teaching deck](../slides/picarx-guided-driving-lab-student.pptx)
 follows a 10:00 AM–1:00 PM lab, including arrival, both breaks, notebook setup,
 nine checkpoints, loop practice, replay debugging, and individual submission.
 The student Colab link is clickable in the slides. Use the starter notebook
