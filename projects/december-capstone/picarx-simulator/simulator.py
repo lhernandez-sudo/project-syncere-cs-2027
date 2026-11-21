@@ -52,6 +52,7 @@ class Scenario:
     seed: int = 1
     branches: tuple[tuple[tuple[float, float], ...], ...] = ()
     turning_bulb: tuple[float, float, float] | None = None
+    road_half_width: float | None = None
 
     def road_segments(self):
         for road in (self.route, *self.branches):
@@ -466,6 +467,7 @@ def render_replays(
             "route": scenario.route,
             "branches": scenario.branches,
             "turningBulb": scenario.turning_bulb,
+            "roadHalfWidth": scenario.road_half_width,
             "sceneObjects": [item.__dict__ for item in scenario.scene_objects],
         },
     } for result, scenario in runs]).replace("<", "\\u003c")
@@ -558,12 +560,12 @@ function drawRoadStrip(frame,sampledRoute){
                      roadEdge(sampledRoute,index+1,right),roadEdge(sampledRoute,index+1,left)],frame,color);
     }
     for(let index=0;index<sampledRoute.length-1;index++){
-        const halfWidth=s.turningBulb && sampledRoute[index].x>=835?82:24;
+        const halfWidth=s.roadHalfWidth ?? (s.turningBulb && sampledRoute[index].x>=835?82:24);
         strip(index,-halfWidth-5,halfWidth+5,'#aab1a6');
         strip(index,-halfWidth,halfWidth,'#484b50');
-        if(halfWidth>24)continue;
-        strip(index,-23,-22,'#ece8dc');
-        strip(index,22,23,'#ece8dc');
+        if(halfWidth>24 && s.roadHalfWidth==null)continue;
+        strip(index,-halfWidth+1,-halfWidth+2,'#ece8dc');
+        strip(index,halfWidth-2,halfWidth-1,'#ece8dc');
         if(index%3!==2)strip(index,-.8,.8,'#e8dcaa');
     }
 }
@@ -595,6 +597,13 @@ function drawCar(width,height){
     v.restore();
 }
 function drawCrosswalk(camera){
+    if(s.roadHalfWidth!=null){
+        for(const sign of s.sceneObjects.filter(object=>object.kind==='stop sign')){
+            const stopX=sign.x-25,half=s.roadHalfWidth-4;
+            roadPolygon([{x:stopX-2,y:260-half},{x:stopX+2,y:260-half},
+                         {x:stopX+2,y:260+half},{x:stopX-2,y:260+half}],camera,'#f4efe0');
+        }
+    }
     for(const person of s.sceneObjects){
         if(!person.crossing_end)continue;
         const dx=person.crossing_end[0]-person.x,dy=person.crossing_end[1]-person.y;
@@ -611,7 +620,7 @@ function drawCrosswalk(camera){
         }
     }
 }
-function driverView(f){const W=d.width,H=d.height,h=155;let g=v.createLinearGradient(0,0,0,h);g.addColorStop(0,'#69b9e8');g.addColorStop(1,'#d9f4ff');v.fillStyle=g;v.fillRect(0,0,W,h);g=v.createLinearGradient(0,h,0,H);g.addColorStop(0,'#65a75f');g.addColorStop(1,'#254f2e');v.fillStyle=g;v.fillRect(0,h,W,H-h);for(let n=0;n<7;n++){const tx=35+n*118;v.fillStyle='#386b35';v.beginPath();v.arc(tx,h-8-(n%2)*12,18+(n%3)*5,0,Math.PI*2);v.fill();v.fillStyle='#79553a';v.fillRect(tx-3,h-2,6,28)}const angle=f.heading*Math.PI/180;const camera={...f,x:f.x-64*Math.cos(angle),y:f.y-64*Math.sin(angle)};drawRoad(camera);drawCrosswalk(camera);const objects=[...s.obstacles.map(o=>({...o,kind:'obstacle'})),...f.objects];objects.map(o=>({o,p:projectGround(o,camera)})).filter(q=>q.p&&q.p.depth<220&&Math.abs(q.p.x-W/2)<W*.65).sort((a,b)=>b.p.depth-a.p.depth).forEach(q=>{const scale=.3+q.p.approach*1.9,ground=q.p.y;const sx=q.p.x;const stride=q.o.walking?Math.sin(f.step*.48)*8:0;if(q.o.kind==='human'){v.strokeStyle='#f9c34e';v.lineWidth=Math.max(3,7*scale);v.beginPath();v.arc(sx,ground-45*scale,9*scale,0,Math.PI*2);v.moveTo(sx,ground-35*scale);v.lineTo(sx,ground-8*scale);v.moveTo(sx,ground-25*scale);v.lineTo(sx-14*scale,ground-15*scale);v.moveTo(sx,ground-25*scale);v.lineTo(sx+14*scale,ground-15*scale);v.moveTo(sx,ground-8*scale);v.lineTo(sx-12*scale,ground+(10+stride)*scale);v.moveTo(sx,ground-8*scale);v.lineTo(sx+12*scale,ground+10*scale);v.stroke()}else if(q.o.kind==='stop sign'){v.fillStyle='#70757b';v.fillRect(sx-2*scale,ground-38*scale,4*scale,43*scale);v.fillStyle='#c9252d';v.strokeStyle='white';v.lineWidth=Math.max(1,2*scale);v.beginPath();for(let n=0;n<8;n++){const a=Math.PI/8+n*Math.PI/4,px=sx+18*scale*Math.cos(a),py=ground-51*scale+18*scale*Math.sin(a);n?v.lineTo(px,py):v.moveTo(px,py)}v.closePath();v.fill();v.stroke();v.fillStyle='white';v.font=`bold ${Math.max(7,8*scale)}px Arial`;v.textAlign='center';v.fillText('STOP',sx,ground-48*scale)}else{drawBox(sx,ground,scale*q.o.radius/26)}});drawCar(W,H);v.fillStyle='rgba(4,15,27,.82)';v.fillRect(0,H-36,W,36);v.fillStyle='#55d6be';v.font='bold 18px Arial';v.textAlign='left';v.fillText(`${f.failure || (f.scan==='human' && !f.throttle ? 'YIELDING - PEDESTRIAN CROSSING' : '') || 'CAMERA: '+f.scan.toUpperCase()+'   SPEED: '+Math.abs(f.throttle).toFixed(0)}`,16,H-12)}
+function driverView(f){const W=d.width,H=d.height,h=155;let g=v.createLinearGradient(0,0,0,h);g.addColorStop(0,'#69b9e8');g.addColorStop(1,'#d9f4ff');v.fillStyle=g;v.fillRect(0,0,W,h);g=v.createLinearGradient(0,h,0,H);g.addColorStop(0,'#65a75f');g.addColorStop(1,'#254f2e');v.fillStyle=g;v.fillRect(0,h,W,H-h);for(let n=0;n<7;n++){const tx=35+n*118;v.fillStyle='#386b35';v.beginPath();v.arc(tx,h-8-(n%2)*12,18+(n%3)*5,0,Math.PI*2);v.fill();v.fillStyle='#79553a';v.fillRect(tx-3,h-2,6,28)}const angle=f.heading*Math.PI/180;const camera={...f,x:f.x-64*Math.cos(angle),y:f.y-64*Math.sin(angle)};drawRoad(camera);drawCrosswalk(camera);const objects=[...s.obstacles.map(o=>({...o,kind:'obstacle'})),...f.objects];objects.map(o=>({o,p:projectGround(o,camera)})).filter(q=>q.p&&q.p.depth<1600&&Math.abs(q.p.x-W/2)<W*.65).sort((a,b)=>b.p.depth-a.p.depth).forEach(q=>{const scale=Math.min(2.2,150/q.p.depth),ground=q.p.y;const sx=q.p.x;const stride=q.o.walking?Math.sin(f.step*.48)*8:0;if(q.o.kind==='human'){v.strokeStyle='#f9c34e';v.lineWidth=Math.max(3,7*scale);v.beginPath();v.arc(sx,ground-45*scale,9*scale,0,Math.PI*2);v.moveTo(sx,ground-35*scale);v.lineTo(sx,ground-8*scale);v.moveTo(sx,ground-25*scale);v.lineTo(sx-14*scale,ground-15*scale);v.moveTo(sx,ground-25*scale);v.lineTo(sx+14*scale,ground-15*scale);v.moveTo(sx,ground-8*scale);v.lineTo(sx-12*scale,ground+(10+stride)*scale);v.moveTo(sx,ground-8*scale);v.lineTo(sx+12*scale,ground+10*scale);v.stroke()}else if(q.o.kind==='stop sign'){v.fillStyle='#70757b';v.fillRect(sx-2*scale,ground-38*scale,4*scale,43*scale);v.fillStyle='#c9252d';v.strokeStyle='white';v.lineWidth=Math.max(1,2*scale);v.beginPath();for(let n=0;n<8;n++){const a=Math.PI/8+n*Math.PI/4,px=sx+18*scale*Math.cos(a),py=ground-51*scale+18*scale*Math.sin(a);n?v.lineTo(px,py):v.moveTo(px,py)}v.closePath();v.fill();v.stroke();v.fillStyle='white';v.font=`bold ${Math.max(7,8*scale)}px Arial`;v.textAlign='center';v.fillText('STOP',sx,ground-48*scale)}else{drawBox(sx,ground,scale*q.o.radius/26)}});drawCar(W,H);v.fillStyle='rgba(4,15,27,.82)';v.fillRect(0,H-36,W,36);v.fillStyle='#55d6be';v.font='bold 18px Arial';v.textAlign='left';v.fillText(`${f.failure || (f.scan==='human' && !f.throttle ? 'YIELDING - PEDESTRIAN CROSSING' : '') || 'CAMERA: '+f.scan.toUpperCase()+'   SPEED: '+Math.abs(f.throttle).toFixed(0)}`,16,H-12)}
 function drawBox(x,y,scale){
     v.save();v.translate(x,y);v.scale(scale,scale);
     v.fillStyle='#ad784a';v.fillRect(-20,-31,40,31);
@@ -647,7 +656,7 @@ function showHint(checkpoints, finished, failure){
     const message=`${target} ${hint}`;
     if(panel.textContent!==message)panel.textContent=message;
 }
-function draw(position=i){if(!data.frames.length)return; i=Math.floor(position);x.clearRect(0,0,c.width,c.height);x.fillStyle='#d9f0df';x.fillRect(0,0,c.width,c.height);if(s.turningBulb){const [x,y,radius]=s.turningBulb;circle({x,y,radius},'#687079');}x.strokeStyle='#253746';x.lineWidth=8;for(const road of [s.route,...s.branches]){x.beginPath();road.forEach((p,n)=>n?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();if(s.turningBulb){x.strokeStyle='#687079';x.lineWidth=164;x.beginPath();road.filter(p=>p[0]>=835).forEach((p,n)=>n?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();}}s.obstacles.forEach(o=>circle(o,'#d9534f'));data.frames[i].objects.forEach(o=>circle(o,o.kind==='human'?'#7a4fa3':'#d22'));s.checkpoints.forEach((p,n)=>{circle(p,n<data.frames[i].checkpoint?'#8ccf72':'#f4c95d');x.fillStyle='#172b3a';x.fillText(n+1,p.x-3,p.y+4)});circle(s.goal,'#42b883');x.strokeStyle='#246b95';x.lineWidth=3;x.beginPath();data.frames.slice(0,i+1).forEach((f,n)=>n?x.lineTo(f.x,f.y):x.moveTo(f.x,f.y));x.stroke();const current=data.frames[i],next=data.frames[Math.min(i+1,data.frames.length-1)],fraction=position-i;const delta=((next.heading-current.heading+540)%360)-180;const f={...current,step:position,objects:current.objects.map((object,index)=>{const following=next.objects[index];if(!following||following.kind!==object.kind)return {...object};return {...object,x:object.x+(following.x-object.x)*fraction,y:object.y+(following.y-object.y)*fraction}}),x:current.x+(next.x-current.x)*fraction,y:current.y+(next.y-current.y)*fraction,heading:current.heading+delta*fraction};x.save();x.translate(f.x,f.y);x.rotate(f.heading*Math.PI/180);x.fillStyle='#247ba0';x.fillRect(-14,-9,28,18);x.fillStyle='white';x.fillRect(4,-5,8,10);x.restore();driverView(f);slider.value=i;document.querySelector('#step').textContent=`Step ${i+1}/${data.frames.length}`;showScore(current.checkpoint,i===data.frames.length-1);showHint(current.checkpoint,i===data.frames.length-1,current.failure);}
+function draw(position=i){if(!data.frames.length)return; i=Math.floor(position);x.clearRect(0,0,c.width,c.height);x.fillStyle='#d9f0df';x.fillRect(0,0,c.width,c.height);if(s.turningBulb){const [x,y,radius]=s.turningBulb;circle({x,y,radius},'#687079');}x.strokeStyle='#253746';x.lineWidth=8;for(const road of [s.route,...s.branches]){x.beginPath();road.forEach((p,n)=>n?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();if(s.turningBulb){x.strokeStyle='#687079';x.lineWidth=164;x.beginPath();road.filter(p=>p[0]>=835).forEach((p,n)=>n?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();}}s.obstacles.forEach(o=>circle(o,'#d9534f'));data.frames[i].objects.forEach(o=>circle(o,o.kind==='human'?'#7a4fa3':'#d22'));s.checkpoints.forEach((p,n)=>{circle(p,n<data.frames[i].checkpoint?'#8ccf72':'#f4c95d');x.fillStyle='#172b3a';x.fillText(n+1,p.x-3,p.y+4)});circle(s.goal,'#42b883');x.strokeStyle='#246b95';x.lineWidth=3;x.beginPath();data.frames.slice(0,i+1).forEach((f,n)=>n?x.lineTo(f.x,f.y):x.moveTo(f.x,f.y));x.stroke();const current=data.frames[i],next=data.frames[Math.min(i+1,data.frames.length-1)],fraction=position-i;const delta=((next.heading-current.heading+540)%360)-180;const f={...current,step:position,objects:current.objects.map((object,index)=>{const following=object.id?next.objects.find(item=>item.id===object.id):next.objects[index];if(!following||following.kind!==object.kind)return {...object};return {...object,x:object.x+(following.x-object.x)*fraction,y:object.y+(following.y-object.y)*fraction}}),x:current.x+(next.x-current.x)*fraction,y:current.y+(next.y-current.y)*fraction,heading:current.heading+delta*fraction};x.save();x.translate(f.x,f.y);x.rotate(f.heading*Math.PI/180);x.fillStyle='#247ba0';x.fillRect(-14,-9,28,18);x.fillStyle='white';x.fillRect(4,-5,8,10);x.restore();driverView(f);slider.value=i;document.querySelector('#step').textContent=`Step ${i+1}/${data.frames.length}`;showScore(current.checkpoint,i===data.frames.length-1);showHint(current.checkpoint,i===data.frames.length-1,current.failure);}
 function pause(){if(t!==null)cancelAnimationFrame(t);t=null;}
 function play(){
     if(t!==null){pause();return;}

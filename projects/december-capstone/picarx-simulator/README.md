@@ -65,10 +65,12 @@ guided replay but does not add a new object to the advanced full simulator. Keep
 
 The debug cell runs a short, guided HTML skills course using the same student
 function: move, yield to a crossing person, stop at a sign, stop before a box,
-and steer around a personal object. The course supplies scripted observations;
-it is not a vehicle physics or full-route navigation test. A correct stop lets
-the pedestrian finish, completes the sign wait, or lets an instructor remove
-the box. Correct custom steering triggers an illustrative detour curve.
+and steer around a personal object. The course supplies position-based mock observations;
+it is not a vehicle physics or full-route navigation test. The pedestrian starts crossing as the car approaches. A fixed roadside sign
+and painted stop line stay in place after the wait. A worker visibly pushes the
+box to the shoulder after the car stops; neither vanishes. The custom object
+stays fixed while the car follows a smooth guided detour. All five scene objects
+persist throughout the replay. Correct custom steering triggers the guided curve.
 The course ends immediately on a wrong action or steering choice and gives a hint.
 No waypoints, coordinates, stop timers, or route planning are required.
 
