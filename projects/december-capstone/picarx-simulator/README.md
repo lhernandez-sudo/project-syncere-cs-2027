@@ -35,23 +35,20 @@ def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
 The [guided driving teaching deck](../slides/picarx-guided-driving-lab.pptx)
 follows a 10:00 AM–1:00 PM lab, including arrival, both breaks, notebook setup,
 nine checkpoints, loop practice, replay debugging, and individual submission.
-The student Colab link is clickable in the slides; speaker notes contain the
-instructor demo link. The complete model remains separate from the student notebook.
+The student Colab link is clickable in the slides. Use the starter notebook
+linked below for classwork.
 
 ### Camera decision practice in Jupyter or Colab
 
-**Start with the completed example:**
-[Open the working Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-working-demo-v2.ipynb).
-Run setup, the completed controller, and simulation in order. No edits or
-installs are required. Expected result: five of five guided skills checkpoints
-and an animated HTML replay. This version has no unfinished checkpoint tasks.
-Use it to verify playback before returning to the student exercise below.
+[Open the student checkpoint notebook in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-camera-decisions.ipynb).
+Choose **File > Save a copy in Drive**. Run Setup, work in the single student
+code cell, and run debug below. The notebook contains comment checkpoints,
+unfinished helpers, and a stop-only starter, with no saved solution outputs.
 
 Checkpoint 8 uses a `for` loop to inspect stop-hazard labels in
 `is_stop_signal()`. Checkpoint 9 uses a terminating `while` loop to build a
 launch countdown in `launch_countdown()`. Both helpers live in the same student
-code cell, with eight additional debug checks below. Working demos include
-completed helpers and call the hazard helper from the controller. The countdown
+code cell, with eight additional debug checks below. Use the hazard helper in the controller after its checks pass. The countdown
 displays numbers; it does not measure time or control the stop-sign wait.
 Allow about ten minutes per loop, or use the countdown as an extension.
 
@@ -59,10 +56,6 @@ Open [picarx-camera-decisions.ipynb](picarx-camera-decisions.ipynb) for a
 beginner-friendly, self-contained introduction before the full driving challenge.
 Its single student code cell uses checkpoint comments and runnable placeholders.
 The initial car stays stopped; failed checks are expected until rules are added.
-The [complete instructor model](guided_debug_controller.py) can replace that
-entire code cell for verification. Run it and then debug: expected results are
-8/8 loop checks, 8/8 driving checks, and 5/5 guided visual checkpoints. Keep the
-completed working demo separate when distributing the student exercise.
 Upload it to Google Colab and save a copy in Google Drive, or open it locally
 in Jupyter. It needs no packages, camera, or hardware. Run the cells in order.
 

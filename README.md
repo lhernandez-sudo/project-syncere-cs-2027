@@ -4,7 +4,7 @@
 
 [Open the guided driving lesson](projects/december-capstone/README.md#current-lesson-guided-picar-x-driving-lab)
 for the student Colab notebook and teaching slides. The lab uses comment
-checkpoints and a short visual driving course, with a separate instructor model.
+checkpoints and a short visual driving course.
 
 Class-opening icebreaker: [Snackdown Derby](activities/snackdown-derby/README.md)
 is a six-minute four-team ticket race with randomized winners, cartoon snack

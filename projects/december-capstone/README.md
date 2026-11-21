@@ -10,9 +10,11 @@ write sensor decisions, personalize an obstacle, and practice both loop types.
 The lesson assumes 10:00 AM–1:00 PM, with 15 minutes for arrival and two breaks.
 
 - [Teaching slides](slides/picarx-guided-driving-lab.pptx)
-- [Student notebook in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/a0a3287/projects/december-capstone/picarx-simulator/picarx-camera-decisions.ipynb)
-- [Completed instructor demo in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/51c5e15/projects/december-capstone/picarx-simulator/picarx-working-demo-v2.ipynb)
-- [Working code model](picarx-simulator/guided_debug_controller.py)
+- [Student notebook in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-camera-decisions.ipynb)
+
+The student link opens the comment-checkpoint starter, with unfinished functions
+and no saved solution outputs. Choose **File > Save a copy in Drive**. Run Setup,
+then edit and run the student code cell before running the debug cell below it.
 
 Use the guided lesson for the current class. The advanced full-course project
 below remains available for future extension.

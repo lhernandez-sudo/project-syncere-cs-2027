@@ -7,8 +7,8 @@ from pathlib import Path
 
 
 class NotebookRuntimeTests(unittest.TestCase):
-    def test_working_notebook_recovers_from_old_imports(self):
-        notebook = Path(__file__).with_name("picarx-working-demo.ipynb")
+    def test_student_notebook_recovers_from_old_imports(self):
+        notebook = Path(__file__).with_name("picarx-camera-decisions.ipynb")
         script = r'''
 import json, sys, types
 from dataclasses import dataclass
@@ -25,30 +25,28 @@ sys.modules["guided_course"] = old_course
 
 nb = json.load(open(sys.argv[1], encoding="utf-8"))
 setup = next("".join(c["source"]) for c in nb["cells"] if c["cell_type"]=="code" and "bundled_sources = json.loads(" in "".join(c["source"]))
-controller = "".join(nb["cells"][4]["source"])
+controller = "".join(nb["cells"][3]["source"])
 namespace = {}
 for repeat in range(2):
     exec(setup, namespace)
     exec(controller, namespace)
-    assert namespace["is_stop_signal"]("human") is True
-    assert namespace["is_stop_signal"]("stop sign") is True
-    assert namespace["is_stop_signal"]("clear") is False
-    assert namespace["is_stop_signal"](namespace["custom_object"]) is False
-    assert namespace["launch_countdown"](5) == [5, 4, 3, 2, 1]
-    assert namespace["launch_countdown"](1) == [1]
+    # Verify that the distributed notebook still contains unfinished starters.
+    assert namespace["is_stop_signal"]("human") is False
+    assert namespace["launch_countdown"](5) == []
     assert namespace["launch_countdown"](0) == []
     assert "road_half_width" in sys.modules["simulator"].Scenario.__dataclass_fields__
     assert sys.modules["simulator"] is not old_simulator
     result, scenario = namespace["run_guided_course"](
         namespace["control_step"], namespace["custom_object"], namespace["avoid_direction"])
-    assert result.reached_goal and result.checkpoints_reached == 5
+    assert not result.reached_goal and result.checkpoints_reached == 0
+    assert "No progress" in result.replay[-1]["failure"]
     assert scenario.road_half_width == 85
     assert sys.path.count(str(namespace["work_folder"])) == 1
     from simulator import render_replays
     render_replays([(result, scenario)], namespace["work_folder"] / "verified.html")
-print("Recovered stale imports, completed 5/5, rendered HTML, and reran setup successfully.")
+print("Recovered stale imports, kept unfinished starters, rendered HTML, and reran setup successfully.")
 '''
-        for filename in (notebook.name, "picarx-working-demo-v2.ipynb"):
+        for filename in (notebook.name,):
             with self.subTest(notebook=filename):
                 with tempfile.TemporaryDirectory(prefix="picarx-runtime-") as folder:
                     result = subprocess.run([sys.executable, "-c", script, str(notebook.with_name(filename))],
