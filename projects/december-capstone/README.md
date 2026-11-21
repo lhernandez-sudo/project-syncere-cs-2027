@@ -2,6 +2,21 @@
 
 Build a useful Python program that addresses a clearly defined problem for a real or realistic user.
 
+## Current lesson: guided PiCar-X driving lab
+
+The three-hour lab uses a beginner notebook with one student code cell,
+nine comment checkpoints, and a debug cell with an animated replay. Students
+write sensor decisions, personalize an obstacle, and practice both loop types.
+The lesson assumes 10:00 AM–1:00 PM, with 15 minutes for arrival and two breaks.
+
+- [Teaching slides](slides/picarx-guided-driving-lab.pptx)
+- [Student notebook in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/a0a3287/projects/december-capstone/picarx-simulator/picarx-camera-decisions.ipynb)
+- [Completed instructor demo in Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/51c5e15/projects/december-capstone/picarx-simulator/picarx-working-demo-v2.ipynb)
+- [Working code model](picarx-simulator/guided_debug_controller.py)
+
+Use the guided lesson for the current class. The advanced full-course project
+below remains available for future extension.
+
 ## Current capstone option: Virtual PiCar-X
 
 The recommended three-class capstone is the [Virtual PiCar-X Navigation

@@ -1,5 +1,11 @@
 # Project Syncere — Computer Science 2027
 
+## Current capstone lab: your Python driver
+
+[Open the guided driving lesson](projects/december-capstone/README.md#current-lesson-guided-picar-x-driving-lab)
+for the student Colab notebook and teaching slides. The lab uses comment
+checkpoints and a short visual driving course, with a separate instructor model.
+
 ## Students: start Week 6
 
 ### [OPEN THE WEEK 6 CODE AND CONSEQUENCES GUIDE](week-06-dictionaries-classes-review/README.md)
