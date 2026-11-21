@@ -10,7 +10,7 @@ from snackdown_derby import build_page
 
 class LauncherTests(unittest.TestCase):
     def test_supported_lengths_and_default(self):
-        for duration in (180, 210, 240):
+        for duration in (180, 210, 240, 300):
             page = build_page(duration)
             self.assertIn(f"const DURATION={duration}", page)
             self.assertNotIn("__DURATION__", page)
@@ -18,7 +18,7 @@ class LauncherTests(unittest.TestCase):
             self.assertNotIn('<script src=', page)
 
     def test_rejects_out_of_scope_lengths(self):
-        for duration in (0, 179, 241):
+        for duration in (0, 179, 301):
             with self.assertRaises(ValueError):
                 build_page(duration)
 
