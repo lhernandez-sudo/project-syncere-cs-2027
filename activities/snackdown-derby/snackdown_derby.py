@@ -1,4 +1,4 @@
-"""Launch a five-minute, four-team snack race. Python standard library only."""
+"""Launch a six-minute, four-team snack race. Python standard library only."""
 
 import argparse
 from pathlib import Path
@@ -39,7 +39,7 @@ button:hover{background:#284260}button:focus-visible{outline:3px solid #ffe071;o
 'use strict';
 const DURATION=__DURATION__, INTRO=8, FINISH=DURATION-10;
 const teams=[{name:'CHEESY',nick:'The Big Cheddar',color:'#ffd35c',dark:'#c27420',move:'CHEDDAR DEATH RAY',quip:'Built different. Mostly dairy.'},{name:'JUICY',nick:'Lord of the Squeeze',color:'#ff7394',dark:'#a82d62',move:'THE PULP SABER',quip:'100% juice. 0% technique.'},{name:'CRISPY',nick:'Crunch Time Criminal',color:'#6ed9ff',dark:'#267aad',move:'CRYO-FRYER 3000',quip:'No thoughts. Just crunch.'},{name:'SPICY',nick:'The Mild Inconvenience',color:'#b7f774',dark:'#558b36',move:'THUNDER PLUNGER',quip:'Banned from the group chat.'}];
-const battleWindows=[[.22,.29],[.48,.55],[.74,.81]].map(([a,b])=>({start:INTRO+(FINISH-INTRO)*a,end:INTRO+(FINISH-INTRO)*b}));
+const battleWindows=[[.12,.17],[.26,.31],[.40,.45],[.54,.59],[.68,.73],[.82,.87]].map(([a,b])=>({start:INTRO+(FINISH-INTRO)*a,end:INTRO+(FINISH-INTRO)*b}));
 const battleLength=battleWindows.reduce((sum,b)=>sum+b.end-b.start,0),raceLength=FINISH-INTRO-battleLength;
 const canvas=document.querySelector('#game'),c=canvas.getContext('2d');
 const $=id=>document.getElementById(id);
@@ -47,14 +47,14 @@ let seed=1,rng,champion=0,rank=[],battles=[],sabotages=[],paceTables=[],phases=[
 function randomInt(n){const a=new Uint32Array(1);crypto.getRandomValues(a);const limit=Math.floor(4294967296/n)*n;if(a[0]>=limit)return randomInt(n);return a[0]%n}
 function seeded(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function mix(a,random=()=>randomInt(1000000)/1000000){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function newShow(){if(customMusic){customMusic.pause();customMusic.currentTime=0}seed=randomInt(4294967296);rng=seeded(seed);champion=randomInt(4);rank=[champion,...mix([0,1,2,3].filter(i=>i!==champion),rng)];phases=teams.map(()=>rng());const pairs=[[0,1],[2,3],mix([0,1,2,3],rng).slice(0,2)];battles=battleWindows.map((b,i)=>({...b,pair:pairs[i],winner:pairs[i][Math.floor(rng()*2)],round:i+1}));prepareSabotage();elapsed=0;running=false;paused=false;finished=false;lastSound=-1;beat=0;nextBeat=0;$('pause').disabled=true;$('pause').textContent='Pause';$('pauseLabel').hidden=true;$('again').hidden=true;draw(0)}
+function newShow(){if(customMusic){customMusic.pause();customMusic.currentTime=0}seed=randomInt(4294967296);rng=seeded(seed);champion=randomInt(4);rank=[champion,...mix([0,1,2,3].filter(i=>i!==champion),rng)];phases=teams.map(()=>rng());const pairs=mix([[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],rng);battles=battleWindows.map((b,i)=>({...b,pair:pairs[i],winner:pairs[i][Math.floor(rng()*2)],round:i+1}));prepareSabotage();elapsed=0;running=false;paused=false;finished=false;lastSound=-1;beat=0;nextBeat=0;$('pause').disabled=true;$('pause').textContent='Pause';$('pauseLabel').hidden=true;$('again').hidden=true;draw(0)}
 function assignTickets(){ticketTeams=mix(Array.from({length:18},(_,i)=>i%4));$('tickets').innerHTML=ticketTeams.map((t,i)=>`<article class="ticket"><small>SNACKDOWN DERBY • ADMIT ONE</small><b>${teams[t].name}</b><em>${teams[t].nick}</em><div class="number">TICKET ${String(i+1).padStart(2,'0')} • CHEER LOUDLY</div></article>`).join('');$('ticketSummary').textContent=teams.map((t,i)=>`${t.name}: ${ticketTeams.filter(x=>x===i).length} tickets`).join('   /   ')}
 function smooth(a,b,x){let u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u)}
 function raceClock(t){let stopped=0;for(const b of battles)stopped+=Math.max(0,Math.min(t,b.end)-b.start);return Math.max(0,Math.min(raceLength,t-INTRO-stopped))}
 const sabotageNames=['BANANA PEEL OF DESTINY','FREEZE RAY, ZERO CHILL','PORTAL TO THE CAFETERIA','ANVIL EXPRESS DELIVERY'];
 const sabotageJokes=['THE BANANA HAS ENTERED ITS VILLAIN ERA','WARRANTY VOID IF FROZEN','YOUR ORDER IS READY IN ANOTHER DIMENSION','DELIVERY INSTRUCTIONS: AIM FOR THE EGO'];
 function prepareSabotage(){
- const points=[.07,.19,.34,.43,.60,.69,.86];
+ const points=[.055,.205,.345,.485,.625,.765,.915];
  sabotages=points.map((fraction,i)=>{const actor=i%4,victim=(actor+1+Math.floor(rng()*3))%4,start=INTRO+(FINISH-INTRO)*fraction;return{actor,victim,start,end:start+8,clock:raceClock(start),kind:i%4}});
  paceTables=teams.map((_,id)=>{const a=[0];for(let k=0;k<1000;k++){const clock=(k+.5)/1000*raceLength;let speed=1+.17*Math.sin(clock/8+phases[id]*7);for(const e of sabotages){const d=clock-e.clock,weight=smooth(0,1,d)*(1-smooth(5,8,d));if(e.actor===id)speed+=.40*weight;if(e.victim===id)speed-=.67*weight}a.push(a[k]+Math.max(.22,speed))}const total=a[1000];return a.map(value=>value/total)});
 }
@@ -145,7 +145,7 @@ function battle(t,b){
  if(impact){const attacker=win===left?545:1055,target=lose===left?360:1240;if(win===0)beam(attacker,495,target,450,'#ffd35c',27);if(win===1){c.strokeStyle='#ff64b5';c.lineWidth=14;c.beginPath();c.arc(800,510,220,Math.PI*.9,Math.PI*1.9);c.stroke()}if(win===3){for(let n=0;n<3;n++)beam(target+n*20,350,target-20+n*25,540,'#d7ff9c',4)}}
 
  if(u<.15){label('THE FOOD COURT HAS FALLEN!',800,399,43,'#fff');label('THEY FOUND THE WEAPON AISLE. WE ARE SO SORRY.',800,450,18,'#e6c7e8')}
- else if(impact){label('SNACKTALITY!',800,390,66,'#ffe071');label(teams[win].move,800,454,30,teams[win].color);label(`${teams[win].name} WINS • ${['SENT TO THE SHADOW FRIDGE','YEETED INTO THIRD PERIOD','REFUND REQUEST DENIED'][b.round-1]}`,800,655,25,'#fff')}
+ else if(impact){label('SNACKTALITY!',800,390,66,'#ffe071');label(teams[win].move,800,454,30,teams[win].color);label(`${teams[win].name} WINS • ${['SENT TO THE SHADOW FRIDGE','YEETED INTO THIRD PERIOD','REFUND REQUEST DENIED','UNINSTALLED FROM THE FOOD COURT','SENT TO THE PRINCIPALS AIR FRYER','EMOTIONAL SUPPORT NUGGET REQUIRED'][b.round-1]}`,800,655,25,'#fff')}
  else{label(teams[cycle?right:left].move,800,375,33,'#ffe071')}
  c.restore();
 }
@@ -202,10 +202,10 @@ if(new URLSearchParams(location.search).has('test'))window.derbyTest={seek(t){el
 </script></body></html>'''
 
 
-def build_page(duration: int = 300) -> str:
+def build_page(duration: int = 360) -> str:
     """Return a self-contained show with original canvas art and synthesized audio."""
-    if not 180 <= duration <= 300:
-        raise ValueError("Choose a show length between 180 and 300 seconds.")
+    if not 180 <= duration <= 360:
+        raise ValueError("Choose a show length between 180 and 360 seconds.")
     minutes, seconds = divmod(duration, 60)
     label = f"{minutes}-minute" if not seconds else f"{minutes}-minute {seconds}-second"
     return HTML.replace("__DURATION__", str(duration)).replace("__DURATION_LABEL__", label)
@@ -213,8 +213,8 @@ def build_page(duration: int = 300) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--duration", type=int, default=300, choices=range(180, 301),
-                        metavar="180-300", help="Show length in seconds (default: 300).")
+    parser.add_argument("--duration", type=int, default=360, choices=range(180, 361),
+                        metavar="180-360", help="Show length in seconds (default: 360).")
     parser.add_argument("--output", type=Path, help="Optional HTML destination.")
     parser.add_argument("--no-browser", action="store_true", help="Save the show without opening it.")
     args = parser.parse_args()

@@ -1,6 +1,6 @@
 # Snackdown Derby
 
-A five-minute classroom icebreaker for four teams: **Cheesy, Juicy,
+A six-minute classroom icebreaker for four teams: **Cheesy, Juicy,
 Crispy, and Spicy**. Students get a team ticket on arrival, then cheer for their
 snack during an automatic stadium race with three ridiculous cartoon battles.
 
@@ -31,8 +31,9 @@ No server, installation, internet, or student devices are needed.
 4. Click **LET THE NONSENSE BEGIN** when everyone is ready. That click also
    enables the original synthesized music.
 
-The 5:00 show includes an introduction, four laps, three snack battles, seven sabotage moments, and
-a winner celebration. The live track pauses for each battle. Playful knockouts
+The 6:00 show includes an introduction, four laps, six one-on-one snack battles, seven sabotage moments, and
+a winner celebration. Every team fights all three other teams once. The match order changes each show.
+The live track pauses for each battle. Playful knockouts
 launch cartoon snacks through the air. Battle results and the race champion
 are random; winning a fight does not guarantee winning the race. Sabotage
 actually slows the target and boosts the attacker, while the final winner still
@@ -56,11 +57,11 @@ has an equal 25% chance of winning the race, independent of ticket counts.
 - **Shuffle ticket teams:** changes ticket numbering before you print. Keep the
   printed sheet once distributed; race resets preserve the ticket team allocation.
 
-The default is five minutes. You can choose any duration from 3 to 5 minutes:
+The default is six minutes. You can choose any duration from 3 to 6 minutes:
 
 ```powershell
 python snackdown_derby.py --duration 180
-python snackdown_derby.py --duration 300
+python snackdown_derby.py --duration 360
 ```
 
 The launcher also supports `--output show.html --no-browser` to export the
