@@ -34,6 +34,13 @@ def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
 
 ### Camera decision practice in Jupyter or Colab
 
+**Start with the completed example:**
+[Open the working Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-working-demo.ipynb).
+Run setup, the completed controller, and simulation in order. No edits or
+installs are required. Expected result: five of five guided skills checkpoints
+and an animated HTML replay. This version has no unfinished checkpoint tasks.
+Use it to verify playback before returning to the student exercise below.
+
 Open [picarx-camera-decisions.ipynb](picarx-camera-decisions.ipynb) for a
 beginner-friendly, self-contained introduction before the full driving challenge.
 Upload it to Google Colab and save a copy in Google Drive, or open it locally
@@ -65,7 +72,7 @@ the box. Correct custom steering triggers an illustrative detour curve.
 The course ends immediately on a wrong action or steering choice and gives a hint.
 No waypoints, coordinates, stop timers, or route planning are required.
 
-The notebook follows the existing Weeks 1�6 materials, especially the Week 3�5
+The notebook follows the existing Weeks 1–6 materials, especially the Week 3–5
 read/predict/run/change/explain routine. Sensor-reading lines are provided as a
 worked starting point. An instructor example connects a familiar string comparison
 to a car action. Students implement short conditions inside the supplied function;
@@ -193,21 +200,21 @@ not a mysterious one-shot grade.
 
 ## Three-class plan
 
-### Class 1 — Safe baseline
+### Class 1 â€” Safe baseline
 
 - Inspect the simulator and connect the API to the physical PiCar-X vocabulary.
 - Write a controller that starts, steers, stops, and avoids one obstacle.
 - Use the practice replay to explain one decision made by the program.
 - Commit a working baseline.
 
-### Class 2 — Reliability and competition
+### Class 2 â€” Reliability and competition
 
 - Test slalom, tight-turn, and sensor-fault scenarios.
 - Add helper functions and a `memory` state.
 - Compare scores without copying code.
 - Record one failure, its cause, and the change that fixed it.
 
-### Class 3 — Validation and showcase
+### Class 3 â€” Validation and showcase
 
 - Run the complete evaluator.
 - Improve the weakest rubric category.
