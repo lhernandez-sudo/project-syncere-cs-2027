@@ -46,6 +46,11 @@ has an equal 25% chance of winning the race, independent of ticket counts.
 
 - **Space / Pause:** pause or resume the entire show, including music timing.
 - **M / Music:** toggle the original music and goofy effects.
+- **Choose music file:** select a local MP3, WAV, or another browser-supported
+  audio file you have permission to use. It replaces the synthesized background
+  track, loops, pauses with the show, and stops at the end. The file stays in
+  your browser; the game does not upload or bundle it. Select it again after
+  reopening the HTML. Weapon effects still play over the selected soundtrack.
 - **F / Fullscreen:** enter or exit fullscreen.
 - **New race:** after the show, return to the lobby and draw a new random result.
 - **Shuffle ticket teams:** changes ticket numbering before you print. Keep the

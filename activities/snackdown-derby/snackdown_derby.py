@@ -30,10 +30,10 @@ button:hover{background:#284260}button:focus-visible{outline:3px solid #ffe071;o
 <div class="teams"><div class="team" style="--color:#ffd35c"><strong>CHEESY</strong><span>The Big Cheddar</span></div><div class="team" style="--color:#ff7394"><strong>JUICY</strong><span>Lord of the Squeeze</span></div><div class="team" style="--color:#6ed9ff"><strong>CRISPY</strong><span>Crunch Time Criminal</span></div><div class="team" style="--color:#b7f774"><strong>SPICY</strong><span>The Mild Inconvenience</span></div></div>
 <div class="actions"><button class="primary" id="start">LET THE NONSENSE BEGIN</button><button id="print">Print 18 tickets</button><button id="shuffle">Shuffle ticket teams</button></div>
 <p class="hint">Hand out tickets as students enter. Cheer for your ticket's team.<br>Space: pause &nbsp; F: fullscreen &nbsp; M: music &nbsp; One winner, equal odds, new draw every show.</p>
-<p class="hint" id="ticketSummary"></p>
+<p class="hint" id="ticketSummary"></p><p class="hint" id="musicStatus" role="status">Soundtrack: built-in pop. You can choose a local audio file.</p>
 </div></section>
 <div id="pauseLabel" hidden>OFFICIAL SNACK BREAK</div>
-<nav id="controls" aria-label="Show controls"><button id="pause" disabled>Pause</button><button id="mute">Music: ON</button><button id="full">Fullscreen</button><button id="again" hidden>New race</button></nav>
+<nav id="controls" aria-label="Show controls"><button id="pause" disabled>Pause</button><button id="mute">Music: ON</button><button id="chooseMusic">Choose music file</button><input id="musicFile" type="file" accept="audio/*" hidden><button id="full">Fullscreen</button><button id="again" hidden>New race</button></nav>
 <section id="tickets" aria-label="Printable team tickets"></section>
 <script>
 'use strict';
@@ -43,11 +43,11 @@ const battleWindows=[[.22,.29],[.48,.55],[.74,.81]].map(([a,b])=>({start:INTRO+(
 const battleLength=battleWindows.reduce((sum,b)=>sum+b.end-b.start,0),raceLength=FINISH-INTRO-battleLength;
 const canvas=document.querySelector('#game'),c=canvas.getContext('2d');
 const $=id=>document.getElementById(id);
-let seed=1,rng,champion=0,rank=[],battles=[],sabotages=[],paceTables=[],phases=[],ticketTeams=[],running=false,paused=false,startTime=0,pauseTime=0,elapsed=0,finished=false,lastSound=-1,music=true,audio=null,beat=0,nextBeat=0,audioBus=null,echoBus=null,noiseBuffer=null,lastFxSlot="";
+let seed=1,rng,champion=0,rank=[],battles=[],sabotages=[],paceTables=[],phases=[],ticketTeams=[],running=false,paused=false,startTime=0,pauseTime=0,elapsed=0,finished=false,lastSound=-1,music=true,audio=null,beat=0,nextBeat=0,audioBus=null,echoBus=null,noiseBuffer=null,lastFxSlot="",customMusic=null,customUrl=null;
 function randomInt(n){const a=new Uint32Array(1);crypto.getRandomValues(a);const limit=Math.floor(4294967296/n)*n;if(a[0]>=limit)return randomInt(n);return a[0]%n}
 function seeded(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function mix(a,random=()=>randomInt(1000000)/1000000){a=a.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function newShow(){seed=randomInt(4294967296);rng=seeded(seed);champion=randomInt(4);rank=[champion,...mix([0,1,2,3].filter(i=>i!==champion),rng)];phases=teams.map(()=>rng());const pairs=[[0,1],[2,3],mix([0,1,2,3],rng).slice(0,2)];battles=battleWindows.map((b,i)=>({...b,pair:pairs[i],winner:pairs[i][Math.floor(rng()*2)],round:i+1}));prepareSabotage();elapsed=0;running=false;paused=false;finished=false;lastSound=-1;beat=0;nextBeat=0;$('pause').disabled=true;$('pause').textContent='Pause';$('pauseLabel').hidden=true;$('again').hidden=true;draw(0)}
+function newShow(){if(customMusic){customMusic.pause();customMusic.currentTime=0}seed=randomInt(4294967296);rng=seeded(seed);champion=randomInt(4);rank=[champion,...mix([0,1,2,3].filter(i=>i!==champion),rng)];phases=teams.map(()=>rng());const pairs=[[0,1],[2,3],mix([0,1,2,3],rng).slice(0,2)];battles=battleWindows.map((b,i)=>({...b,pair:pairs[i],winner:pairs[i][Math.floor(rng()*2)],round:i+1}));prepareSabotage();elapsed=0;running=false;paused=false;finished=false;lastSound=-1;beat=0;nextBeat=0;$('pause').disabled=true;$('pause').textContent='Pause';$('pauseLabel').hidden=true;$('again').hidden=true;draw(0)}
 function assignTickets(){ticketTeams=mix(Array.from({length:18},(_,i)=>i%4));$('tickets').innerHTML=ticketTeams.map((t,i)=>`<article class="ticket"><small>SNACKDOWN DERBY • ADMIT ONE</small><b>${teams[t].name}</b><em>${teams[t].nick}</em><div class="number">TICKET ${String(i+1).padStart(2,'0')} • CHEER LOUDLY</div></article>`).join('');$('ticketSummary').textContent=teams.map((t,i)=>`${t.name}: ${ticketTeams.filter(x=>x===i).length} tickets`).join('   /   ')}
 function smooth(a,b,x){let u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u)}
 function raceClock(t){let stopped=0;for(const b of battles)stopped+=Math.max(0,Math.min(t,b.end)-b.start);return Math.max(0,Math.min(raceLength,t-INTRO-stopped))}
@@ -170,19 +170,35 @@ function playPopStep(index,time,mode='race'){
  if(mode==='victory'&&step%4===0)for(const note of[72,76,79])tone(midi(note),time,.32,'triangle',.028);
 }
 function weaponSound(id,time){if(id===0){tone(1000,time,.18,'sawtooth',.045,150);tone(130,time+.06,.16,'sine',.1,45)}if(id===1){tone(180,time,.3,'sawtooth',.045,650);tone(620,time+.12,.2,'triangle',.04,140)}if(id===2){tone(1600,time,.35,'sine',.025,400);drum('hat',time,1.8)}if(id===3){drum('clap',time,1.3);tone(80,time,.4,'sawtooth',.07,25)}}
-function audioPump(){if(!audio||!music||!running||paused||finished)return;ensureSound();const now=audio.currentTime;if(nextBeat<now-.3)nextBeat=now;while(nextBeat<now+.12){playPopStep(beat++,nextBeat,stageAt(elapsed));nextBeat+=STEP}}
+function audioPump(){if(customMusic||!audio||!music||!running||paused||finished)return;ensureSound();const now=audio.currentTime;if(nextBeat<now-.3)nextBeat=now;while(nextBeat<now+.12){playPopStep(beat++,nextBeat,stageAt(elapsed));nextBeat+=STEP}}
 
 setInterval(audioPump,90);
-function tick(now){if(running&&!paused){elapsed=Math.max(0,Math.min(DURATION,(now-startTime)/1000));if(elapsed>=DURATION){running=false;finished=true;$('again').hidden=false;$('pause').disabled=true}const b=battles.findIndex(b=>elapsed>=b.start&&elapsed<b.end);if(b!==lastSound){if(b>=0&&audio){tone(150,audio.currentTime,.5,'sawtooth',.06,40);tone(650,audio.currentTime+.2,.4,'triangle',.03,160)}lastSound=b}const event=sabotages.find(e=>elapsed>=e.start&&elapsed<e.end);const fight=b>=0?battles[b]:null;const slot=event?'s'+sabotages.indexOf(event)+':'+Math.floor((elapsed-event.start)/1.6):fight?'b'+b+':'+Math.floor((elapsed-fight.start)/1.2):'';if(slot&&slot!==lastFxSlot&&audio&&music){weaponSound(event?event.actor:fight.pair[Math.floor((elapsed-fight.start)/1.2)%2],audio.currentTime);lastFxSlot=slot}}draw(elapsed);requestAnimationFrame(tick)}
-async function start(){if(running||finished)return;try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(error=>console.warn("Audio unavailable:",error))}catch(error){console.warn('Audio unavailable:',error)}$('lobby').hidden=true;running=true;startTime=performance.now();$('pause').disabled=false;nextBeat=audio?audio.currentTime:0}
-function pause(){if(!running)return;paused=!paused;if(paused)pauseTime=performance.now();else startTime+=performance.now()-pauseTime;$('pauseLabel').hidden=!paused;$('pause').textContent=paused?'Resume':'Pause'}
+function tick(now){if(running&&!paused){elapsed=Math.max(0,Math.min(DURATION,(now-startTime)/1000));if(elapsed>=DURATION){running=false;finished=true;if(customMusic)customMusic.pause();$('again').hidden=false;$('pause').disabled=true}const b=battles.findIndex(b=>elapsed>=b.start&&elapsed<b.end);if(b!==lastSound){if(b>=0&&audio){tone(150,audio.currentTime,.5,'sawtooth',.06,40);tone(650,audio.currentTime+.2,.4,'triangle',.03,160)}lastSound=b}const event=sabotages.find(e=>elapsed>=e.start&&elapsed<e.end);const fight=b>=0?battles[b]:null;const slot=event?'s'+sabotages.indexOf(event)+':'+Math.floor((elapsed-event.start)/1.6):fight?'b'+b+':'+Math.floor((elapsed-fight.start)/1.2):'';if(slot&&slot!==lastFxSlot&&audio&&music){weaponSound(event?event.actor:fight.pair[Math.floor((elapsed-fight.start)/1.2)%2],audio.currentTime);lastFxSlot=slot}}draw(elapsed);requestAnimationFrame(tick)}
+async function start(){if(running||finished)return;try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();audio.resume().catch(error=>console.warn("Audio unavailable:",error))}catch(error){console.warn('Audio unavailable:',error)}$('lobby').hidden=true;running=true;startTime=performance.now();$('pause').disabled=false;nextBeat=audio?audio.currentTime:0;syncCustomMusic()}
+function pause(){if(!running)return;paused=!paused;if(paused)pauseTime=performance.now();else startTime+=performance.now()-pauseTime;$('pauseLabel').hidden=!paused;$('pause').textContent=paused?'Resume':'Pause';syncCustomMusic()}
 async function full(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(error){console.warn('Fullscreen unavailable:',error)}}
-function toggleMusic(){music=!music;$('mute').textContent=`Music: ${music?'ON':'OFF'}`;if(music&&audio){audio.resume();nextBeat=audio.currentTime}}
+function toggleMusic(){music=!music;$('mute').textContent=`Music: ${music?'ON':'OFF'}`;if(music&&audio){audio.resume();nextBeat=audio.currentTime}syncCustomMusic()}
+function syncCustomMusic(){
+ if(!customMusic)return;
+ if(!running||paused||!music||finished){customMusic.pause();return}
+ customMusic.play().catch(error=>{console.warn('Selected audio could not play:',error);$('musicStatus').textContent='Audio could not play. Choose another file or use the built-in soundtrack.'});
+}
+function chooseSoundtrack(file){
+ if(!file)return;
+ if(customMusic){customMusic.pause();customMusic.src=''}
+ if(customUrl)URL.revokeObjectURL(customUrl);
+ customUrl=URL.createObjectURL(file);customMusic=new Audio(customUrl);customMusic.loop=true;customMusic.volume=.45;
+ customMusic.onerror=()=>{$('musicStatus').textContent='Unsupported audio file. Using built-in pop.';customMusic.pause();customMusic=null;nextBeat=audio?audio.currentTime:0};
+ $('musicStatus').textContent='Soundtrack: '+file.name+' (local playback only)';
+ $('chooseMusic').textContent='Change music file';syncCustomMusic();
+}
+$('chooseMusic').onclick=()=>$('musicFile').click();
+$('musicFile').onchange=event=>chooseSoundtrack(event.target.files[0]);
 $('start').onclick=start;$('pause').onclick=pause;$('mute').onclick=toggleMusic;$('full').onclick=full;$('print').onclick=()=>window.print();$('shuffle').onclick=assignTickets;$('again').onclick=()=>{newShow();$('lobby').hidden=false};
 document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();if(!$('lobby').hidden)start();else pause()}if(e.key.toLowerCase()==='f')full();if(e.key.toLowerCase()==='m')toggleMusic()});
 assignTickets();newShow();requestAnimationFrame(tick);
 // Test access is absent from the normal classroom view.
-if(new URLSearchParams(location.search).has('test'))window.derbyTest={seek(t){elapsed=Math.max(0,Math.min(DURATION,t));startTime=performance.now()-elapsed*1000;draw(elapsed)},snapshot(){return{elapsed,stage:stageAt(elapsed),champion,rank:rank.slice(),progress:progress(elapsed),running,paused,tickets:ticketTeams.slice(),battles:battles.map(b=>({...b})),sabotages:sabotages.map(e=>({...e})),duration:DURATION}},newShow,previewPop(context,seconds=12){audio=context;audioBus=null;echoBus=null;music=true;ensureSound();for(let step=0;step*STEP<seconds;step++)playPopStep(step,step*STEP,"race")}};
+if(new URLSearchParams(location.search).has('test'))window.derbyTest={seek(t){elapsed=Math.max(0,Math.min(DURATION,t));startTime=performance.now()-elapsed*1000;draw(elapsed)},snapshot(){return{elapsed,stage:stageAt(elapsed),champion,rank:rank.slice(),progress:progress(elapsed),running,paused,tickets:ticketTeams.slice(),battles:battles.map(b=>({...b})),sabotages:sabotages.map(e=>({...e})),duration:DURATION,customAudio:customMusic?{paused:customMusic.paused,muted:!music,loop:customMusic.loop}:null}},newShow,previewPop(context,seconds=12){audio=context;audioBus=null;echoBus=null;music=true;ensureSound();for(let step=0;step*STEP<seconds;step++)playPopStep(step,step*STEP,"race")}};
 </script></body></html>'''
 
 
