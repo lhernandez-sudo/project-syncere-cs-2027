@@ -65,6 +65,14 @@ the box. Correct custom steering triggers an illustrative detour curve.
 The course ends immediately on a wrong action or steering choice and gives a hint.
 No waypoints, coordinates, stop timers, or route planning are required.
 
+The notebook follows the existing Weeks 1–6 materials, especially the Week 3–5
+read/predict/run/change/explain routine. Sensor-reading lines are provided as a
+worked starting point. An instructor example connects a familiar string comparison
+to a car action. Students implement short conditions inside the supplied function;
+the runner supplies repetition. Dictionary state and class construction are not
+required. The notebook maps these tasks back to the earlier lessons without
+assuming that exposure to a concept means mastery.
+
 The notebook includes a three-hour plan: 15 minutes for arrival/setup, a short
 demonstration, checkpoint work, two ten-minute breaks, personalization, replay,
 and submission. The target is eight mock checks plus five guided skills
