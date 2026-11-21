@@ -51,6 +51,12 @@ Allow about ten minutes per loop, or use the countdown as an extension.
 
 Open [picarx-camera-decisions.ipynb](picarx-camera-decisions.ipynb) for a
 beginner-friendly, self-contained introduction before the full driving challenge.
+Its single student code cell uses checkpoint comments and runnable placeholders.
+The initial car stays stopped; failed checks are expected until rules are added.
+The [complete instructor model](guided_debug_controller.py) can replace that
+entire code cell for verification. Run it and then debug: expected results are
+8/8 loop checks, 8/8 driving checks, and 5/5 guided visual checkpoints. Keep the
+completed working demo separate when distributing the student exercise.
 Upload it to Google Colab and save a copy in Google Drive, or open it locally
 in Jupyter. It needs no packages, camera, or hardware. Run the cells in order.
 
