@@ -30,6 +30,13 @@ namespace = {}
 for repeat in range(2):
     exec(setup, namespace)
     exec(controller, namespace)
+    assert namespace["is_stop_signal"]("human") is True
+    assert namespace["is_stop_signal"]("stop sign") is True
+    assert namespace["is_stop_signal"]("clear") is False
+    assert namespace["is_stop_signal"](namespace["custom_object"]) is False
+    assert namespace["launch_countdown"](5) == [5, 4, 3, 2, 1]
+    assert namespace["launch_countdown"](1) == [1]
+    assert namespace["launch_countdown"](0) == []
     assert "road_half_width" in sys.modules["simulator"].Scenario.__dataclass_fields__
     assert sys.modules["simulator"] is not old_simulator
     result, scenario = namespace["run_guided_course"](

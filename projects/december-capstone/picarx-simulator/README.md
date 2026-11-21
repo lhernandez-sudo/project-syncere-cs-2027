@@ -41,6 +41,14 @@ installs are required. Expected result: five of five guided skills checkpoints
 and an animated HTML replay. This version has no unfinished checkpoint tasks.
 Use it to verify playback before returning to the student exercise below.
 
+Checkpoint 8 uses a `for` loop to inspect stop-hazard labels in
+`is_stop_signal()`. Checkpoint 9 uses a terminating `while` loop to build a
+launch countdown in `launch_countdown()`. Both helpers live in the same student
+code cell, with eight additional debug checks below. Working demos include
+completed helpers and call the hazard helper from the controller. The countdown
+displays numbers; it does not measure time or control the stop-sign wait.
+Allow about ten minutes per loop, or use the countdown as an extension.
+
 Open [picarx-camera-decisions.ipynb](picarx-camera-decisions.ipynb) for a
 beginner-friendly, self-contained introduction before the full driving challenge.
 Upload it to Google Colab and save a copy in Google Drive, or open it locally
