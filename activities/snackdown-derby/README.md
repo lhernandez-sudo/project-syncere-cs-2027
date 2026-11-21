@@ -37,9 +37,12 @@ The live track pauses for each battle. Playful knockouts
 launch cartoon snacks through the air. Battle results and the race champion
 are random; winning a fight does not guarantee winning the race. Sabotage
 actually slows the target and boosts the attacker, while the final winner still
-has equal odds. Each character has a ridiculous weapon: a cheddar ray gun, pulp
-laser sword, cryo-fryer, or thunder plunger. Banana peels, freeze rays, portals,
-and falling anvils interrupt the race. The original 128 BPM pop soundtrack has
+has equal odds. Each character has a matching food weapon: Cheesy fires a fondue cannon,
+Juicy uses a high-pressure juice blaster, Crispy launches fries from an air fryer,
+and Spicy sprays hot sauce. Race sabotage also follows the character: cheese
+slicks, juice floods, breadcrumb storms, and hot-sauce rocket boosts. Opponents
+get coated, splashed, breaded, or overwhelmed by spice, with matching effects
+and sounds. The original 128 BPM pop soundtrack has
 a repeating melody, four-chord progression, bass, claps, drums, and delay. Every team
 has an equal 25% chance of winning the race, independent of ticket counts.
 

@@ -38,7 +38,7 @@ button:hover{background:#284260}button:focus-visible{outline:3px solid #ffe071;o
 <script>
 'use strict';
 const DURATION=__DURATION__, INTRO=8, FINISH=DURATION-10;
-const teams=[{name:'CHEESY',nick:'The Big Cheddar',color:'#ffd35c',dark:'#c27420',move:'CHEDDAR DEATH RAY',quip:'Built different. Mostly dairy.'},{name:'JUICY',nick:'Lord of the Squeeze',color:'#ff7394',dark:'#a82d62',move:'THE PULP SABER',quip:'100% juice. 0% technique.'},{name:'CRISPY',nick:'Crunch Time Criminal',color:'#6ed9ff',dark:'#267aad',move:'CRYO-FRYER 3000',quip:'No thoughts. Just crunch.'},{name:'SPICY',nick:'The Mild Inconvenience',color:'#b7f774',dark:'#558b36',move:'THUNDER PLUNGER',quip:'Banned from the group chat.'}];
+const teams=[{name:'CHEESY',nick:'The Big Cheddar',color:'#ffd35c',dark:'#c27420',move:'FONDUE OF DOOM',quip:'Built different. Mostly dairy.'},{name:'JUICY',nick:'Lord of the Squeeze',color:'#ff7394',dark:'#a82d62',move:'PULP PRESSURE 9000',quip:'100% juice. 0% technique.'},{name:'CRISPY',nick:'Crunch Time Criminal',color:'#6ed9ff',dark:'#267aad',move:'AIR-FRYER ARTILLERY',quip:'No thoughts. Just crunch.'},{name:'SPICY',nick:'The Mild Inconvenience',color:'#b7f774',dark:'#558b36',move:'HOT SAUCE: FINAL BOSS',quip:'Banned from the group chat.'}];
 const battleWindows=[[.12,.17],[.26,.31],[.40,.45],[.54,.59],[.68,.73],[.82,.87]].map(([a,b])=>({start:INTRO+(FINISH-INTRO)*a,end:INTRO+(FINISH-INTRO)*b}));
 const battleLength=battleWindows.reduce((sum,b)=>sum+b.end-b.start,0),raceLength=FINISH-INTRO-battleLength;
 const canvas=document.querySelector('#game'),c=canvas.getContext('2d');
@@ -51,8 +51,8 @@ function newShow(){if(customMusic){customMusic.pause();customMusic.currentTime=0
 function assignTickets(){ticketTeams=mix(Array.from({length:18},(_,i)=>i%4));$('tickets').innerHTML=ticketTeams.map((t,i)=>`<article class="ticket"><small>SNACKDOWN DERBY • ADMIT ONE</small><b>${teams[t].name}</b><em>${teams[t].nick}</em><div class="number">TICKET ${String(i+1).padStart(2,'0')} • CHEER LOUDLY</div></article>`).join('');$('ticketSummary').textContent=teams.map((t,i)=>`${t.name}: ${ticketTeams.filter(x=>x===i).length} tickets`).join('   /   ')}
 function smooth(a,b,x){let u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u)}
 function raceClock(t){let stopped=0;for(const b of battles)stopped+=Math.max(0,Math.min(t,b.end)-b.start);return Math.max(0,Math.min(raceLength,t-INTRO-stopped))}
-const sabotageNames=['BANANA PEEL OF DESTINY','FREEZE RAY, ZERO CHILL','PORTAL TO THE CAFETERIA','ANVIL EXPRESS DELIVERY'];
-const sabotageJokes=['THE BANANA HAS ENTERED ITS VILLAIN ERA','WARRANTY VOID IF FROZEN','YOUR ORDER IS READY IN ANOTHER DIMENSION','DELIVERY INSTRUCTIONS: AIM FOR THE EGO'];
+const sabotageNames=['NACHO CHEESE OIL SLICK','HIGH-PRESSURE JUICE FLOOD','DEEP-FRIED CRUMB STORM','HOT-SAUCE ROCKET BOOST'];
+const sabotageJokes=['THAT IS NACHO PERSONAL SPACE','NOW WITH 300% OF YOUR DAILY ATTITUDE','CRUNCHY ON THE OUTSIDE. PANICKING INSIDE.','SCOVILLE LEVEL: PARENT CONFERENCE'];
 function prepareSabotage(){
  const points=[.055,.205,.345,.485,.625,.765,.915];
  sabotages=points.map((fraction,i)=>{const actor=i%4,victim=(actor+1+Math.floor(rng()*3))%4,start=INTRO+(FINISH-INTRO)*fraction;return{actor,victim,start,end:start+8,clock:raceClock(start),kind:i%4}});
@@ -81,23 +81,40 @@ function mascot(id,x,y,scale=1,pose=0,flip=false,attack=false){
  c.restore();
 }
 function weapon(id,x,y,scale=1,flip=false,phase=0,firing=false){
- c.save();c.translate(x,y);if(flip)c.scale(-1,1);c.scale(scale,scale);c.translate(53,-20);c.rotate(Math.sin(phase)*.10);
- if(id===0||id===2){roundRect(-8,-10,53,25,6,id===0?'#ffd35c':'#70e7ff');roundRect(5,8,13,26,4,'#32435b');roundRect(36,-6,22,15,3,'#edf6ff');ellipse(18,-12,12,10,id===0?'#ff924e':'#bafcff');label(id===0?'CHEEZ':'BRR',14,1,9,'#12213a');if(firing){c.shadowBlur=25;c.shadowColor=teams[id].color;star(65,0,16,teams[id].color)}}
- if(id===1){roundRect(-4,-5,27,13,4,'#b7c4dc');roundRect(0,-6,6,15,2,'#3d4763');c.save();c.rotate(-.8+Math.sin(phase)*.45);c.shadowColor='#ff4fbf';c.shadowBlur=25;roundRect(22,-6,115,12,6,'#ff64b5');roundRect(23,-2,113,4,2,'#fff');c.restore()}
- if(id===3){c.save();c.rotate(-.9+Math.sin(phase)*.6);roundRect(-3,-5,85,10,4,'#9b6744');roundRect(65,-28,38,54,8,'#b7f774');ellipse(84,28,30,9,'#578e3c');c.strokeStyle='#efffc3';c.lineWidth=3;c.beginPath();c.moveTo(81,-20);c.lineTo(73,-4);c.lineTo(87,-4);c.lineTo(79,17);c.stroke();c.restore()}
+ c.save();c.translate(x,y);if(flip)c.scale(-1,1);c.scale(scale,scale);c.translate(53,-20);c.rotate(Math.sin(phase)*.08);
+ if(id===0){roundRect(-21,-22,61,39,8,'#ba6330');ellipse(9,-21,30,9,'#ffe078');roundRect(-12,13,14,22,3,'#773e25');roundRect(30,-6,37,15,4,'#ffbb42');ellipse(65,1,8,11,'#ffdf71');label('FONDUE',7,0,9,'#fff4bc');for(let i=0;i<3;i++){ellipse(-8+i*15,-27-Math.sin(phase+i)*3,3,5,'#ffd35c')}if(firing)ellipse(75,0,15,8,'#ffe483')}
+ if(id===1){roundRect(-16,-27,55,48,8,'#ad3765');roundRect(-11,-22,45,28,5,'#ffb5c5');c.fillStyle='#f96c9c';c.fillRect(-8,-7-Math.sin(phase)*3,39,11);roundRect(33,-5,37,12,4,'#77d8e5');c.strokeStyle='#74d4d9';c.lineWidth=5;c.beginPath();c.moveTo(-4,-27);c.lineTo(6,-43);c.lineTo(29,-43);c.stroke();roundRect(-5,17,14,20,4,'#6c2849');label('PULP',11,-9,9,'#9b2851');if(firing)ellipse(76,0,10,7,'#ff9fba')}
+ if(id===2){roundRect(-23,-29,73,54,11,'#253c53');roundRect(-18,-23,63,18,5,'#5ab5d7');roundRect(-13,-2,55,22,5,'#f1aa43');roundRect(9,3,23,6,2,'#24384d');roundRect(42,-7,29,19,4,'#304d65');label('AIR FRY',13,-14,8,'#e9f8ff');for(let i=0;i<3;i++){roundRect(57+i*6,-10-i*5,5,23,2,'#ffe18b')}if(firing){for(let i=0;i<3;i++){c.strokeStyle='#fff2c9';c.lineWidth=2;c.beginPath();c.moveTo(-12+i*17,-35);c.quadraticCurveTo(-20+i*17,-45,-8+i*17,-52);c.stroke()}}}
+ if(id===3){roundRect(-14,-22,43,48,9,'#d33030');roundRect(-5,-34,24,13,4,'#f6b343');roundRect(20,-5,48,15,4,'#aa1b24');roundRect(-2,23,13,16,4,'#6b2530');label('HOT',7,1,11,'#fff4c8');c.strokeStyle='#ffbb60';c.lineWidth=3;c.beginPath();c.moveTo(-10,17);c.lineTo(-30,24);c.lineTo(-38,14);c.stroke();if(firing){ellipse(79,1,20,10,'#ff6533');ellipse(75,1,12,6,'#ffe27a')}}
  c.restore();
 }
-function beam(x1,y1,x2,y2,color,width=9){c.save();c.strokeStyle=color;c.shadowColor=color;c.shadowBlur=24;c.lineWidth=width;c.lineCap='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.strokeStyle='#fff';c.lineWidth=Math.max(2,width*.25);c.stroke();c.restore()}
-function freezeCube(x,y,scale=1){c.save();c.translate(x,y);c.scale(scale,scale);roundRect(-46,-58,92,115,12,'#8fe8ff88');c.strokeStyle='#ddffff';c.lineWidth=3;c.strokeRect(-39,-51,78,101);for(let i=0;i<3;i++){c.beginPath();c.moveTo(-34+i*21,-45);c.lineTo(-10+i*20,-10);c.stroke()}c.restore()}
+function foodAttack(id,x1,x2,y,t,power=1){
+ c.save();const dx=x2-x1;
+ if(id===0||id===1){c.lineCap='round';c.lineWidth=(id===0?16:11)*power;c.strokeStyle=id===0?'#ffc73f':'#ff83a8';c.beginPath();c.moveTo(x1,y);c.bezierCurveTo(x1+dx*.35,y-24*power,x1+dx*.65,y+15*power,x2,y+Math.sin(t*11)*12);c.stroke();c.lineWidth=4*power;c.strokeStyle=id===0?'#ffe895':'#ffd2e1';c.stroke();for(let i=0;i<12;i++){let u=(t*1.7+i/12)%1;ellipse(x1+dx*u,y+Math.sin(u*12+t)*12+u*u*22,5*power,3*power,id===0?'#ffd259':'#ffb0cc')}}
+ if(id===2){for(let i=0;i<13;i++){const u=(t*1.5+i/13)%1;c.save();c.translate(x1+dx*u,y-Math.sin(u*Math.PI)*80+(i%3-1)*22);c.rotate(t*9+i);roundRect(-15*power,-3*power,30*power,7*power,2,'#ffe08a');c.fillStyle='#b77c2d';c.fillRect(-10*power,-2*power,5*power,2*power);c.restore()}}
+ if(id===3){for(let i=0;i<28;i++){const u=(t*2+i/28)%1,spread=(8+u*50)*power;c.globalAlpha=(1-u)*.85;ellipse(x1+dx*u,y+Math.sin(i*7+t*13)*spread,(16+u*25)*power,(6+u*18)*power,i%3===0?'#ffe28b':i%3===1?'#ff9a35':'#f24e35')}}
+ c.restore();
+}
+function foodReaction(id,x,y,scale=1,t=0){
+ c.save();c.translate(x,y);c.scale(scale,scale);
+ if(id===0){ellipse(0,-28,39,10,'#ffd35cdd');for(let i=0;i<5;i++){const xx=-30+i*15;roundRect(xx,-28,9,25+Math.sin(i+t*4)*9,4,'#ffce4cdd')}label('NACHO DAY',0,73,12,'#ffe397')}
+ if(id===1){for(let i=0;i<9;i++){const a=i*2.4+t,r=40+(i%3)*7;ellipse(Math.cos(a)*r,Math.sin(a)*r,4,8,'#ff9cbe')}label('PULP TRAUMA',0,73,12,'#ffbad0')}
+ if(id===2){for(let i=0;i<22;i++){const a=i*2.4,rr=22+(i%4)*8;roundRect(Math.cos(a)*rr-3,Math.sin(a)*rr-8,7,6,2,i%2?'#ffda85':'#b8752e')}label('EXTRA CRISPY',0,73,12,'#ffe4a5')}
+ if(id===3){for(let i=0;i<6;i++){const yy=-45-((t*35+i*13)%60);ellipse((i%2?1:-1)*(16+i*3),yy,10+(i%3)*4,7,'#ffd3bb99')}label('SPICE REGRET',0,73,12,'#ffac79')}
+ c.restore();
+}
+
 function raceSabotage(t,event,racers){
  const a=racers.find(r=>r.id===event.actor),v=racers.find(r=>r.id===event.victim),u=(t-event.start)/8;
- if(event.kind!==0)weapon(event.kind===1?2:event.kind===3?3:0,a.x,a.y,.85,v.x<a.x,t*7,u<.55);
- if(event.kind===0){const f=Math.min(1,u/.45),x=a.x+(v.x-a.x)*f,y=a.y+(v.y-a.y)*f-Math.sin(f*Math.PI)*120;c.save();c.translate(x,y);c.rotate(u*15);c.strokeStyle='#ffe071';c.lineWidth=10;c.beginPath();c.arc(0,0,22,.15,Math.PI-.15);c.stroke();c.lineWidth=5;c.beginPath();c.moveTo(0,7);c.lineTo(0,28);c.moveTo(0,7);c.lineTo(-25,20);c.moveTo(0,7);c.lineTo(25,20);c.stroke();c.restore();if(u>.40&&u<.8)label('MY ANKLES HAVE LEFT THE CHAT',800,580,21,'#ffe071')}
- if(event.kind===1){if(u<.6)beam(a.x,a.y-20,v.x,v.y-15,'#8feaff',5);if(u>.25)freezeCube(v.x,v.y,.85);label('ICE ICE CRISPY',800,580,24,'#9cefff')}
- if(event.kind===2){for(const [x,y,color] of [[a.x,a.y,'#ffb547'],[v.x,v.y,'#70caff']]){c.save();c.translate(x,y);c.rotate(t*2);c.strokeStyle=color;c.shadowColor=color;c.shadowBlur=18;c.lineWidth=8;c.beginPath();c.ellipse(0,0,34,63,0,0,Math.PI*2);c.stroke();c.restore()}label('WRONG CLASSROOM. WRONG DIMENSION.',800,580,22,'#d1c5ff')}
- if(event.kind===3){let y=v.y-170+Math.min(1,u/.45)*130;roundRect(v.x-33,y,66,25,3,'#657487');roundRect(v.x-18,y+20,36,17,2,'#8d9bb0');label('FRAGILE: SELF ESTEEM',v.x,y-20,12,'#fff');if(u>.4)star(v.x,v.y-10,39,'#ffe071')}
- label(`${teams[event.actor].name} USES ${sabotageNames[event.kind]}!`,800,455,26,teams[event.actor].color);
- label(sabotageJokes[event.kind],800,503,19,'#fff');
+ weapon(event.actor,a.x,a.y,.85,v.x<a.x,t*7,u<.7);
+ if(u<.78)foodAttack(event.actor,a.x+(v.x>a.x?40:-40),v.x,v.y-15,t,.45);
+ if(u>.23)foodReaction(event.actor,v.x,v.y,.8,t);
+ if(event.actor===0){ellipse(v.x,v.y+36,65,14,'#ffcf53bb');label('SLIPPERY WHEN CHEDDAR',800,580,24,'#ffe071')}
+ if(event.actor===1){ellipse(v.x,v.y+38,75,12,'#ff83a888');label('CLEANUP ON LANE TWO',800,580,24,'#ffbad0')}
+ if(event.actor===2){label('THEY HAVE BEEN BREADED AGAINST THEIR WILL',800,580,22,'#ffe4a5')}
+ if(event.actor===3){for(let k=0;k<5;k++)ellipse(a.x-30-k*12,a.y+22,17-k*2,8,k%2?'#ff963e':'#ffe071');label('HOT SAUCE IS NOT AN APPROVED FUEL',800,580,22,'#ffb483')}
+ label(`${teams[event.actor].name} USES ${sabotageNames[event.actor]}!`,800,455,26,teams[event.actor].color);
+ label(sabotageJokes[event.actor],800,503,19,'#fff');
 }
 
 function stadium(t){
@@ -120,11 +137,11 @@ function race(t,dim=false){
  for(let xx=0;xx<5;xx++)for(let yy=0;yy<8;yy++){c.fillStyle=(xx+yy)%2?'#15253b':'#fff';c.fillRect(786+xx*7,259+yy*11,7,11)}
  label('FINISH',804,240,15,'#fff');
  const racers=teams.map((team,id)=>{let a=-Math.PI/2+2*Math.PI*p[id];return{id,x:800+(638-id*24)*Math.cos(a),y:500+(230-id*22)*Math.sin(a)}}).sort((a,b)=>a.y-b.y);
- for(const r of racers){const bounce=t>FINISH?Math.sin(t*8+r.id)*5:Math.abs(Math.sin(t*11+r.id))*6;const hit=event&&event.victim===r.id&&(t-event.start)>2;c.save();c.translate(r.x,r.y-bounce);if(hit&&event.kind===0)c.rotate(Math.sin((t-event.start)*8)*1.1);if(hit&&event.kind===3)c.scale(1.3,.7);mascot(r.id,0,0,.66,hit&&event.kind===1?0:t*14+r.id);c.restore();label(teams[r.id].name,r.x,r.y-65,17,teams[r.id].color)}if(event)raceSabotage(t,event,racers);
+ for(const r of racers){const bounce=t>FINISH?Math.sin(t*8+r.id)*5:Math.abs(Math.sin(t*11+r.id))*6;const hit=event&&event.victim===r.id&&(t-event.start)>2;c.save();c.translate(r.x,r.y-bounce);if(hit&&event.actor===0)c.rotate(Math.sin((t-event.start)*8)*1.1);if(hit&&event.actor===2)c.scale(1.3,.7);mascot(r.id,0,0,.66,t*14+r.id);c.restore();label(teams[r.id].name,r.x,r.y-65,17,teams[r.id].color)}if(event)raceSabotage(t,event,racers);
  order.forEach((id,pos)=>{const x=66+pos*384;roundRect(x,805,360,63,12,'#06152abf');label(`${pos+1}  ${teams[id].name}`,x+20,828,22,teams[id].color,'left');label(pos===0?'ABSOLUTELY LOCKED IN':['','ALLEGEDLY AN ATHLETE','NEEDS A SNACK BREAK','JUST HERE FOR THE TICKET'][pos],x+20,852,10,'#c7d5e7','left')});
  if(dim){c.fillStyle='#020713bb';c.fillRect(0,122,1600,660)}
 }
-const announcements=['CHEESY HAS BEEN BANNED FROM THREE LUNCHROOMS','JUICY IS CURRENTLY 40% WATER AND 60% ATTITUDE','CRISPY BROUGHT A FREEZE RAY TO A FOOT RACE','SPICY THOUGHT THIS WAS A JOB INTERVIEW','THE REFEREE IS HIDING IN THE AIR FRYER','THE BANANA PEEL HAS A BETTER WIN RATE THAN YOU','THAT PORTAL LEADS TO THIRD PERIOD','THE CROWD HAS FILED FOR EMOTIONAL DAMAGES','CHEESY CALLS THIS A DAIRY DISPUTE','JUICY HAS ASKED TO SPEAK TO THE PHYSICS MANAGER','THE ANVIL HAS ITS OWN LINKEDIN','THEY TRAINED FOR THIS. NO THEY DID NOT.'];
+const announcements=['CHEESY HAS BEEN BANNED FROM THREE LUNCHROOMS','JUICY IS CURRENTLY 40% WATER AND 60% ATTITUDE','CRISPY BROUGHT AN ENTIRE AIR FRYER TO A FOOT RACE','SPICY THOUGHT THIS WAS A JOB INTERVIEW','THE REFEREE IS HIDING IN THE AIR FRYER','THAT CHEESE PUDDLE HAS A BETTER WIN RATE THAN YOU','JUICY HAS TURNED THE TRACK INTO A SMOOTHIE','THE CROWD HAS FILED FOR EMOTIONAL DAMAGES','CHEESY CALLS THIS A DAIRY DISPUTE','JUICY HAS ASKED TO SPEAK TO THE PHYSICS MANAGER','SPICY IS NOW LEGALLY CLASSIFIED AS A SPACE HEATER','THEY TRAINED FOR THIS. NO THEY DID NOT.'];
 function battle(t,b){
  const u=(t-b.start)/(b.end-b.start),local=(t-b.start),left=b.pair[0],right=b.pair[1],win=b.winner,lose=b.pair.find(i=>i!==win),impact=u>.73;
  race(t,true);
@@ -135,14 +152,14 @@ function battle(t,b){
  label(`SNACK KOMBAT • ROUND ${b.round}`,800,215,38,'#ffe071');
  for(const [id,x] of[[left,210],[right,940]]){label(teams[id].name,x,270,26,teams[id].color,'left');roundRect(x,292,450,18,5,'#ffffff22');const health=id===win?1-.25*smooth(.2,.7,u):1-smooth(.18,.83,u);roundRect(x,292,450*health,18,5,teams[id].color)}
  const attacks=u>.14&&u<.73,cycle=Math.floor(u*10)%2,kick=Math.sin(local*12),lunge=attacks?Math.max(0,kick)*85:0;
- function fighter(id,base,flip){const losing=id===lose&&impact;let xx=base+(id===left?1:-1)*lunge,yy=560;let rotation=0;if(losing){const fly=smooth(.76,.96,u);xx+=(id===left?-1:1)*fly*480;yy-=Math.sin(fly*Math.PI)*230;rotation=fly*8}c.save();c.translate(xx,yy);c.rotate(rotation);mascot(id,0,0,2.15,local*9,flip,attacks);weapon(id,0,0,2.15,flip,local*8,attacks);if(id===lose&&impact&&win===2)freezeCube(0,0,2.4);c.restore()}
+ function fighter(id,base,flip){const losing=id===lose&&impact;let xx=base+(id===left?1:-1)*lunge,yy=560;let rotation=0;if(losing){const fly=smooth(.76,.96,u);xx+=(id===left?-1:1)*fly*480;yy-=Math.sin(fly*Math.PI)*230;rotation=fly*8}c.save();c.translate(xx,yy);c.rotate(rotation);mascot(id,0,0,2.15,local*9,flip,attacks);weapon(id,0,0,2.15,flip,local*8,attacks);if(id===lose&&impact)foodReaction(win,0,0,2.15,local);c.restore()}
  fighter(left,420,false);fighter(right,1180,true);
- if(attacks){const from=cycle?right:left,to=cycle?left:right,f=(u*10)%1,a=from===left?545:1055,z=to===left?440:1160,flip=from!==left;
-   if(from===0||from===2){if(f<.75)beam(a,490,z,490+Math.sin(local*25)*13,teams[from].color,from===0?14:8);if(from===2&&f>.45)freezeCube(z,545,1.5);if(f>.6){star(z,490,47,teams[from].color);label(from===0?'PASTEURIZED.':'REFRIGERATED.',800,440,32,'#fff')}}
-   if(from===1){c.save();c.strokeStyle='#ff80cd';c.shadowColor='#ff52ac';c.shadowBlur=25;c.lineWidth=18;c.beginPath();c.arc(800,505,145,-2+f*4,0+f*4);c.stroke();c.restore();label('THE FORCE IS MOSTLY SUGAR',800,435,27,'#ffaddc')}
-   if(from===3){const xx=a+(z-a)*f,yy=460-Math.sin(f*Math.PI)*150;c.save();c.translate(xx,yy);c.rotate(local*10);weapon(3,-50,20,1.4,false,0,true);c.restore();beam(xx,yy,xx+Math.sin(local*30)*50,yy-85,'#d7ff9c',4);if(f>.72){star(z,520,80,'#efffc1');label('THUNDERPLUNGER: UNEMPLOYED',800,435,27,'#d7ff9c')}}
+ if(attacks){const from=cycle?right:left,to=cycle?left:right,f=(u*10)%1,a=from===left?560:1040,z=to===left?440:1160;
+   foodAttack(from,a,z,490,local,1.2);
+   if(f>.45)foodReaction(from,z,550,1.4,local);
+   if(f>.6){star(z,490,45,teams[from].color);label(['YOU HAVE BEEN FON-DUED','100% JUICE. 0% MERCY.','YOUR WARRANTY IS NOW CRUMBS','SPICE LEVEL: REGRET'][from],800,435,27,teams[from].color)}
  }
- if(impact){const attacker=win===left?545:1055,target=lose===left?360:1240;if(win===0)beam(attacker,495,target,450,'#ffd35c',27);if(win===1){c.strokeStyle='#ff64b5';c.lineWidth=14;c.beginPath();c.arc(800,510,220,Math.PI*.9,Math.PI*1.9);c.stroke()}if(win===3){for(let n=0;n<3;n++)beam(target+n*20,350,target-20+n*25,540,'#d7ff9c',4)}}
+ if(impact){const attacker=win===left?560:1040,target=lose===left?360:1240;foodAttack(win,attacker,target,495,local,2)}
 
  if(u<.15){label('THE FOOD COURT HAS FALLEN!',800,399,43,'#fff');label('THEY FOUND THE WEAPON AISLE. WE ARE SO SORRY.',800,450,18,'#e6c7e8')}
  else if(impact){label('SNACKTALITY!',800,390,66,'#ffe071');label(teams[win].move,800,454,30,teams[win].color);label(`${teams[win].name} WINS • ${['SENT TO THE SHADOW FRIDGE','YEETED INTO THIRD PERIOD','REFUND REQUEST DENIED','UNINSTALLED FROM THE FOOD COURT','SENT TO THE PRINCIPALS AIR FRYER','EMOTIONAL SUPPORT NUGGET REQUIRED'][b.round-1]}`,800,655,25,'#fff')}
@@ -169,7 +186,13 @@ function playPopStep(index,time,mode='race'){
  if(step===15&&bar%4===3)tone(midi(84),time,.25,'sine',.018,midi(72));
  if(mode==='victory'&&step%4===0)for(const note of[72,76,79])tone(midi(note),time,.32,'triangle',.028);
 }
-function weaponSound(id,time){if(id===0){tone(1000,time,.18,'sawtooth',.045,150);tone(130,time+.06,.16,'sine',.1,45)}if(id===1){tone(180,time,.3,'sawtooth',.045,650);tone(620,time+.12,.2,'triangle',.04,140)}if(id===2){tone(1600,time,.35,'sine',.025,400);drum('hat',time,1.8)}if(id===3){drum('clap',time,1.3);tone(80,time,.4,'sawtooth',.07,25)}}
+function weaponSound(id,time){
+ if(id===0){tone(180,time,.3,'triangle',.065,70);tone(95,time+.09,.18,'sine',.11,50)}
+ if(id===1){for(let i=0;i<4;i++)tone(460+i*90,time+i*.045,.10,'sine',.045,180+i*30)}
+ if(id===2){for(let i=0;i<3;i++){drum('hat',time+i*.07,1.3);tone(230+i*80,time+i*.07,.055,'triangle',.04,100)}}
+ if(id===3){drum('clap',time,.45);drum('hat',time+.05,1.8);tone(90,time,.45,'sawtooth',.065,40)}
+}
+
 function audioPump(){if(customMusic||!audio||!music||!running||paused||finished)return;ensureSound();const now=audio.currentTime;if(nextBeat<now-.3)nextBeat=now;while(nextBeat<now+.12){playPopStep(beat++,nextBeat,stageAt(elapsed));nextBeat+=STEP}}
 
 setInterval(audioPump,90);
