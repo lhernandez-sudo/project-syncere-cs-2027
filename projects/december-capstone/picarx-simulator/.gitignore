@@ -3,3 +3,5 @@ simulation_replay.html
 strict_replay.html
 warehouse_replay.html
 score_report.txt
+.camera-venv/
+*.pt

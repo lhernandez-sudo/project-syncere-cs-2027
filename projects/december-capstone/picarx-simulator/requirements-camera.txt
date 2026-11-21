@@ -1,0 +1,2 @@
+# Hardware camera perception only. The simulator and notebook do not need this.
+ultralytics>=8.3,<9

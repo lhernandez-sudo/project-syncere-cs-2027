@@ -7,12 +7,25 @@ from student_controller import control_step
 
 
 class SimulatorTests(unittest.TestCase):
+    def test_virtual_car_inherits_sunfounder_class(self) -> None:
+        from car_api import CoursePicarx
+        from vendor.sunfounder_picarx import Picarx
+        self.assertTrue(issubclass(VirtualPicarx, Picarx))
+        self.assertTrue(issubclass(VirtualPicarx, CoursePicarx))
+
+    def test_shared_turn_helper_and_upstream_distance_method(self) -> None:
+        car = VirtualPicarx(scenario_catalog()["practice"])
+        car.turn_left(30)
+        self.assertEqual(car.steering, -28)
+        self.assertEqual(car.throttle, 30)
+        self.assertIsInstance(car.get_distance(), float)
+
     def test_api_clamps_unsafe_commands(self) -> None:
         car = VirtualPicarx(scenario_catalog()["practice"])
         car.forward(500)
         car.set_dir_servo_angle(-90)
         self.assertEqual(car.throttle, 100)
-        self.assertEqual(car.steering, -35)
+        self.assertEqual(car.steering, -30)
         self.assertEqual(car.invalid_commands, 2)
 
     def test_sensor_fault_is_repeatable(self) -> None:

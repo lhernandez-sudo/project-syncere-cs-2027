@@ -16,10 +16,10 @@ With a physical PiCar-X, the same decision-making function can receive a real
 `Picarx` object.
 
 ```python
-from simulator import VirtualPicarx
+from car_api import CoursePicarx
 
 
-def control_step(car: VirtualPicarx, memory: dict[str, object]) -> None:
+def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
     distance: float = car.ultrasonic.read()
 
     if distance < 25:
@@ -31,6 +31,30 @@ def control_step(car: VirtualPicarx, memory: dict[str, object]) -> None:
 ```
 
 ## Start here
+
+### Camera decision practice in Jupyter or Colab
+
+Open [picarx-camera-decisions.ipynb](picarx-camera-decisions.ipynb) for a
+beginner-friendly, self-contained introduction before the full driving challenge.
+Upload it to Google Colab and save a copy in Google Drive, or open it locally
+in Jupyter. It needs no packages, camera, or hardware. Run the cells in order.
+
+Students use a mock `car.scan()` interface and complete `control_step()` in one
+student code cell with numbered checkpoint comments. The debug cell directly
+below checks pedestrian, stop-sign, distance, unexpected-reading, and clear-road
+scenarios and points students back to the relevant checkpoint. After each edit,
+run the student cell and then the debug cell. The mock setup cell is collapsed in Colab. Camera detection
+and PyTorch implementation code are not included. The checks give specific hints;
+they are practice feedback, not the full simulator's driving score. Copy the
+student controller function into the full controller when ready; the route still requires
+steering, obstacle avoidance, and stop-sign timing.
+
+Checkpoint 7 adds personal choices in that same student cell: a driver name,
+a custom obstacle label, and a left/right detour preference. Debug checks test
+the chosen steering, straightening after the object clears, and stopping if it
+is too close. These are mock decision checks, not a geometric avoidance test.
+A custom label does not train the real detector or add a new object to the
+full simulator. Keep the custom settings with any controller that uses them.
 
 1. Open `student_controller.py`.
 2. Complete `control_step()` using variables, conditions, lists or dictionaries,
@@ -74,7 +98,7 @@ The simulated camera labels from `scan()` need a camera adapter on hardware.
 Use the grayscale and distance readings to make decisions that can transfer
 to the physical course.
 
-In the starter's type hints, `car: VirtualPicarx` means the simulator hands
+In the starter's type hints, `car: CoursePicarx` means the simulator hands
 you a virtual car with methods such as `forward()` and `stop()`.
 `memory: dict[str, object]` means you use string keys and can store different
 kinds of values, such as a Boolean or a number. The simulator keeps that
@@ -88,7 +112,7 @@ return. Calling a car method is how you tell it what to do.
 | `car.forward(speed)` | Move forward at a speed from 0 to 100. |
 | `car.backward(speed)` | Move backward at a speed from 0 to 100. |
 | `car.stop()` | Stop both drive motors. |
-| `car.set_dir_servo_angle(angle)` | Steer from -35 degrees to +35 degrees. |
+| `car.set_dir_servo_angle(angle)` | Steer from -30 degrees to +30 degrees. |
 | `car.ultrasonic.read()` | Distance to the nearest object ahead in centimeters. |
 | `car.get_grayscale_data()` | Three virtual ground-sensor readings: left, center, right. |
 | `car.scan()` | Camera result: `"human"`, `"stop sign"`, or `"clear"`. |
@@ -112,7 +136,7 @@ that conceptually belongs inside `while driving():` without creating an infinite
 loop that could freeze the shared evaluator:
 
 ```python
-def control_step(car: VirtualPicarx, memory: dict[str, object]) -> None:
+def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
     scan_input: str = car.scan()
 
     if scan_input == "human":
@@ -192,3 +216,80 @@ awards the final 10 points for the demonstration and engineering explanation.
 Every controller must stop the car when it finishes or encounters an unsafe
 condition. A `try/finally` block is still required when adapting the controller
 to real hardware.
+
+## Simulation and hardware share a base class
+
+The inheritance chain is SunFounder's Picarx, then CoursePicarx, then
+VirtualPicarx or HardwarePicarx. The pinned SunFounder source and license
+are in vendor/. HardwarePicarx inherits the real steering, motor, calibration,
+and sensor implementation. VirtualPicarx replaces those operations with
+simulation behavior and uses the same steering limits of -30 to +30 degrees.
+
+Student controllers import CoursePicarx from car_api for their type hints.
+Keep decision logic within the documented course API. Vendor calibration
+and low-level motor configuration methods are intended for hardware setup.
+
+The camera scan and turn_left/turn_right helpers are course additions.
+HardwarePicarx uses CameraScanner from camera_scanner.py. A COCO-trained
+YOLO11 nano model detects people and stop signs in camera frames. A person
+overlapping the middle 70% of the image with feet below the top quarter
+is treated as potentially in the car's path. Human detections take priority.
+The scanner holds a human label for 0.8 seconds and a sign label for
+0.4 seconds after the last qualifying detection to reduce flicker.
+These are starting thresholds to tune against the real course.
+
+On a configured Raspberry Pi, install SunFounder's robot_hat dependencies
+using its official hardware setup instructions. The simulation and Colab
+do not need those packages. For the default Pi camera, run:
+
+    .camera-venv/bin/python run_hardware.py --seconds 30
+
+The hardware runner calls the same student_controller.control_step at a
+target interval of 0.12 seconds and stops the motors when the run exits.
+Ten stopped steps are nominally 1.2 seconds. Detection latency can change
+real timing, so camera thresholds, stop location, steering and sensor
+calibration still require physical-course validation. Simulation scores
+demonstrate behavior within this model.
+
+Source and installation instructions:
+https://github.com/sunfounder/picar-x/tree/2.1.x
+
+## Camera setup and bench testing
+
+Run `python setup_camera.py` once with internet access. It creates
+`.camera-venv`, installs the camera requirements, and downloads
+`yolo11n.pt`. On Raspberry Pi OS, install Picamera2 first with
+`sudo apt install python3-picamera2`. The virtual environment includes
+system packages so it can use Picamera2 and robot_hat installed on the Pi.
+USB cameras use OpenCV and can also be tested on a laptop.
+
+Before connecting driving commands, test a photo and the camera:
+
+    .camera-venv/bin/python camera_scanner.py --image photo.jpg
+    .camera-venv/bin/python camera_scanner.py --camera picamera2
+    .camera-venv/bin/python camera_scanner.py --camera usb --camera-index 0
+
+On Windows setup uses `%USERPROFILE%\.venvs\picarx-camera\Scripts\python.exe`
+to avoid long package installation paths.
+Image mode prints the chosen label plus bounding boxes and confidence scores.
+Camera mode prints labels and scan latency without starting the motors.
+
+The concrete perception methods are `read_frame()`, `detect_frame(frame)`,
+`select_label(detections, now)`, and `scan()`. Students continue calling
+`car.scan()`. HardwarePicarx stops the motors before synchronous scanning,
+so slow inference leaves the car stopped. Capture/model errors propagate to
+the hardware runner, which also stops the car in its cleanup block.
+A completed scan taking over two seconds raises an error. This check runs
+after capture and inference return and cannot interrupt a blocked camera call.
+
+Stop-sign bounding-box area is an approach heuristic, not a distance reading.
+The default minimum is 0.5% of the image. Use
+`--minimum-sign-area` and `--confidence` in the bench tool to inspect thresholds.
+Printed toy-scale signs, small figures, occlusion, motion blur and lighting
+need real-course tests and potentially model fine-tuning. A person leaving
+the image can also be a camera blind spot, so the dropout hold alone does
+not establish that a crossing is clear. Boxes still use ultrasonic readings.
+
+Detector API and camera color-order references:
+https://docs.ultralytics.com/modes/predict/
+https://github.com/raspberrypi/picamera2/blob/main/picamera2/request.py

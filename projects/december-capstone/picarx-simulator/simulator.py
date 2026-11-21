@@ -8,6 +8,7 @@ import math
 import random
 from pathlib import Path
 from typing import Callable
+from car_api import CoursePicarx, ScanLabel
 
 
 @dataclass(frozen=True)
@@ -119,8 +120,8 @@ class VirtualUltrasonic:
         return 200.0
 
 
-class VirtualPicarx:
-    """Small compatibility layer modeled after SunFounder's Picarx API."""
+class VirtualPicarx(CoursePicarx):
+    """SunFounder PiCar-X subclass with simulated motors and sensors."""
 
     is_simulation = True
 
@@ -158,21 +159,11 @@ class VirtualPicarx:
     def stop(self) -> None:
         self.throttle = 0.0
 
-    def turn_left(self, speed: float = 28) -> None:
-        """Begin a readable left turn using the real steering and motor calls."""
-        self.set_dir_servo_angle(-28)
-        self.forward(speed)
-
-    def turn_right(self, speed: float = 28) -> None:
-        """Begin a readable right turn using the real steering and motor calls."""
-        self.set_dir_servo_angle(28)
-        self.forward(speed)
-
     def set_dir_servo_angle(self, angle: float) -> None:
         angle = self._number(angle)
-        if not -35 <= angle <= 35:
+        if not self.DIR_MIN <= angle <= self.DIR_MAX:
             self.invalid_commands += 1
-        self.steering = clamp(angle, -35, 35)
+        self.steering = clamp(angle, self.DIR_MIN, self.DIR_MAX)
 
     def set_cam_pan_angle(self, angle: float) -> None:
         self._number(angle)
@@ -198,7 +189,7 @@ class VirtualPicarx:
             readings.append(250 if route_distance <= 11 else 1200)
         return readings
 
-    def scan(self) -> str:
+    def scan(self) -> ScanLabel:
         """Return the closest camera-recognized object or ``clear``.
 
         This intentionally hides computer-vision math from beginners. In a
