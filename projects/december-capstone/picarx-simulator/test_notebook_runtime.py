@@ -41,11 +41,13 @@ for repeat in range(2):
     render_replays([(result, scenario)], namespace["work_folder"] / "verified.html")
 print("Recovered stale imports, completed 5/5, rendered HTML, and reran setup successfully.")
 '''
-        with tempfile.TemporaryDirectory(prefix="picarx-runtime-") as folder:
-            result = subprocess.run([sys.executable, "-c", script, str(notebook)],
-                                    cwd=folder, capture_output=True, text=True, timeout=30)
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Recovered stale imports", result.stdout)
+        for filename in (notebook.name, "picarx-working-demo-v2.ipynb"):
+            with self.subTest(notebook=filename):
+                with tempfile.TemporaryDirectory(prefix="picarx-runtime-") as folder:
+                    result = subprocess.run([sys.executable, "-c", script, str(notebook.with_name(filename))],
+                                            cwd=folder, capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("Recovered stale imports", result.stdout)
 
 
 if __name__ == "__main__":

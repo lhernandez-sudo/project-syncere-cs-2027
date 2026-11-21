@@ -2,6 +2,8 @@
 import contextlib
 import io
 import unittest
+from dataclasses import fields, make_dataclass, MISSING
+from unittest.mock import patch
 
 from guided_course import run_guided_course
 
@@ -85,6 +87,22 @@ class GuidedCourseTests(unittest.TestCase):
         stalled = self.run_course(lambda car, memory: car.stop())
         self.assertFalse(stalled.reached_goal)
         self.assertIn("No progress", stalled.replay[-1]["failure"])
+
+    def test_legacy_scenario_constructor_without_road_width(self):
+        from simulator import Scenario
+        definitions = []
+        for field in fields(Scenario):
+            if field.name == "road_half_width":
+                continue
+            if field.default is MISSING:
+                definitions.append((field.name, field.type))
+            else:
+                definitions.append((field.name, field.type, field.default))
+        LegacyScenario = make_dataclass("LegacyScenario", definitions, frozen=True)
+        with patch("simulator.Scenario", LegacyScenario):
+            result = self.run_course(driver("left"))
+        self.assertTrue(result.reached_goal)
+        self.assertEqual(result.checkpoints_reached, 5)
 
 
 if __name__ == "__main__":

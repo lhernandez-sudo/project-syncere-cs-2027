@@ -124,7 +124,9 @@ def run_guided_course(controller, obstacle, direction, car_factory):
     frames[-1]["throttle"] = 0
     scenario = Scenario("guided_neighborhood",1600,520,(65,260,0),Checkpoint(1450,260,32),(),
         tuple(Checkpoint(cx,260,32) for cx in checkpoint_x),((40,260),(1550,260)),scene,
-        max_steps=2200,road_half_width=85)
+        max_steps=2200)
+    # Keep compatibility with earlier Scenario constructors used in Colab.
+    object.__setattr__(scenario, "road_half_width", 85)
     result = RunResult(scenario=scenario.name,reached_goal=success,checkpoints_reached=completed,
         total_checkpoints=5,collisions=int(failure=="Hit an obstacle"),boundary_hits=0,
         invalid_commands=0,sensor_faults_seen=0,steps=len(frames),distance_traveled=round(traveled,2),

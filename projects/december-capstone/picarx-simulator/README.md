@@ -35,7 +35,7 @@ def control_step(car: CoursePicarx, memory: dict[str, object]) -> None:
 ### Camera decision practice in Jupyter or Colab
 
 **Start with the completed example:**
-[Open the working Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-working-demo.ipynb).
+[Open the working Colab](https://colab.research.google.com/github/lhernandez-sudo/project-syncere-cs-2027/blob/main/projects/december-capstone/picarx-simulator/picarx-working-demo-v2.ipynb).
 Run setup, the completed controller, and simulation in order. No edits or
 installs are required. Expected result: five of five guided skills checkpoints
 and an animated HTML replay. This version has no unfinished checkpoint tasks.
