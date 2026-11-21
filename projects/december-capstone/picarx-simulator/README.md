@@ -56,6 +56,16 @@ is too close. These are mock decision checks, not a geometric avoidance test.
 A custom label does not train the real detector or add a new object to the
 full simulator. Keep the custom settings with any controller that uses them.
 
+The debug cell also runs that same controller on the full strict course and
+embeds the existing 3D HTML replay below the mock checks. The simulator sources
+are bundled in the collapsed setup cell, so this needs no download or camera
+packages. The replay reports route progress and failure hints, separately from
+the mock checkpoint checks; it does not grade code quality. The saved fallback
+is `picarx_notebook/camera_course_replay.html` in the notebook runtime. In Colab,
+download that file from the Files panel if the embedded viewer is unavailable.
+Personal objects remain mock-only. Passing the mock checks does not complete
+the full course, which also requires turns, obstacle avoidance, and stop timing.
+
 1. Open `student_controller.py`.
 2. Complete `control_step()` using variables, conditions, lists or dictionaries,
    loops, and helper functions.
