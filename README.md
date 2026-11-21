@@ -6,6 +6,10 @@
 for the student Colab notebook and teaching slides. The lab uses comment
 checkpoints and a short visual driving course, with a separate instructor model.
 
+Class-opening icebreaker: [Snackdown Derby](activities/snackdown-derby/README.md)
+is a 3.5-minute four-team ticket race with randomized winners, cartoon snack
+battles, original music, and 18 printable tickets. Run one Python file.
+
 ## Students: start Week 6
 
 ### [OPEN THE WEEK 6 CODE AND CONSEQUENCES GUIDE](week-06-dictionaries-classes-review/README.md)
